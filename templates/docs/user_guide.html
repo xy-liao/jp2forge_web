@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | JP2Forge Web{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>JP2Forge Web User Guide</h1>
+            <p class="lead">Learn how to use the JP2Forge Web application for converting images to JPEG2000 format.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="{% url 'docs_readme' %}" class="list-group-item list-group-item-action">Documentation Home</a>
+                <a href="{% url 'docs_user_guide' %}" class="list-group-item list-group-item-action active">User Guide</a>
+                <a href="{% url 'about' %}" class="list-group-item list-group-item-action">About JP2Forge Web</a>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Table of Contents</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#creating-jobs" class="list-group-item list-group-item-action">Creating a New Conversion Job</a>
+                        <a href="#compression-options" class="list-group-item list-group-item-action">Understanding Compression Options</a>
+                        <a href="#document-types" class="list-group-item list-group-item-action">Document Types</a>
+                        <a href="#bnf-compliance" class="list-group-item list-group-item-action">BnF Compliance Options</a>
+                        <a href="#managing-jobs" class="list-group-item list-group-item-action">Viewing and Managing Jobs</a>
+                        <a href="#downloading" class="list-group-item list-group-item-action">Downloading Converted Files</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <section id="creating-jobs" class="mb-5">
+                        <h2>Creating a New Conversion Job</h2>
+                        <p>To create a new conversion job:</p>
+                        <ol>
+                            <li>Log in to your account</li>
+                            <li>Navigate to the "New Job" page</li>
+                            <li>Click "Choose Files" to select one or more image files to convert</li>
+                            <li>Configure the conversion settings (explained below)</li>
+                            <li>Click "Upload and Convert" to start the conversion process</li>
+                        </ol>
+                        <p>The system supports batch conversion of multiple files in one job.</p>
+                    </section>
+
+                    <section id="compression-options" class="mb-5">
+                        <h2>Understanding Compression Options</h2>
+                        <p>JP2Forge offers four compression modes, each suited to different needs:</p>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Lossless</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Preserves all image data perfectly</li>
+                                    <li>Results in larger file sizes</li>
+                                    <li>Ideal for archival purposes where no quality loss is acceptable</li>
+                                    <li>No quality setting is needed (automatically hidden)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Lossy</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Achieves smaller files by allowing controlled quality reduction</li>
+                                    <li>Quality level is adjustable (20-100)</li>
+                                    <li>Good for web access copies or when storage space is limited</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Supervised</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Expert-level settings with fine-tuned parameters</li>
+                                    <li>Allows detailed control of the compression process</li>
+                                    <li>Quality level is adjustable (20-100)</li>
+                                    <li>Best for specialized needs or when precise control is required</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">BnF Compliant</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Follows Bibliothèque nationale de France digitization standards</li>
+                                    <li>Specialized preservation settings for cultural heritage materials</li>
+                                    <li>No quality setting is needed (automatically configured)</li>
+                                    <li>When selected, the BnF Compliant checkbox is automatically checked and disabled</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="document-types" class="mb-5">
+                        <h2>Document Types</h2>
+                        <p>Select the document type that best matches your source material:</p>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Photograph</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Optimized for detailed photos and continuous-tone images</li>
+                                    <li>Special handling for detail preservation in high frequencies</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Heritage Document</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Best for historical manuscripts, documents, and maps</li>
+                                    <li>Emphasizes text clarity and detail preservation</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Color</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Optimized for vibrant color content and general graphics</li>
+                                    <li>Enhanced color fidelity</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Grayscale</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul>
+                                    <li>Best for black & white or grayscale content</li>
+                                    <li>Focuses on contrast preservation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="bnf-compliance" class="mb-5">
+                        <h2>BnF Compliance Options</h2>
+                        <p>There are two ways to apply BnF (Bibliothèque nationale de France) standards:</p>
+                        
+                        <ol>
+                            <li><strong>BnF Compliant Compression Mode</strong>: Select "BnF Compliant" from the compression mode dropdown. This applies all BnF standards as a complete preset and automatically checks the BnF Compliant checkbox.</li>
+                            <li><strong>BnF Compliant Checkbox</strong>: When using other compression modes (Lossless, Lossy, or Supervised), you can enable this checkbox to apply BnF standards while maintaining your selected compression approach.</li>
+                        </ol>
+                        
+                        <div class="alert alert-info">
+                            <h4 class="h5">Key Difference:</h4>
+                            <ul>
+                                <li>The BnF Compliant mode applies a comprehensive set of BnF specifications</li>
+                                <li>The checkbox option allows you to apply BnF standards while using your preferred compression mode</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section id="managing-jobs" class="mb-5">
+                        <h2>Viewing and Managing Jobs</h2>
+                        <p>After submitting a conversion job:</p>
+                        <ol>
+                            <li>You'll be redirected to the job detail page</li>
+                            <li>The status will initially show as "Pending" or "Processing"</li>
+                            <li>Refresh the page or wait for automatic updates to see progress</li>
+                            <li>Once completed, the status will change to "Completed" and download links will appear</li>
+                        </ol>
+                        
+                        <p>From the "My Jobs" page, you can:</p>
+                        <ul>
+                            <li>View all your conversion jobs</li>
+                            <li>Filter jobs by status</li>
+                            <li>Sort by different criteria</li>
+                            <li>Delete completed jobs you no longer need</li>
+                        </ul>
+                    </section>
+
+                    <section id="downloading" class="mb-5">
+                        <h2>Downloading Converted Files</h2>
+                        <p>After a job completes successfully:</p>
+                        <ol>
+                            <li>Go to the job detail page</li>
+                            <li>Click the "Download" button next to each converted file</li>
+                            <li>For multi-page documents, you'll see individual download links for each page</li>
+                        </ol>
+                        
+                        <div class="alert alert-secondary">
+                            <p class="mb-0">Converted files are kept available for download for 30 days by default.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,784 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}New Conversion Job - JP2Forge{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    [data-bs-theme="dark"] .form-section {
+        border-bottom: 1px solid #495057;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+    }
+    
+    .help-text {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    [data-bs-theme="dark"] .help-text {
+        color: #adb5bd;
+    }
+    
+    .form-card {
+        border: none;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    }
+    
+    .info-card {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-2px);
+        border-left-color: #0d6efd;
+    }
+    
+    /* Custom file input styling */
+    .custom-file-input-container {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .custom-file-button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    [data-bs-theme="dark"] .custom-file-button {
+        background-color: #495057;
+        border-color: #6c757d;
+        color: #f8f9fa;
+    }
+    
+    .custom-file-label {
+        margin-left: 10px;
+        color: #6c757d;
+    }
+    
+    /* Hide the actual file input */
+    .custom-file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 0.1px;
+        height: 0.1px;
+    }
+    
+    .file-preview {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 5px;
+        display: none;
+        margin-top: 10px;
+    }
+    
+    .file-info {
+        margin-top: 10px;
+        display: none;
+    }
+    
+    .compression-info-card {
+        background-color: #f8f9fa;
+        border-left: 3px solid #0d6efd;
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
+    
+    [data-bs-theme="dark"] .compression-info-card {
+        background-color: #343a40;
+        border-left: 3px solid #0d6efd;
+        color: #f8f9fa;
+    }
+    
+    /* Format the help text descriptions with proper spacing */
+    .help-block {
+        display: block !important;
+        clear: both;
+        margin-top: 8px;
+        margin-bottom: 15px;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    [data-bs-theme="dark"] .help-block {
+        color: #adb5bd;
+    }
+    
+    [data-bs-theme="dark"] .help-block strong {
+        color: #e9ecef;
+    }
+    
+    /* Format the help text descriptions with proper spacing */
+    .help-block strong {
+        font-weight: 600;
+        color: #495057;
+        display: block;
+        margin-top: 10px;
+    }
+    
+    /* Add spacing between options in dropdown help text */
+    .help-block strong + br {
+        display: none;
+    }
+    
+    /* Selected files display */
+    .selected-files-container {
+        margin-top: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+    
+    [data-bs-theme="dark"] .selected-files-container {
+        background-color: #343a40;
+        border-color: #495057;
+    }
+    
+    .selected-file-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .selected-file-item:last-child {
+        border-bottom: none;
+    }
+    
+    /* Ensure form controls have consistent spacing */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Ensure labels have proper spacing */
+    label {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    /* Consistent form control sizing */
+    select.form-control {
+        height: calc(1.5em + .75rem + 2px);
+    }
+
+    /* Quality input field styling */
+    .quality-field {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 0.375rem 0.75rem;
+        width: 100%;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .quality-field:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    /* Quality ranges styling */
+    .quality-ranges {
+        margin-top: 12px;
+    }
+    
+    .quality-range {
+        padding: 4px 0;
+        margin-bottom: 4px;
+    }
+    
+    .quality-range strong {
+        display: inline-block;
+        min-width: 60px;
+        color: #495057;
+    }
+    
+    /* Visual quality indicator */
+    .quality-indicator {
+        height: 6px;
+        margin: 13px 0 15px 0;
+        background: linear-gradient(to right, #dc3545, #ffc107, #198754);
+        border-radius: 3px;
+        position: relative;
+    }
+
+    /* Quality input styling improvements */
+    .quality-input-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .quality-input-group input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        flex: 1;
+        height: 38px;
+        padding-right: 0; /* Remove padding to prevent text overlap with spinner */
+    }
+    
+    /* Hide the spinner arrows on number inputs for cleaner look */
+    .quality-input-group input::-webkit-outer-spin-button,
+    .quality-input-group input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+    .quality-input-group input[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+    }
+    
+    .quality-input-group .input-group-text {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        background-color: #f8f9fa;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        height: 38px;
+        border: 1px solid #ced4da;
+        border-left: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    [data-bs-theme="dark"] .quality-input-group .input-group-text {
+        background-color: #495057;
+        border-color: #6c757d;
+        color: #f8f9fa;
+    }
+    
+    /* Style for the quality marker/indicator */
+    .quality-marker {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: #212529;
+        border-radius: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        z-index: 2;
+    }
+    
+    [data-bs-theme="dark"] .quality-marker {
+        background-color: #f8f9fa;
+    }
+    
+    /* Style for quality range indicator texts */
+    .quality-label-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    
+    .quality-label-container span {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    [data-bs-theme="dark"] .quality-label-container span {
+        color: #adb5bd;
+    }
+
+    /* Improve form controls styling for dark mode consistency */
+    .form-select, .form-control {
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+    
+    [data-bs-theme="dark"] .form-select,
+    [data-bs-theme="dark"] .form-control {
+        background-color: #343a40;
+        color: #f8f9fa;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Better form styling for dark mode */
+    [data-bs-theme="dark"] select option {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+    
+    /* Improved label styling for dark mode */
+    [data-bs-theme="dark"] label {
+        color: #e9ecef;
+    }
+    
+    /* Conversion settings section styling for better dark mode display */
+    .conversion-section {
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    [data-bs-theme="dark"] .conversion-section {
+        background-color: #343a40;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Mode and type descriptions styling for dark mode */
+    .mode-description, .type-description {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        background-color: #f8f9fa;
+    }
+    
+    [data-bs-theme="dark"] .mode-description,
+    [data-bs-theme="dark"] .type-description {
+        background-color: #2b3035;
+        color: #e9ecef;
+    }
+    
+    [data-bs-theme="dark"] .mode-title,
+    [data-bs-theme="dark"] .type-title {
+        color: #f8f9fa;
+        font-weight: 500;
+    }
+    
+    /* Fix for dark mode quality slider */
+    [data-bs-theme="dark"] .quality-indicator {
+        background: linear-gradient(to right, #dc3545, #ffc107, #198754);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>New Conversion Job</h1>
+        <p class="text-muted">Upload an image or multiple images and configure the JPEG2000 conversion settings.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Jobs
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card form-card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Upload Files</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="conversion-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-section">
+                        <h5>File Selection</h5>
+                        <p class="help-text">Select an image file or multiple files to convert to JPEG2000. Supported formats include JPEG, TIFF, PNG, and BMP.</p>
+                        
+                        <!-- Custom file input -->
+                        <div class="custom-file-input-container">
+                            <label for="id_files" class="custom-file-button">
+                                <i class="bi bi-upload"></i> Choose Files
+                            </label>
+                            <span class="custom-file-label" id="file-selection-text">No files selected</span>
+                            <input type="file" name="files" multiple class="custom-file-input" id="id_files" required>
+                            <small class="form-text text-muted d-block mt-2">Maximum file size: 100MB</small>
+                            
+                            <!-- Selected files display container -->
+                            <div class="selected-files-container mt-3 d-none" id="selected-files-container">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="mb-0">Selected Files: <span id="fileCount">0</span></h6>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="clear-files-btn">
+                                        <i class="bi bi-x"></i> Clear All
+                                    </button>
+                                </div>
+                                <div id="fileList" class="selected-files-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section mt-4">
+                        <h5>Conversion Settings</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_compression_mode">Compression mode</label>
+                                {{ form.compression_mode }}
+                                <div class="help-block">{{ form.compression_mode.help_text|safe }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_document_type">Document type</label>
+                                {{ form.document_type }}
+                                <div class="help-block">{{ form.document_type.help_text|safe }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3" id="bnf_compliant_container">
+                                <div class="form-check">
+                                    {{ form.bnf_compliant }}
+                                    <label class="form-check-label" for="id_bnf_compliant">
+                                        BnF Compliant
+                                    </label>
+                                </div>
+                                <div class="help-block">{{ form.bnf_compliant.help_text|safe }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3" id="quality_container">
+                                <label for="id_quality">Quality</label>
+                                <div class="quality-input-group">
+                                    {{ form.quality }}
+                                    <span class="input-group-text">%</span>
+                                </div>
+                                <div class="quality-indicator mt-2" id="quality-slider">
+                                    <!-- Marker will be added by JS -->
+                                </div>
+                                <div class="quality-label-container">
+                                    <span>Smaller files</span>
+                                    <span>Balanced</span>
+                                    <span>Higher quality</span>
+                                </div>
+                                <div class="help-block">{{ form.quality.help_text|safe }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> Upload and Convert
+                        </button>
+                        <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Conversion Information</h5>
+            </div>
+            <div class="card-body">
+                <h6>Compression Modes</h6>
+                
+                <div id="compression-info-lossless" class="compression-info-card">
+                    <h6>Lossless</h6>
+                    <p>Perfect preservation of all image data.</p>
+                    <ul class="small">
+                        <li>No quality loss at all</li>
+                        <li>Larger file sizes</li>
+                        <li>Perfect for archival</li>
+                    </ul>
+                </div>
+                
+                <div id="compression-info-lossy" class="compression-info-card" style="display: none;">
+                    <h6>Lossy</h6>
+                    <p>Achieves high compression with controlled quality reduction.</p>
+                    <ul class="small">
+                        <li>Better compression than lossless</li>
+                        <li>Quality level adjustable</li>
+                        <li>Good for web access copies</li>
+                    </ul>
+                </div>
+                
+                <div id="compression-info-supervised" class="compression-info-card" style="display: none;">
+                    <h6>Supervised</h6>
+                    <p>Expert-level settings with fine-tuned parameters.</p>
+                    <ul class="small">
+                        <li>Advanced wavelet settings</li>
+                        <li>Customizable codeblock parameters</li>
+                        <li>Best for specialized needs</li>
+                    </ul>
+                </div>
+                
+                <div id="compression-info-bnf" class="compression-info-card" style="display: none;">
+                    <h6>BnF Compliant</h6>
+                    <p>Follows Bibliothèque nationale de France requirements.</p>
+                    <ul class="small">
+                        <li>Specialized preservation settings</li>
+                        <li>Meets cultural heritage standards</li>
+                        <li>Ideal for libraries and archives</li>
+                    </ul>
+                </div>
+                
+                <hr>
+                
+                <h6>Document Types</h6>
+                
+                <div id="document-info-photograph" class="compression-info-card">
+                    <h6>Photograph</h6>
+                    <p>Optimized settings for detailed photos.</p>
+                    <ul class="small">
+                        <li>Optimized for: Detailed photos, continuous-tone images</li>
+                        <li>Special handling: Detail preservation in high frequencies</li>
+                    </ul>
+                </div>
+                
+                <div id="document-info-heritage" class="compression-info-card" style="display: none;">
+                    <h6>Heritage Document</h6>
+                    <p>Settings for historical documents and manuscripts.</p>
+                    <ul class="small">
+                        <li>Optimized for: Historical documents, manuscripts, maps</li>
+                        <li>Special handling: Text clarity, detail preservation</li>
+                    </ul>
+                </div>
+                
+                <div id="document-info-color" class="compression-info-card" style="display: none;">
+                    <h6>Color</h6>
+                    <p>Optimized for vibrant color content.</p>
+                    <ul class="small">
+                        <li>Optimized for: General graphics, illustrations</li>
+                        <li>Color handling: Enhanced color fidelity</li>
+                    </ul>
+                </div>
+                
+                <div id="document-info-grayscale" class="compression-info-card" style="display: none;">
+                    <h6>Grayscale</h6>
+                    <p>Optimized settings for grayscale or black and white images.</p>
+                    <ul class="small">
+                        <li>Optimized for: Black & white photos, line art</li>
+                        <li>Special handling: Contrast preservation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // File input handling
+        const fileInput = document.getElementById('id_files');
+        const fileSelectionText = document.getElementById('file-selection-text');
+        const selectedFilesContainer = document.getElementById('selected-files-container');
+        const fileCountElement = document.getElementById('fileCount');
+        const fileListElement = document.getElementById('fileList');
+        const clearFilesBtn = document.getElementById('clear-files-btn');
+
+        // Function to update the file selection display
+        function updateFileDisplay() {
+            if (fileInput.files.length > 0) {
+                fileSelectionText.textContent = `${fileInput.files.length} file(s) selected`;
+                selectedFilesContainer.classList.remove('d-none');
+                fileCountElement.textContent = fileInput.files.length;
+                
+                // Clear previous file list
+                fileListElement.innerHTML = '';
+                
+                // Add each file to the list with size
+                Array.from(fileInput.files).forEach(file => {
+                    const fileSize = formatFileSize(file.size);
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'selected-file-item';
+                    fileItem.innerHTML = `
+                        <div class="text-truncate" style="max-width: 70%;">${file.name}</div>
+                        <div class="badge bg-secondary">${fileSize}</div>
+                    `;
+                    fileListElement.appendChild(fileItem);
+                });
+            } else {
+                fileSelectionText.textContent = 'No files selected';
+                selectedFilesContainer.classList.add('d-none');
+            }
+        }
+        
+        // Helper function to format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Event listener for file input change
+        if (fileInput) {
+            fileInput.addEventListener('change', updateFileDisplay);
+        }
+        
+        // Clear files button event listener
+        if (clearFilesBtn) {
+            clearFilesBtn.addEventListener('click', function() {
+                fileInput.value = '';
+                fileSelectionText.textContent = 'No files selected';
+                selectedFilesContainer.classList.add('d-none');
+            });
+        }
+        
+        // Compression mode and BnF Compliant handling
+        const compressionModeSelect = document.getElementById('id_compression_mode');
+        const qualityContainer = document.getElementById('quality_container');
+        const bnfCompliantContainer = document.getElementById('bnf_compliant_container');
+        const bnfCompliantCheckbox = document.getElementById('id_bnf_compliant');
+        
+        // Add a tooltip container for BnF explanation when mode is selected
+        if (bnfCompliantContainer) {
+            const tooltipDiv = document.createElement('div');
+            tooltipDiv.className = 'alert alert-info mt-2 d-none';
+            tooltipDiv.id = 'bnf-mode-tooltip';
+            tooltipDiv.innerHTML = 'When BnF Compliant mode is selected, the separate BnF Compliant option is automatically applied and disabled.';
+            bnfCompliantContainer.appendChild(tooltipDiv);
+        }
+        
+        // Compression info cards
+        const compressionInfoCards = {
+            lossless: document.getElementById('compression-info-lossless'),
+            lossy: document.getElementById('compression-info-lossy'),
+            supervised: document.getElementById('compression-info-supervised'),
+            bnf_compliant: document.getElementById('compression-info-bnf')
+        };
+        
+        // Update compression mode info and related options
+        function updateCompressionInfo() {
+            const selectedMode = compressionModeSelect.value;
+            const bnfTooltip = document.getElementById('bnf-mode-tooltip');
+            
+            // Hide all info cards first
+            Object.values(compressionInfoCards).forEach(card => {
+                if (card) card.style.display = 'none';
+            });
+            
+            // Show the selected mode's info card
+            if (selectedMode === 'lossless' && compressionInfoCards.lossless) {
+                compressionInfoCards.lossless.style.display = 'block';
+            } else if (selectedMode === 'lossy' && compressionInfoCards.lossy) {
+                compressionInfoCards.lossy.style.display = 'block';
+            } else if (selectedMode === 'supervised' && compressionInfoCards.supervised) {
+                compressionInfoCards.supervised.style.display = 'block';
+            } else if (selectedMode === 'bnf_compliant' && compressionInfoCards.bnf_compliant) {
+                compressionInfoCards.bnf_compliant.style.display = 'block';
+            }
+            
+            // Show/hide quality field based on compression mode
+            if (selectedMode === 'lossless' || selectedMode === 'bnf_compliant') {
+                qualityContainer.style.display = 'none';
+            } else {
+                qualityContainer.style.display = 'block';
+            }
+            
+            // Handle BnF Compliant checkbox when BnF Compliant mode is selected
+            if (selectedMode === 'bnf_compliant') {
+                // When BnF Compliant mode is selected, check and disable the checkbox
+                bnfCompliantCheckbox.checked = true;
+                bnfCompliantCheckbox.disabled = true;
+                
+                // Show explanation tooltip
+                if (bnfTooltip) bnfTooltip.classList.remove('d-none');
+                
+                // Optional: Add visual indication that the checkbox is auto-selected
+                bnfCompliantContainer.classList.add('opacity-75');
+            } else {
+                // For other modes, enable the checkbox
+                bnfCompliantCheckbox.disabled = false;
+                
+                // Hide explanation tooltip
+                if (bnfTooltip) bnfTooltip.classList.add('d-none');
+                
+                // Remove visual indication
+                bnfCompliantContainer.classList.remove('opacity-75');
+            }
+        }
+        
+        // Document type handling
+        const documentTypeSelect = document.getElementById('id_document_type');
+        
+        // Document type info cards
+        const documentInfoCards = {
+            photograph: document.getElementById('document-info-photograph'),
+            heritage_document: document.getElementById('document-info-heritage'),
+            color: document.getElementById('document-info-color'),
+            grayscale: document.getElementById('document-info-grayscale')
+        };
+        
+        // Update document type info
+        function updateDocumentTypeInfo() {
+            const selectedType = documentTypeSelect.value;
+            
+            // Hide all info cards first
+            Object.values(documentInfoCards).forEach(card => {
+                if (card) card.style.display = 'none';
+            });
+            
+            // Show the selected type's info card
+            if (selectedType === 'photograph' && documentInfoCards.photograph) {
+                documentInfoCards.photograph.style.display = 'block';
+            } else if (selectedType === 'heritage_document' && documentInfoCards.heritage_document) {
+                documentInfoCards.heritage_document.style.display = 'block';
+            } else if (selectedType === 'color' && documentInfoCards.color) {
+                documentInfoCards.color.style.display = 'block';
+            } else if (selectedType === 'grayscale' && documentInfoCards.grayscale) {
+                documentInfoCards.grayscale.style.display = 'block';
+            }
+        }
+        
+        // Quality input visual indicator
+        const qualityInput = document.getElementById('id_quality');
+        const qualityIndicator = document.querySelector('.quality-indicator');
+        
+        // Update the visual indicator when quality value changes
+        function updateQualityIndicator() {
+            if (qualityInput && qualityIndicator) {
+                // Create a marker to show current position
+                const value = parseFloat(qualityInput.value);
+                const position = Math.min(Math.max(value / 100, 0), 1) * 100;
+                
+                // Remove any existing markers
+                const existingMarker = qualityIndicator.querySelector('.quality-marker');
+                if (existingMarker) {
+                    existingMarker.remove();
+                }
+                
+                // Add new marker at current position
+                const marker = document.createElement('div');
+                marker.className = 'quality-marker';
+                marker.style.left = `${position}%`;
+                qualityIndicator.appendChild(marker);
+            }
+        }
+        
+        // Initialize quality indicator
+        if (qualityInput) {
+            updateQualityIndicator();
+            
+            // Update indicator when quality changes
+            qualityInput.addEventListener('input', updateQualityIndicator);
+            qualityInput.addEventListener('change', updateQualityIndicator);
+        }
+        
+        // Initialize on page load
+        updateCompressionInfo();
+        updateDocumentTypeInfo();
+        
+        // Add event listeners for select changes
+        if (compressionModeSelect) {
+            compressionModeSelect.addEventListener('change', updateCompressionInfo);
+        }
+        
+        if (documentTypeSelect) {
+            documentTypeSelect.addEventListener('change', updateDocumentTypeInfo);
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

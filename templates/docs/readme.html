@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | JP2Forge Web{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>JP2Forge Web Documentation</h1>
+            <p class="lead">Documentation for the JP2Forge Web application.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="{% url 'docs_readme' %}" class="list-group-item list-group-item-action active">Documentation Home</a>
+                <a href="{% url 'docs_user_guide' %}" class="list-group-item list-group-item-action">User Guide</a>
+                <a href="{% url 'about' %}" class="list-group-item list-group-item-action">About JP2Forge Web</a>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h2>About JP2Forge Web</h2>
+                    <p>JP2Forge Web is a Django-based web application that provides a user-friendly interface for converting various image formats to JPEG2000. It serves as a front-end to the core JP2Forge conversion scripts, offering features like:</p>
+                    
+                    <ul>
+                        <li>User authentication and job management</li>
+                        <li>Batch image conversion</li>
+                        <li>Different compression modes including BnF compliance</li>
+                        <li>Job status tracking and notifications</li>
+                        <li>Downloadable converted files</li>
+                    </ul>
+
+                    <h2>Documentation Contents</h2>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="bi bi-book"></i> <a href="{% url 'docs_user_guide' %}">User Guide</a></h3>
+                            <p>How to use the JP2Forge Web application for image conversion.</p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="h5"><i class="bi bi-info-circle"></i> <a href="{% url 'about' %}">About JP2Forge Web</a></h3>
+                            <p>Information about the JP2Forge Web application and its features.</p>
+                        </div>
+                    </div>
+
+                    <h2>Relationship to JP2Forge Core</h2>
+                    <p>This documentation covers only the web application interface. The JP2Forge Web application is built on top of the JP2Forge core conversion scripts, providing a user-friendly web interface for the functionality.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

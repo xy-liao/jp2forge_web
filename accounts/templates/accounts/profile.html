@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile | JP2Forge Web{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2>User Profile</h2>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <strong>Username:</strong>
+                    </div>
+                    <div class="col-md-9">
+                        {{ user.username }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <strong>Email:</strong>
+                    </div>
+                    <div class="col-md-9">
+                        {{ user.email }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <strong>Member Since:</strong>
+                    </div>
+                    <div class="col-md-9">
+                        {{ user.date_joined|date:"F j, Y" }}
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <strong>Last Login:</strong>
+                    </div>
+                    <div class="col-md-9">
+                        {{ user.last_login|date:"F j, Y" }}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'password_change' %}" class="btn btn-primary">Change Password</a>
+                    <a href="{% url 'job_list' %}" class="btn btn-secondary">My Conversion Jobs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

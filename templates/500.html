@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error | JP2Forge Web{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-circle-fill text-danger" style="font-size: 5rem;"></i>
+    </div>
+    <h1 class="mb-3">Server Error</h1>
+    <p class="lead text-muted mb-4">Something went wrong on our end. We've been notified and will fix the issue as soon as possible.</p>
+    <div class="d-grid gap-3 col-lg-6 mx-auto">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+            <i class="bi bi-house"></i> Go to Dashboard
+        </a>
+        <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-list"></i> View Your Jobs
+        </a>
+    </div>
+</div>
+{% endblock %}

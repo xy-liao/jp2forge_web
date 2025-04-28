@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Job | JP2Forge Web{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-warning {
+        color: #842029;
+        background-color: #f8d7da;
+        border: 1px solid #f5c2c7;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .file-info {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .confirmation-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'job_list' %}">Jobs</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'job_detail' job.id %}">{{ job.original_filename }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Delete</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Delete Conversion Job</h5>
+            </div>
+            <div class="card-body">
+                <div class="delete-warning">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> Warning</h5>
+                    <p>You are about to delete this conversion job. This action <strong>cannot be undone</strong>. All files associated with this job will be permanently removed from the server.</p>
+                </div>
+                
+                <div class="file-info">
+                    <h5>Job Information</h5>
+                    <table class="table table-sm">
+                        <tr>
+                            <th style="width: 30%;">Job ID</th>
+                            <td>{{ job.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Original Filename</th>
+                            <td>{{ job.original_filename }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status</th>
+                            <td>
+                                {% if job.status == 'pending' %}
+                                <span class="badge bg-secondary">Pending</span>
+                                {% elif job.status == 'processing' %}
+                                <span class="badge bg-primary">Processing</span>
+                                {% elif job.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                                {% elif job.status == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Created</th>
+                            <td>{{ job.created_at }}</td>
+                        </tr>
+                        <tr>
+                            <th>Compression Mode</th>
+                            <td>{{ job.get_compression_mode_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>Document Type</th>
+                            <td>{{ job.get_document_type_display }}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="confirm-delete" required>
+                        <label class="form-check-label" for="confirm-delete">
+                            I understand that this action cannot be undone and all files will be permanently deleted.
+                        </label>
+                    </div>
+                    
+                    <div class="confirmation-buttons">
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger" id="delete-button" disabled>
+                            <i class="bi bi-trash"></i> Delete Permanently
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmCheckbox = document.getElementById('confirm-delete');
+        const deleteButton = document.getElementById('delete-button');
+        
+        // Enable delete button only when checkbox is checked
+        confirmCheckbox.addEventListener('change', function() {
+            deleteButton.disabled = !this.checked;
+        });
+    });
+</script>
+{% endblock %}
