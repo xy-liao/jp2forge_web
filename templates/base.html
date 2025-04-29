@@ -462,7 +462,10 @@
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            onKeyPress="if(event.key === 'Enter') this.click()"
+                            onKeyDown="if(event.key === ' ' || event.key === 'Spacebar') { event.preventDefault(); this.click(); }"
+                            onKeyUp="if(event.key === 'Tab') this.focus()">
                             <i class="bi bi-person-circle"></i> {{ user.username }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
