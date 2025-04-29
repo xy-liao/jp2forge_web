@@ -27,6 +27,8 @@ To create a new conversion job:
 
 The system supports batch conversion of multiple files in one job.
 
+**File Size Limit:** The maximum allowed file size for uploads is 100MB per file. Larger files will need to be reduced before uploading.
+
 ## Understanding Compression Options
 
 JP2Forge offers four compression modes, each suited to different needs:
