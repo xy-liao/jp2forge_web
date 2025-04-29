@@ -71,17 +71,28 @@ python init.py
    cp .env.example .env
    ```
 
-3. Start the Docker containers:
+3. Configure database credentials:
+   
+   The docker-compose.yml file uses environment variables for database credentials, following security best practices:
+   ```
+   # In your .env file or exported in your shell:
+   POSTGRES_USER=your_secure_username
+   POSTGRES_PASSWORD=your_secure_password
+   ```
+   
+   If these variables are not set, default values (`postgres` for both) will be used.
+
+4. Start the Docker containers:
    ```
    docker-compose up -d
    ```
 
-4. Create a superuser:
+5. Create a superuser:
    ```
    docker-compose exec web python manage.py createsuperuser
    ```
 
-5. Access the application at http://localhost:8000
+6. Access the application at http://localhost:8000
 
 ### Manual Installation
 
