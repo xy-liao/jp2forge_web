@@ -25,10 +25,26 @@ cleanup() {
 # Trap SIGINT (Ctrl+C) and SIGTERM
 trap cleanup SIGINT SIGTERM
 
-# Check if Python virtual environment exists
-if [ -d "venv" ]; then
+# Deactivate any active virtual environments first
+# This ensures we start with a clean slate
+if [[ -n "$VIRTUAL_ENV" ]]; then
+    echo "Deactivating current virtual environment..."
+    deactivate 2>/dev/null || true
+    # Give the system a moment to complete deactivation
+    sleep 1
+fi
+
+# Check for virtual environment (.venv preferred)
+if [ -d ".venv" ]; then
     echo "Activating virtual environment..."
+    source .venv/bin/activate
+elif [ -d "venv" ]; then
+    echo "Activating legacy virtual environment..."
     source venv/bin/activate
+    echo "Note: Consider migrating to .venv by running setup.sh"
+else
+    echo "Error: No virtual environment found. Please run setup.sh first."
+    exit 1
 fi
 
 # Check if Redis is running
@@ -54,6 +70,21 @@ if ! redis-cli ping > /dev/null 2>&1; then
         fi
     else
         echo "Warning: Could not start Redis automatically on this platform. Please start Redis manually."
+    fi
+    
+    # Verify Redis started successfully
+    sleep 2
+    if ! redis-cli ping > /dev/null 2>&1; then
+        echo "Error: Redis could not be started. Celery worker will not function correctly."
+        echo "Please start Redis manually before continuing."
+        read -p "Continue anyway? (y/n) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Setup aborted. Please start Redis and try again."
+            exit 1
+        fi
+    else
+        echo "Redis started successfully."
     fi
 fi
 

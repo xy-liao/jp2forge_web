@@ -16,6 +16,26 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 ## Installation
 
+### Prerequisites
+
+Before installing JP2Forge Web, ensure you have the following prerequisites installed:
+
+- Python 3.8 or higher
+- Redis (required for Celery task queue)
+  - On macOS: `brew install redis && brew services start redis`
+  - On Ubuntu/Debian: `sudo apt install redis-server && sudo service redis-server start`
+  - On Windows: Download from [Redis for Windows](https://github.com/tporadowski/redis/releases)
+- ExifTool (for metadata functionality)
+  - On macOS: `brew install exiftool`
+  - On Ubuntu/Debian: `sudo apt install libimage-exiftool-perl`
+  - On Windows: Download from [ExifTool's website](https://exiftool.org)
+
+To verify Redis is running:
+```bash
+redis-cli ping
+```
+You should get a response of `PONG`. If not, Redis is not running and needs to be started.
+
 ### Quick Start (Development)
 
 For a quick development setup:
@@ -25,9 +45,9 @@ For a quick development setup:
 git clone https://github.com/yourusername/jp2forge_web.git
 cd jp2forge_web
 
-# Make scripts executable
-chmod +x make_executable.sh
-./make_executable.sh
+# Run the setup script
+chmod +x setup.sh
+./setup.sh
 
 # Initialize the application
 python init.py
@@ -71,8 +91,8 @@ python init.py
 
 2. Create a virtual environment and install dependencies:
    ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
@@ -91,17 +111,24 @@ python init.py
    python manage.py createsuperuser
    ```
 
-6. Start the development server:
+6. Ensure Redis is running (check with `redis-cli ping`), then start the development server:
    ```
    python manage.py runserver
    ```
 
 7. In a separate terminal, start the Celery worker:
    ```
+   source .venv/bin/activate  # Activate the virtual environment again
    celery -A jp2forge_web worker -l INFO
    ```
 
 8. Access the application at http://localhost:8000
+
+### Troubleshooting
+
+- **Celery worker won't start**: Ensure Redis is running with `redis-cli ping`
+- **Missing media directory**: Create the directory structure with `mkdir -p media/jobs`
+- **Permission issues**: Make sure that all script files are executable with `chmod +x *.sh`
 
 ## Application Structure
 

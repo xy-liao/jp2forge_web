@@ -69,3 +69,10 @@ Thumbs.db
 # Project specific
 celerybeat-schedule
 celerybeat.pid
+
+# Additional project files to exclude
+jp2forge_web.log
+COMPLETED_TASKS.md
+test_output/
+test_jp2forge.py
+analyze_logs.py

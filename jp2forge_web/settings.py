@@ -1,11 +1,16 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-abc123!please-change-in-production'
+# Use a default key only for development environments
+SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-only-key-please-set-env-variable')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -252,7 +257,10 @@ LOGGING = {
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
-ADMINS = [('Admin', 'admin@example.com')]  # For error emails
+# Use environment variables for admin emails
+ADMIN_NAME = os.environ.get('ADMIN_NAME', 'Admin')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+ADMINS = [(ADMIN_NAME, ADMIN_EMAIL)]  # For error emails
 
 # JP2Forge specific settings
 JP2FORGE_SETTINGS = {
