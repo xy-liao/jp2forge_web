@@ -283,10 +283,16 @@ def remove_all_logs(dry_run=False):
     
     all_log_files = []
     for pattern in log_patterns:
-        all_log_files.extend(glob.glob(os.path.join(LOGS_DIR, pattern)))
+        matching_files = glob.glob(os.path.join(LOGS_DIR, pattern))
+        logger.debug(f"Pattern '{pattern}' matched {len(matching_files)} files")
+        all_log_files.extend(matching_files)
     
     # Remove duplicates (a file might match multiple patterns)
     all_log_files = list(set(all_log_files))
+    
+    # Debug listing of found files
+    for file_path in all_log_files:
+        logger.debug(f"Found log file: {os.path.basename(file_path)}")
     
     logger.info(f"Found {len(all_log_files)} log files to remove")
     
@@ -294,17 +300,26 @@ def remove_all_logs(dry_run=False):
         for file_path in all_log_files:
             logger.info(f"Would remove log file: {os.path.basename(file_path)}")
     else:
+        removed_count = 0
+        failed_count = 0
+        
         for file_path in all_log_files:
             try:
-                os.remove(file_path)
-                logger.info(f"Removed log file: {os.path.basename(file_path)}")
+                # Double-check file existence to avoid errors
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    logger.info(f"Removed log file: {os.path.basename(file_path)}")
+                    removed_count += 1
+                else:
+                    logger.warning(f"Log file not found: {file_path}")
             except Exception as e:
+                failed_count += 1
                 logger.error(f"Error removing log file {file_path}: {e}")
         
         # Create placeholder .gitkeep file
         create_gitkeep(LOGS_DIR)
         
-        logger.info(f"Removed {len(all_log_files)} log files")
+        logger.info(f"Successfully removed {removed_count} log files, failed to remove {failed_count}")
     
     logger.info("Log removal completed")
 
