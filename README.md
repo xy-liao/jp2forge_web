@@ -143,13 +143,13 @@ The dashboard provides a comprehensive overview of your JP2Forge activity:
 - **Recent Jobs**: Quick view of your most recent conversion jobs with real-time status indicators
 - **Quick Actions**: Direct links to common tasks
 
-![JP2Forge Dashboard](/static/images/docs/dashboard.png)
+![JP2Forge Dashboard](static/images/docs/dashboard.png)
 
 ### JPEG2000 Conversion
 
 The application provides a user-friendly interface for JP2Forge's powerful conversion capabilities:
 
-![JP2Forge Conversion Interface](/static/images/docs/conversion.png)
+![JP2Forge Conversion Interface](static/images/docs/conversion.png)
 
 - **Multiple Compression Modes**:
   - `lossless`: No data loss, larger file size
