@@ -269,4 +269,5 @@ JP2FORGE_SETTINGS = {
     'DEFAULT_DOCUMENT_TYPE': 'photograph',
     'DEFAULT_QUALITY': 40.0,
     'MAX_FILE_SIZE_MB': 100,  # Maximum file size in MB
+    'MOCK_MODE': os.environ.get('JP2FORGE_MOCK_MODE', 'False').lower() == 'true',  # Enable mock mode via environment variable
 }

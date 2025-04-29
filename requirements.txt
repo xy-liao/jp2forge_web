@@ -1,5 +1,5 @@
 django==4.2
-jp2forge==0.9.1
+# jp2forge==0.9.1  # Install from https://github.com/xy-liao/jp2forge or use mock mode
 celery==5.3.1
 redis==4.6.0
 django-crispy-forms==2.0

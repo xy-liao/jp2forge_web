@@ -10,6 +10,7 @@ import logging
 import threading
 import time
 from typing import Dict, Any, Optional, Callable, Union, List
+from django.conf import settings
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -23,6 +24,11 @@ try:
 except ImportError as e:
     JP2FORGE_AVAILABLE = False
     logger.error(f"Failed to import JP2Forge modules: {e}")
+
+# Check if mock mode is enabled in settings
+MOCK_MODE = getattr(settings, 'JP2FORGE_SETTINGS', {}).get('MOCK_MODE', False)
+if MOCK_MODE:
+    logger.info("JP2Forge mock mode is enabled in settings")
 
 class JP2ForgeResult:
     """
@@ -49,7 +55,13 @@ class JP2ForgeAdapter:
     
     def __init__(self):
         """Initialize the adapter and check JP2Forge availability"""
-        self.jp2forge_available = JP2FORGE_AVAILABLE
+        self.jp2forge_available = JP2FORGE_AVAILABLE and not MOCK_MODE
+        if MOCK_MODE:
+            logger.info("JP2Forge adapter running in mock mode")
+        elif not JP2FORGE_AVAILABLE:
+            logger.warning("JP2Forge is not available, will use mock mode when needed")
+        else:
+            logger.info("JP2Forge adapter initialized with actual library")
         
     def create_config(self, **kwargs) -> Any:
         """
@@ -153,10 +165,13 @@ class JP2ForgeAdapter:
         Returns:
             JP2ForgeResult object with conversion results
         """
-        if not self.jp2forge_available:
-            logger.error("Cannot process file: JP2Forge is not available")
-            return JP2ForgeResult(None, success=False, error="JP2Forge library is not available")
-        
+        # Use mock mode if explicitly enabled or if JP2Forge is not available
+        if MOCK_MODE or not self.jp2forge_available:
+            logger.info(f"Using mock conversion for {input_path} (MOCK_MODE={MOCK_MODE}, JP2FORGE_AVAILABLE={JP2FORGE_AVAILABLE})")
+            # Extract output directory from config
+            output_dir = getattr(config, 'output_dir', os.path.join(settings.MEDIA_ROOT, 'jobs'))
+            return self.mock_conversion(input_path, output_dir, progress_callback)
+            
         if not config:
             logger.error("Cannot process file: Invalid configuration")
             return JP2ForgeResult(None, success=False, error="Invalid configuration")

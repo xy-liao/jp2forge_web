@@ -42,7 +42,7 @@ For a quick development setup:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/jp2forge_web.git
+git clone https://github.com/xy-liao/jp2forge_web.git
 cd jp2forge_web
 
 # Run the setup script
@@ -60,7 +60,7 @@ python init.py
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/jp2forge_web.git
+   git clone https://github.com/xy-liao/jp2forge_web.git
    cd jp2forge_web
    ```
 
@@ -85,7 +85,7 @@ python init.py
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/jp2forge_web.git
+   git clone https://github.com/xy-liao/jp2forge_web.git
    cd jp2forge_web
    ```
 
@@ -269,6 +269,23 @@ The production settings include:
 - **Redis**: Message broker for Celery
 - **ExifTool**: For metadata handling
 - **PostgreSQL** (optional, for production): Database
+
+### JP2Forge Library Installation
+
+The application depends on the JP2Forge JPEG2000 conversion library. There are two ways to use it:
+
+1. **Install the JP2Forge library** (recommended for production):
+   - Visit the [JP2Forge repository](https://github.com/xy-liao/jp2forge)
+   - Follow the installation instructions
+   - Ensure the library is in your Python path
+
+2. **Use Mock Mode** (for testing/development):
+   - The application can run without the actual JP2Forge library
+   - Set `JP2FORGE_MOCK_MODE=True` in your .env file
+   - This will simulate JPEG2000 conversions without actually performing them
+   - Useful for testing the UI and workflows
+
+**Note**: The mock mode provides a simulated experience but does not perform actual JPEG2000 conversions.
 
 ### System Dependencies
 
