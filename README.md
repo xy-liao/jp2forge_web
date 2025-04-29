@@ -185,20 +185,35 @@ The JP2Forge Web application includes a cleanup tool to help maintain your insta
 The `cleanup.py` script provides comprehensive cleanup capabilities:
 
 ```bash
-# Clean everything
-python cleanup.py
+# Clean everything (standard safe options)
+python cleanup.py --all
 
 # Show what would be cleaned without actually deleting anything
 python cleanup.py --dry-run
 
 # Clean specific components
-python cleanup.py --jobs      # Job records and media files
-python cleanup.py --logs      # Log files
-python cleanup.py --temp      # Temporary cache files
-python cleanup.py --celery    # Reset Celery tasks
-python cleanup.py --sqlite    # Clean SQLite journal files and optimize DB
-python cleanup.py --static    # Remove collected static files (requires collectstatic afterward)
-python cleanup.py --sessions  # Clean Django session files
+python cleanup.py --jobs            # Job records and media files
+python cleanup.py --logs            # Clear log files contents (preserves files)
+python cleanup.py --remove-all-logs # Remove log files completely
+python cleanup.py --temp            # Temporary cache files
+python cleanup.py --celery          # Reset Celery tasks
+python cleanup.py --sqlite          # Clean SQLite journal files and optimize DB
+python cleanup.py --sqlite-backups  # Remove SQLite database backup files
+python cleanup.py --static          # Remove collected static files (requires collectstatic afterward)
+python cleanup.py --sessions        # Clean Django session files
+
+# User account options
+python cleanup.py --jobs --keep-users     # Keep user accounts (default behavior)
+python cleanup.py --jobs --no-keep-users  # Remove user accounts when cleaning jobs
+
+# Full project reinitialization (recreates database, removes all data)
+python cleanup.py --reinit
+
+# Complete thorough cleanup (removes all non-essential files)
+python cleanup.py --complete
+
+# Skip backup creation before clearing files
+python cleanup.py --logs --no-backup
 
 # Combine multiple cleanup operations
 python cleanup.py --jobs --logs --sqlite
@@ -208,14 +223,18 @@ python cleanup.py --jobs --logs --sqlite
 
 The script provides the following cleanup features:
 
-- **Database cleanup**: Removes conversion job records while preserving user accounts
+- **Database cleanup**: Removes conversion job records, with options to preserve or remove user accounts
 - **Media files cleanup**: Deletes all job-related files in the media/jobs directory
-- **Log files cleanup**: Creates backups of log files before clearing them
+- **Log files management**: 
+  - Clear log contents while preserving files (creates backups before clearing)
+  - Completely remove log files with `--remove-all-logs`
+  - Manage backup rotations (keeping only the latest backups)
 - **Temporary files cleanup**: Removes Python cache files and other temporary data
-- **Celery task management**: Resets the Celery task queue for a fresh start
-- **SQLite optimization**: Cleans journal files and optimizes the database
+- **Celery task management**: Resets the Celery task queue and can restart workers
+- **SQLite optimization**: Cleans journal files, optimizes the database with VACUUM, and manages backups
 - **Static files management**: Removes collected static files when needed
 - **Session management**: Cleans Django session files
+- **Complete reinitialization**: Recreates the database from scratch with the `--reinit` option
 
 ### When to Use Cleanup
 
@@ -223,6 +242,7 @@ The script provides the following cleanup features:
 - **Before demos**: Start with a clean slate when demonstrating features
 - **Storage management**: Free up disk space by removing old job files
 - **Troubleshooting**: Reset the application to a clean state when diagnosing issues
+- **Application reset**: Use `--reinit` for a complete fresh start, recreating the database
 
 ### Regular Maintenance
 
@@ -233,7 +253,7 @@ For regular maintenance, consider running the cleanup script periodically, espec
 python cleanup.py --jobs --logs
 ```
 
-**Note**: The script creates backups of log files before clearing them, ensuring you don't lose important debugging information.
+**Note**: By default, the script creates backups of log files before clearing them, ensuring you don't lose important debugging information. Use the `--no-backup` option to skip backup creation.
 
 ## Configuration
 
