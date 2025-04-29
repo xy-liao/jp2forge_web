@@ -3,6 +3,10 @@ JP2Forge Adapter Module
 
 This module provides a compatibility layer between JP2Forge Web and the JP2Forge library.
 It handles differences in API and provides fallback implementations when necessary.
+
+Note that JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script
+and its BnF compliance capabilities. This adapter implements only a subset of JP2Forge's
+features rather than leveraging all available arguments of the underlying script.
 """
 
 import os
@@ -51,6 +55,10 @@ class JP2ForgeAdapter:
     """
     Adapter class for JP2Forge library to provide a consistent interface
     regardless of the actual JP2Forge version installed.
+    
+    This adapter implements only a subset of JP2Forge's functionality,
+    focusing primarily on the features needed for the demonstration web application.
+    It is not intended to expose all capabilities of the underlying JP2Forge script.
     """
     
     def __init__(self):

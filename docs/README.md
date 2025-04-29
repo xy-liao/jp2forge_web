@@ -4,11 +4,12 @@ This directory contains documentation for the **JP2Forge Web** application, whic
 
 ## About JP2Forge Web
 
-JP2Forge Web is a Django-based web application that provides a user-friendly interface for converting various image formats to JPEG2000. It serves as a front-end to the core JP2Forge conversion scripts, offering features like:
+JP2Forge Web is a Django-based web application that provides a user-friendly interface for converting various image formats to JPEG2000. It serves as a promotional demonstration for the JP2Forge script, focusing particularly on BnF (Bibliothèque nationale de France) compliance standards. This application showcases a subset of JP2Forge's capabilities rather than leveraging all available arguments of the underlying script. It's intended as a case study implementation that demonstrates how the JP2Forge script can be integrated into a web-based workflow.
 
+Key aspects of this demonstration implementation include:
 - User authentication and job management
 - Batch image conversion
-- Different compression modes including BnF compliance
+- Selected compression modes including BnF compliance
 - Job status tracking and notifications
 - Downloadable converted files
 

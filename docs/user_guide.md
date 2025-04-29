@@ -2,6 +2,10 @@
 
 This guide explains how to use the JP2Forge Web application for converting images to JPEG2000 format.
 
+## Important Note
+
+JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script and its BnF (Bibliothèque nationale de France) compliance capabilities. This web interface implements a curated subset of JP2Forge's full functionality, focusing on showcasing key features in an accessible way. For access to all JP2Forge capabilities, users are encouraged to work directly with the [JP2Forge script](https://github.com/xy-liao/jp2forge).
+
 ## Table of Contents
 
 1. [Creating a New Conversion Job](#creating-a-new-conversion-job)
