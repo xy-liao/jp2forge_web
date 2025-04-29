@@ -143,9 +143,13 @@ The dashboard provides a comprehensive overview of your JP2Forge activity:
 - **Recent Jobs**: Quick view of your most recent conversion jobs with real-time status indicators
 - **Quick Actions**: Direct links to common tasks
 
+![JP2Forge Dashboard](/static/images/docs/dashboard.png)
+
 ### JPEG2000 Conversion
 
 The application provides a user-friendly interface for JP2Forge's powerful conversion capabilities:
+
+![JP2Forge Conversion Interface](/static/images/docs/conversion.png)
 
 - **Multiple Compression Modes**:
   - `lossless`: No data loss, larger file size
@@ -244,7 +248,7 @@ The application uses environment variables for configuration. Key variables incl
 | `ALLOWED_HOSTS` | Allowed hosts (comma-separated) | `localhost,127.0.0.1` |
 | `DATABASE_URL` | Database connection string | SQLite in development, PostgreSQL in production |
 | `CELERY_BROKER_URL` | Celery broker URL | `redis://localhost:6379/0` |
-| `MAX_UPLOAD_SIZE` | Maximum upload file size in bytes | 10MB (10485760) |
+| `MAX_UPLOAD_SIZE` | Maximum upload file size in bytes | 100MB (104857600) |
 
 See `.env.example` for a complete list of available options.
 
