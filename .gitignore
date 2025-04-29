@@ -70,6 +70,11 @@ Thumbs.db
 celerybeat-schedule
 celerybeat.pid
 
+# Logs directory - exclude all log files and backups
+logs/
+*.log.*
+*.log.*.bak
+
 # Additional project files to exclude
 jp2forge_web.log
 COMPLETED_TASKS.md

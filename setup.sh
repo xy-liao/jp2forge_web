@@ -99,6 +99,59 @@ pip install --upgrade pip
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
+# Verify critical dependencies are installed
+echo "Verifying critical dependencies..."
+MISSING_DEPS=0
+
+# Check for Django
+if ! python -c "import django" &> /dev/null; then
+    echo "Error: Django is not installed correctly."
+    MISSING_DEPS=1
+fi
+
+# Check for crispy-bootstrap4
+if ! python -c "import crispy_bootstrap4" &> /dev/null; then
+    echo "Error: crispy-bootstrap4 is not installed correctly."
+    echo "Trying to install it again..."
+    pip install crispy-bootstrap4
+    if ! python -c "import crispy_bootstrap4" &> /dev/null; then
+        echo "Failed to install crispy-bootstrap4. This may cause issues with form rendering."
+        MISSING_DEPS=1
+    fi
+fi
+
+# Check for django-celery-results
+if ! python -c "import django_celery_results" &> /dev/null; then
+    echo "Error: django-celery-results is not installed correctly."
+    echo "Trying to install it again..."
+    pip install django-celery-results
+    if ! python -c "import django_celery_results" &> /dev/null; then
+        echo "Failed to install django-celery-results. This may cause issues with task handling."
+        MISSING_DEPS=1
+    fi
+fi
+
+# Check for JP2Forge if it's supposed to be available
+# Note: JP2Forge might not be pip-installable, so we'll just warn if it's not found
+if ! python -c "import core.types" &> /dev/null; then
+    echo "Warning: JP2Forge core modules are not found."
+    echo "The application will run in mock mode without real JPEG2000 conversion capabilities."
+    echo "This is acceptable for testing the UI, but not for production use."
+fi
+
+if [ $MISSING_DEPS -eq 1 ]; then
+    echo "Warning: Some dependencies could not be installed properly."
+    echo "The application may not function correctly."
+    read -p "Do you want to continue anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Setup aborted. Please resolve the dependency issues and try again."
+        exit 1
+    fi
+else
+    echo "All critical dependencies verified!"
+fi
+
 # Create .env file from example
 if [ ! -f .env ]; then
     echo "Creating .env file from example..."
