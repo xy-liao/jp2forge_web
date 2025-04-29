@@ -1,0 +1,234 @@
+INFO 2025-04-29 07:20:59,542 Successfully imported JP2Forge modules
+ 
+ -------------- celery@Mac v5.3.1 (emerald-rush)
+--- ***** ----- 
+-- ******* ---- macOS-15.4.1-arm64-arm-64bit 2025-04-29 07:20:59
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         jp2forge_web:0x102fad910
+- ** ---------- .> transport:   redis://localhost:6379/0
+- ** ---------- .> results:     
+- *** --- * --- .> concurrency: 12 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . converter.tasks.process_conversion_job
+
+[2025-04-29 07:21:31,129: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Starting conversion job 14572686-c84e-472e-a174-daa69cb85152
+[2025-04-29 07:21:31,134: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Starting conversion job 49c5205b-2fe2-4278-9666-6490cf756fe7
+[2025-04-29 07:21:31,136: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Starting conversion job 9a400827-f93a-4b59-911b-bcca57ce44bd
+[2025-04-29 07:21:31,137: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Processing job 49c5205b-2fe2-4278-9666-6490cf756fe7 for file Arkansas_Constitution_of_1836,_page_2.tif
+[2025-04-29 07:21:31,138: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 configuration: mode=supervised, type=photograph, quality=40.0
+[2025-04-29 07:21:31,138: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Processing job 9a400827-f93a-4b59-911b-bcca57ce44bd for file Arkansas_Constitution_of_1836,_page_4.tif
+[2025-04-29 07:21:31,138: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd configuration: mode=supervised, type=photograph, quality=40.0
+[2025-04-29 07:21:31,142: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Starting conversion job 1b62424e-56e9-44f4-ad4a-4297c1eb291b
+[2025-04-29 07:21:31,145: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Processing job 1b62424e-56e9-44f4-ad4a-4297c1eb291b for file Arkansas_Constitution_of_1836,_page_3.tif
+[2025-04-29 07:21:31,146: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b configuration: mode=supervised, type=photograph, quality=40.0
+[2025-04-29 07:21:31,154: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Processing job 14572686-c84e-472e-a174-daa69cb85152 for file Arkansas_Constitution_of_1836,_page_1.tif
+[2025-04-29 07:21:31,154: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 configuration: mode=supervised, type=photograph, quality=40.0
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-1] Initialized MetadataHandler
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-8] Initialized MetadataHandler
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-9] Initialized MetadataHandler
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-1] Initialized workflow with output directory: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/1b62424e-56e9-44f4-ad4a-4297c1eb291b/output
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-8] Initialized workflow with output directory: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/49c5205b-2fe2-4278-9666-6490cf756fe7/output
+[2025-04-29 07:21:31,240: INFO/ForkPoolWorker-9] Initialized workflow with output directory: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/9a400827-f93a-4b59-911b-bcca57ce44bd/output
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-1] Quality threshold (PSNR): 40.0
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-8] Quality threshold (PSNR): 40.0
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-9] Quality threshold (PSNR): 40.0
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-1] Number of resolution levels: 10
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-8] Number of resolution levels: 10
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-9] Number of resolution levels: 10
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-1] Progression order: RPCL
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-8] Progression order: RPCL
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-9] Progression order: RPCL
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-1] Compression mode: supervised
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-8] Compression mode: supervised
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-9] Compression mode: supervised
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-1] Processing mode: SEQUENTIAL
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-8] Processing mode: SEQUENTIAL
+[2025-04-29 07:21:31,241: INFO/ForkPoolWorker-9] Processing mode: SEQUENTIAL
+INFO 2025-04-29 07:21:31,242 Created StandardWorkflow successfully
+INFO 2025-04-29 07:21:31,242 Created StandardWorkflow successfully
+INFO 2025-04-29 07:21:31,242 Created StandardWorkflow successfully
+INFO 2025-04-29 07:21:31,242 Progress tracking not supported, using background thread
+INFO 2025-04-29 07:21:31,243 Progress tracking not supported, using background thread
+INFO 2025-04-29 07:21:31,243 Progress tracking not supported, using background thread
+[2025-04-29 07:21:31,246: INFO/ForkPoolWorker-7] Initialized MetadataHandler
+[2025-04-29 07:21:31,246: INFO/ForkPoolWorker-7] Initialized workflow with output directory: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/14572686-c84e-472e-a174-daa69cb85152/output
+[2025-04-29 07:21:31,246: INFO/ForkPoolWorker-7] Quality threshold (PSNR): 40.0
+[2025-04-29 07:21:31,246: INFO/ForkPoolWorker-7] Number of resolution levels: 10
+[2025-04-29 07:21:31,247: INFO/ForkPoolWorker-7] Progression order: RPCL
+[2025-04-29 07:21:31,247: INFO/ForkPoolWorker-7] Compression mode: supervised
+[2025-04-29 07:21:31,247: INFO/ForkPoolWorker-7] Processing mode: SEQUENTIAL
+INFO 2025-04-29 07:21:31,247 Created StandardWorkflow successfully
+INFO 2025-04-29 07:21:31,248 Progress tracking not supported, using background thread
+[2025-04-29 07:21:31,933: INFO/ForkPoolWorker-8] Processing file: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/49c5205b-2fe2-4278-9666-6490cf756fe7/Arkansas_Constitution_of_1836_page_2.tif
+[2025-04-29 07:21:31,933: INFO/ForkPoolWorker-7] Processing file: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/14572686-c84e-472e-a174-daa69cb85152/Arkansas_Constitution_of_1836_page_1.tif
+[2025-04-29 07:21:31,933: INFO/ForkPoolWorker-1] Processing file: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/1b62424e-56e9-44f4-ad4a-4297c1eb291b/Arkansas_Constitution_of_1836_page_3.tif
+[2025-04-29 07:21:31,933: INFO/ForkPoolWorker-9] Processing file: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/9a400827-f93a-4b59-911b-bcca57ce44bd/Arkansas_Constitution_of_1836_page_4.tif
+[2025-04-29 07:21:31,934: INFO/ForkPoolWorker-8] Document type: DocumentType.PHOTOGRAPH
+[2025-04-29 07:21:31,934: INFO/ForkPoolWorker-7] Document type: DocumentType.PHOTOGRAPH
+[2025-04-29 07:21:31,934: INFO/ForkPoolWorker-1] Document type: DocumentType.PHOTOGRAPH
+[2025-04-29 07:21:31,934: INFO/ForkPoolWorker-9] Document type: DocumentType.PHOTOGRAPH
+[2025-04-29 07:21:31,935: INFO/ForkPoolWorker-8] Step 1: Converting to JPEG2000
+[2025-04-29 07:21:31,935: INFO/ForkPoolWorker-7] Step 1: Converting to JPEG2000
+[2025-04-29 07:21:31,935: INFO/ForkPoolWorker-1] Step 1: Converting to JPEG2000
+[2025-04-29 07:21:31,935: INFO/ForkPoolWorker-9] Step 1: Converting to JPEG2000
+[2025-04-29 07:21:42,146: INFO/ForkPoolWorker-7] Conversion completed in 10.21 seconds
+[2025-04-29 07:21:42,147: INFO/ForkPoolWorker-7] Step 2: Analyzing pixel loss
+[2025-04-29 07:21:42,186: INFO/ForkPoolWorker-9] Conversion completed in 10.25 seconds
+[2025-04-29 07:21:42,187: INFO/ForkPoolWorker-9] Step 2: Analyzing pixel loss
+[2025-04-29 07:21:42,552: INFO/ForkPoolWorker-1] Conversion completed in 10.62 seconds
+[2025-04-29 07:21:42,553: INFO/ForkPoolWorker-1] Step 2: Analyzing pixel loss
+[2025-04-29 07:21:42,774: INFO/ForkPoolWorker-8] Conversion completed in 10.84 seconds
+[2025-04-29 07:21:42,774: INFO/ForkPoolWorker-8] Step 2: Analyzing pixel loss
+[2025-04-29 07:21:44,491: INFO/ForkPoolWorker-7] Analysis completed in 2.34 seconds
+[2025-04-29 07:21:44,492: WARNING/ForkPoolWorker-7] Quality checks failed for /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/14572686-c84e-472e-a174-daa69cb85152/Arkansas_Constitution_of_1836_page_1.tif
+[2025-04-29 07:21:44,492: INFO/ForkPoolWorker-7] Step 3: Adding metadata
+[2025-04-29 07:21:44,493: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/14572686-c84e-472e-a174-daa69cb85152/output/Arkansas_Constitution_of_1836_page_1.jp2
+[2025-04-29 07:21:44,513: INFO/ForkPoolWorker-7] Successfully processed /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/14572686-c84e-472e-a174-daa69cb85152/Arkansas_Constitution_of_1836_page_1.tif
+[2025-04-29 07:21:44,516: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 progress: 99.0% (Step: finalize)
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 progress: 100.0% (Step: finalize)
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 processing completed successfully
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 produced single output file: Arkansas_Constitution_of_1836_page_1.jp2
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 - Original: 24502546 bytes, Converted: 1993380 bytes, Ratio: 12.29:1
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 - PSNR: 39.47 dB
+[2025-04-29 07:21:44,519: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Job 14572686-c84e-472e-a174-daa69cb85152 - SSIM: 0.9880
+[2025-04-29 07:21:44,520: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[43315601-c0b2-4a10-868c-385d9ecbc08d]: Completed conversion job 14572686-c84e-472e-a174-daa69cb85152
+[2025-04-29 07:21:44,894: INFO/ForkPoolWorker-9] Analysis completed in 2.71 seconds
+[2025-04-29 07:21:44,894: INFO/ForkPoolWorker-9] Step 3: Adding metadata
+[2025-04-29 07:21:44,895: INFO/ForkPoolWorker-9] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/9a400827-f93a-4b59-911b-bcca57ce44bd/output/Arkansas_Constitution_of_1836_page_4.jp2
+[2025-04-29 07:21:44,912: INFO/ForkPoolWorker-9] Successfully processed /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/9a400827-f93a-4b59-911b-bcca57ce44bd/Arkansas_Constitution_of_1836_page_4.tif
+[2025-04-29 07:21:44,915: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd progress: 99.0% (Step: finalize)
+[2025-04-29 07:21:44,917: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd progress: 100.0% (Step: finalize)
+[2025-04-29 07:21:44,918: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd processing completed successfully
+[2025-04-29 07:21:44,918: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd produced single output file: Arkansas_Constitution_of_1836_page_4.jp2
+[2025-04-29 07:21:44,918: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd - Original: 36942476 bytes, Converted: 2237150 bytes, Ratio: 16.51:1
+[2025-04-29 07:21:44,918: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd - PSNR: 40.18 dB
+[2025-04-29 07:21:44,918: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Job 9a400827-f93a-4b59-911b-bcca57ce44bd - SSIM: 0.9942
+[2025-04-29 07:21:44,919: INFO/ForkPoolWorker-9] converter.tasks.process_conversion_job[1a4e44c8-fa4a-4774-9364-5bdb818b7873]: Completed conversion job 9a400827-f93a-4b59-911b-bcca57ce44bd
+[2025-04-29 07:21:45,491: INFO/ForkPoolWorker-8] Analysis completed in 2.72 seconds
+[2025-04-29 07:21:45,492: INFO/ForkPoolWorker-8] Step 3: Adding metadata
+[2025-04-29 07:21:45,493: INFO/ForkPoolWorker-8] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/49c5205b-2fe2-4278-9666-6490cf756fe7/output/Arkansas_Constitution_of_1836_page_2.jp2
+[2025-04-29 07:21:45,520: INFO/ForkPoolWorker-8] Successfully processed /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/49c5205b-2fe2-4278-9666-6490cf756fe7/Arkansas_Constitution_of_1836_page_2.tif
+[2025-04-29 07:21:45,525: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 progress: 99.0% (Step: finalize)
+[2025-04-29 07:21:45,528: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 progress: 100.0% (Step: finalize)
+[2025-04-29 07:21:45,528: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 processing completed successfully
+[2025-04-29 07:21:45,528: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 produced single output file: Arkansas_Constitution_of_1836_page_2.jp2
+[2025-04-29 07:21:45,528: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 - Original: 34541168 bytes, Converted: 2171442 bytes, Ratio: 15.91:1
+[2025-04-29 07:21:45,528: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 - PSNR: 40.11 dB
+[2025-04-29 07:21:45,529: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Job 49c5205b-2fe2-4278-9666-6490cf756fe7 - SSIM: 0.9892
+[2025-04-29 07:21:45,530: INFO/ForkPoolWorker-8] converter.tasks.process_conversion_job[05e11311-6cea-4ff0-9bbd-9125f21a8b73]: Completed conversion job 49c5205b-2fe2-4278-9666-6490cf756fe7
+[2025-04-29 07:21:45,552: INFO/ForkPoolWorker-1] Analysis completed in 3.00 seconds
+[2025-04-29 07:21:45,553: INFO/ForkPoolWorker-1] Step 3: Adding metadata
+[2025-04-29 07:21:45,553: INFO/ForkPoolWorker-1] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/1b62424e-56e9-44f4-ad4a-4297c1eb291b/output/Arkansas_Constitution_of_1836_page_3.jp2
+[2025-04-29 07:21:45,575: INFO/ForkPoolWorker-1] Successfully processed /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/1b62424e-56e9-44f4-ad4a-4297c1eb291b/Arkansas_Constitution_of_1836_page_3.tif
+[2025-04-29 07:21:45,579: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b progress: 99.0% (Step: finalize)
+[2025-04-29 07:21:45,581: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b progress: 100.0% (Step: finalize)
+[2025-04-29 07:21:45,581: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b processing completed successfully
+[2025-04-29 07:21:45,581: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b produced single output file: Arkansas_Constitution_of_1836_page_3.jp2
+[2025-04-29 07:21:45,582: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b - Original: 37527756 bytes, Converted: 2368386 bytes, Ratio: 15.85:1
+[2025-04-29 07:21:45,582: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b - PSNR: 41.40 dB
+[2025-04-29 07:21:45,582: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Job 1b62424e-56e9-44f4-ad4a-4297c1eb291b - SSIM: 0.9932
+[2025-04-29 07:21:45,583: INFO/ForkPoolWorker-1] converter.tasks.process_conversion_job[66e22ae9-96d2-4df4-8c83-cff1d30a15ff]: Completed conversion job 1b62424e-56e9-44f4-ad4a-4297c1eb291b
+[2025-04-29 07:34:32,903: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Starting conversion job 8288a2ef-c410-467e-856a-8e7cd26b9036
+[2025-04-29 07:34:32,905: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Processing job 8288a2ef-c410-467e-856a-8e7cd26b9036 for file voyage_en_provence.tiff
+[2025-04-29 07:34:32,905: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 configuration: mode=lossy, type=photograph, quality=20.0
+[2025-04-29 07:34:33,019: INFO/ForkPoolWorker-7] Initialized MetadataHandler
+[2025-04-29 07:34:33,019: INFO/ForkPoolWorker-7] Initialized workflow with output directory: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output
+[2025-04-29 07:34:33,020: INFO/ForkPoolWorker-7] Quality threshold (PSNR): 20.0
+[2025-04-29 07:34:33,020: INFO/ForkPoolWorker-7] Number of resolution levels: 10
+[2025-04-29 07:34:33,020: INFO/ForkPoolWorker-7] Progression order: RPCL
+[2025-04-29 07:34:33,020: INFO/ForkPoolWorker-7] Compression mode: lossy
+[2025-04-29 07:34:33,020: INFO/ForkPoolWorker-7] Processing mode: SEQUENTIAL
+INFO 2025-04-29 07:34:33,020 Created StandardWorkflow successfully
+INFO 2025-04-29 07:34:33,021 Progress tracking not supported, using background thread
+[2025-04-29 07:34:33,023: INFO/ForkPoolWorker-7] Processing file: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:33,023: INFO/ForkPoolWorker-7] Document type: DocumentType.PHOTOGRAPH
+[2025-04-29 07:34:33,036: INFO/ForkPoolWorker-7] Processing multi-page TIFF: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff with 23 pages
+[2025-04-29 07:34:33,037: INFO/ForkPoolWorker-7] Processing page 1/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:38,027: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_0.jp2
+[2025-04-29 07:34:38,027: INFO/ForkPoolWorker-7] Successfully processed page 1/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:38,040: INFO/ForkPoolWorker-7] Processing page 2/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:42,682: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_1.jp2
+[2025-04-29 07:34:42,683: INFO/ForkPoolWorker-7] Successfully processed page 2/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:42,700: INFO/ForkPoolWorker-7] Processing page 3/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:47,318: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_2.jp2
+[2025-04-29 07:34:47,318: INFO/ForkPoolWorker-7] Successfully processed page 3/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:47,331: INFO/ForkPoolWorker-7] Processing page 4/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:51,973: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_3.jp2
+[2025-04-29 07:34:51,974: INFO/ForkPoolWorker-7] Successfully processed page 4/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:51,985: INFO/ForkPoolWorker-7] Processing page 5/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:56,459: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_4.jp2
+[2025-04-29 07:34:56,459: INFO/ForkPoolWorker-7] Successfully processed page 5/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:34:56,472: INFO/ForkPoolWorker-7] Processing page 6/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:01,118: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_5.jp2
+[2025-04-29 07:35:01,118: INFO/ForkPoolWorker-7] Successfully processed page 6/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:01,129: INFO/ForkPoolWorker-7] Processing page 7/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:06,848: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_6.jp2
+[2025-04-29 07:35:06,848: INFO/ForkPoolWorker-7] Successfully processed page 7/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:06,861: INFO/ForkPoolWorker-7] Processing page 8/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:12,296: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_7.jp2
+[2025-04-29 07:35:12,297: INFO/ForkPoolWorker-7] Successfully processed page 8/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:12,310: INFO/ForkPoolWorker-7] Processing page 9/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:17,216: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_8.jp2
+[2025-04-29 07:35:17,216: INFO/ForkPoolWorker-7] Successfully processed page 9/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:17,229: INFO/ForkPoolWorker-7] Processing page 10/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:22,237: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_9.jp2
+[2025-04-29 07:35:22,238: INFO/ForkPoolWorker-7] Successfully processed page 10/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:22,252: INFO/ForkPoolWorker-7] Processing page 11/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:27,084: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_10.jp2
+[2025-04-29 07:35:27,084: INFO/ForkPoolWorker-7] Successfully processed page 11/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:27,100: INFO/ForkPoolWorker-7] Processing page 12/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:31,691: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_11.jp2
+[2025-04-29 07:35:31,691: INFO/ForkPoolWorker-7] Successfully processed page 12/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:31,704: INFO/ForkPoolWorker-7] Processing page 13/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:36,596: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_12.jp2
+[2025-04-29 07:35:36,596: INFO/ForkPoolWorker-7] Successfully processed page 13/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:36,622: INFO/ForkPoolWorker-7] Processing page 14/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:41,174: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_13.jp2
+[2025-04-29 07:35:41,174: INFO/ForkPoolWorker-7] Successfully processed page 14/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:41,186: INFO/ForkPoolWorker-7] Processing page 15/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:46,179: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_14.jp2
+[2025-04-29 07:35:46,179: INFO/ForkPoolWorker-7] Successfully processed page 15/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:46,192: INFO/ForkPoolWorker-7] Processing page 16/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:51,093: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_15.jp2
+[2025-04-29 07:35:51,093: INFO/ForkPoolWorker-7] Successfully processed page 16/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:51,106: INFO/ForkPoolWorker-7] Processing page 17/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:55,572: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_16.jp2
+[2025-04-29 07:35:55,573: INFO/ForkPoolWorker-7] Successfully processed page 17/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:35:55,585: INFO/ForkPoolWorker-7] Processing page 18/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:00,306: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_17.jp2
+[2025-04-29 07:36:00,307: INFO/ForkPoolWorker-7] Successfully processed page 18/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:00,319: INFO/ForkPoolWorker-7] Processing page 19/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:04,957: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_18.jp2
+[2025-04-29 07:36:04,958: INFO/ForkPoolWorker-7] Successfully processed page 19/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:04,970: INFO/ForkPoolWorker-7] Processing page 20/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:09,625: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_19.jp2
+[2025-04-29 07:36:09,625: INFO/ForkPoolWorker-7] Successfully processed page 20/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:09,638: INFO/ForkPoolWorker-7] Processing page 21/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:14,736: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_20.jp2
+[2025-04-29 07:36:14,736: INFO/ForkPoolWorker-7] Successfully processed page 21/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:14,756: INFO/ForkPoolWorker-7] Processing page 22/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:19,641: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_21.jp2
+[2025-04-29 07:36:19,641: INFO/ForkPoolWorker-7] Successfully processed page 22/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:19,661: INFO/ForkPoolWorker-7] Processing page 23/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:23,001: INFO/ForkPoolWorker-7] Wrote metadata to /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/output/voyage_en_provence_page_22.jp2
+[2025-04-29 07:36:23,002: INFO/ForkPoolWorker-7] Successfully processed page 23/23 from /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff
+[2025-04-29 07:36:23,034: INFO/ForkPoolWorker-7] Completed processing multi-page TIFF: /Users/syl/Documents/GitHub/jp2forge_web/media/jobs/8288a2ef-c410-467e-856a-8e7cd26b9036/voyage_en_provence.tiff, status: SUCCESS
+[2025-04-29 07:36:23,038: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 progress: 99.0% (Step: finalize)
+[2025-04-29 07:36:23,042: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 progress: 100.0% (Step: finalize)
+[2025-04-29 07:36:23,043: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 processing completed successfully
+[2025-04-29 07:36:23,043: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 produced single output file: voyage_en_provence_page_22.jp2
+[2025-04-29 07:36:23,043: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Job 8288a2ef-c410-467e-856a-8e7cd26b9036 - Original: 262920716 bytes, Converted: 18752645 bytes, Ratio: 14.02:1
+[2025-04-29 07:36:23,044: INFO/ForkPoolWorker-7] converter.tasks.process_conversion_job[8f24a3db-7cea-4233-851c-5c76e3547166]: Completed conversion job 8288a2ef-c410-467e-856a-8e7cd26b9036
+
+worker: Warm shutdown (MainProcess)
+
+worker: Hitting Ctrl+C again will terminate all running tasks!
+
+worker: Warm shutdown (MainProcess)

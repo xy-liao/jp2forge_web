@@ -1,0 +1,1243 @@
+ERROR 2025-04-28 12:41:24,189 log 58294 6132346880 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: converter_conversionjob
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 28, in dashboard
+    stats = ConversionJob.objects.filter(user=request.user).aggregate(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/sql/query.py", line 522, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: converter_conversionjob
+ERROR 2025-04-28 13:06:47,921 log 58294 6132346880 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: converter_conversionjob
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 28, in dashboard
+    stats = ConversionJob.objects.filter(user=request.user).aggregate(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/sql/query.py", line 522, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/.venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: converter_conversionjob
+ERROR 2025-04-28 13:25:22,504 log 8312 6165491712 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: converter_conversionjob
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 28, in dashboard
+    stats = ConversionJob.objects.filter(user=request.user).aggregate(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/query.py", line 522, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: converter_conversionjob
+CRITICAL 2025-04-28 13:25:54,247 worker 8311 8474971264 Unrecoverable error: RuntimeError("reentrant call inside <_io.BufferedWriter name='<stderr>'>")
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/worker.py", line 202, in start
+    self.blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 365, in start
+    return self.obj.start()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 336, in start
+    blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 726, in start
+    c.loop(*c.loop_args())
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/asynchronous/hub.py", line 317, in create_loop
+    events = poll(poll_timeout)
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/utils/eventio.py", line 216, in poll
+    event_list = self._quick_poll(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 288, in _handle_request
+    callback(worker)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 320, in on_SIGINT
+    safe_say('worker: Hitting Ctrl+C again will terminate all running tasks!')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 289, in _handle_request
+    safe_say(f'worker: {how} shutdown (MainProcess)')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+RuntimeError: reentrant call inside <_io.BufferedWriter name='<stderr>'>
+CRITICAL 2025-04-28 13:29:19,484 worker 9453 8474971264 Unrecoverable error: RuntimeError("reentrant call inside <_io.BufferedWriter name='<stderr>'>")
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/worker.py", line 202, in start
+    self.blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 365, in start
+    return self.obj.start()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 336, in start
+    blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 726, in start
+    c.loop(*c.loop_args())
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/asynchronous/hub.py", line 317, in create_loop
+    events = poll(poll_timeout)
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/utils/eventio.py", line 216, in poll
+    event_list = self._quick_poll(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 288, in _handle_request
+    callback(worker)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 320, in on_SIGINT
+    safe_say('worker: Hitting Ctrl+C again will terminate all running tasks!')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 289, in _handle_request
+    safe_say(f'worker: {how} shutdown (MainProcess)')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+RuntimeError: reentrant call inside <_io.BufferedWriter name='<stderr>'>
+CRITICAL 2025-04-28 13:41:25,675 worker 11292 8474971264 Unrecoverable error: RuntimeError("reentrant call inside <_io.BufferedWriter name='<stderr>'>")
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/worker.py", line 202, in start
+    self.blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 365, in start
+    return self.obj.start()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 336, in start
+    blueprint.start(self)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 726, in start
+    c.loop(*c.loop_args())
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/asynchronous/hub.py", line 317, in create_loop
+    events = poll(poll_timeout)
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/kombu/utils/eventio.py", line 216, in poll
+    event_list = self._quick_poll(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 288, in _handle_request
+    callback(worker)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 320, in on_SIGINT
+    safe_say('worker: Hitting Ctrl+C again will terminate all running tasks!')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 289, in _handle_request
+    safe_say(f'worker: {how} shutdown (MainProcess)')
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+RuntimeError: reentrant call inside <_io.BufferedWriter name='<stderr>'>
+ERROR 2025-04-28 16:10:13,284 consumer 36936 8474971264 Received unregistered task of type 'core.tasks.process_image'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[{"__type__": "uuid", "__value__": {"hex": "01dd71de9a0e414e996ece722bb5399b"}}], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (155b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'core.tasks.process_image', 'id': 'f8f15320-377a-47b5-b4d8-3fa8e093424b', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'f8f15320-377a-47b5-b4d8-3fa8e093424b', 'parent_id': None, 'argsrepr': "(UUID('01dd71de-9a0e-414e-996e-ce722bb5399b'),)", 'kwargsrepr': '{}', 'origin': 'gen76064@Mac', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'processing'}
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 642, in on_task_received
+    strategy = strategies[type_]
+               ~~~~~~~~~~^^^^^^^
+KeyError: 'core.tasks.process_image'
+ERROR 2025-04-28 16:10:13,300 consumer 36936 8474971264 Received unregistered task of type 'core.tasks.process_image'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[["01dd71de-9a0e-414e-996e-ce722bb5399b"], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (115b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'core.tasks.process_image', 'id': 'a7d77001-b96e-4447-bd21-24dcc0a96427', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'a7d77001-b96e-4447-bd21-24dcc0a96427', 'parent_id': None, 'argsrepr': "('01dd71de-9a0e-414e-996e-ce722bb5399b',)", 'kwargsrepr': '{}', 'origin': 'gen88829@Mac', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'processing'}
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 642, in on_task_received
+    strategy = strategies[type_]
+               ~~~~~~~~~~^^^^^^^
+KeyError: 'core.tasks.process_image'
+ERROR 2025-04-28 16:10:13,305 consumer 36936 8474971264 Received unregistered task of type 'core.tasks.process_image'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[{"__type__": "uuid", "__value__": {"hex": "3cdc837ab3f748fd80187e1192a746ce"}}], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (155b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'core.tasks.process_image', 'id': 'ea5365ea-cef4-43e1-89c1-57adf817cf2d', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'ea5365ea-cef4-43e1-89c1-57adf817cf2d', 'parent_id': None, 'argsrepr': "(UUID('3cdc837a-b3f7-48fd-8018-7e1192a746ce'),)", 'kwargsrepr': '{}', 'origin': 'gen91897@Mac', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'processing'}
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 642, in on_task_received
+    strategy = strategies[type_]
+               ~~~~~~~~~~^^^^^^^
+KeyError: 'core.tasks.process_image'
+ERROR 2025-04-28 16:10:13,309 consumer 36936 8474971264 Received unregistered task of type 'core.tasks.process_image'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[["3cdc837a-b3f7-48fd-8018-7e1192a746ce"], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (115b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'core.tasks.process_image', 'id': 'bfd9c771-5125-4347-91aa-c5b9c1d78f01', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': 'bfd9c771-5125-4347-91aa-c5b9c1d78f01', 'parent_id': None, 'argsrepr': "('3cdc837a-b3f7-48fd-8018-7e1192a746ce',)", 'kwargsrepr': '{}', 'origin': 'gen94846@Mac', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'processing'}
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 642, in on_task_received
+    strategy = strategies[type_]
+               ~~~~~~~~~~^^^^^^^
+KeyError: 'core.tasks.process_image'
+ERROR 2025-04-28 16:10:13,313 consumer 36936 8474971264 Received unregistered task of type 'core.tasks.process_image'.
+The message has been ignored and discarded.
+
+Did you remember to import the module containing this task?
+Or maybe you're using relative imports?
+
+Please see
+https://docs.celeryq.dev/en/latest/internals/protocol.html
+for more information.
+
+The full contents of the message body was:
+b'[[{"__type__": "uuid", "__value__": {"hex": "e3942e328e304e548a0eccb7751bac59"}}], {}, {"callbacks": null, "errbacks": null, "chain": null, "chord": null}]' (155b)
+
+The full contents of the message headers:
+{'lang': 'py', 'task': 'core.tasks.process_image', 'id': '5f7c65df-0665-429d-b8d0-6addc69c7a64', 'shadow': None, 'eta': None, 'expires': None, 'group': None, 'group_index': None, 'retries': 0, 'timelimit': [None, None], 'root_id': '5f7c65df-0665-429d-b8d0-6addc69c7a64', 'parent_id': None, 'argsrepr': "(UUID('e3942e32-8e30-4e54-8a0e-ccb7751bac59'),)", 'kwargsrepr': '{}', 'origin': 'gen98985@Mac', 'ignore_result': False, 'replaced_task_nesting': 0, 'stamped_headers': None, 'stamps': {}}
+
+The delivery info for this task is:
+{'exchange': '', 'routing_key': 'processing'}
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 642, in on_task_received
+    strategy = strategies[type_]
+               ~~~~~~~~~~^^^^^^^
+KeyError: 'core.tasks.process_image'
+ERROR 2025-04-28 16:29:19,328 log 51548 6122876928 Internal Server Error: /converter/jobs/6ccc9975-e80e-4abe-a8a6-9dcbdbbbb28a/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 291, in job_detail
+    return render(request, 'converter/job_detail.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 321, in render
+    return nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'job_download_all' not found. 'job_download_all' is not a valid view function or pattern name.
+ERROR 2025-04-28 20:08:47,525 log 55250 6194393088 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 85, in dashboard
+    return render(request, 'converter/dashboard.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'docs_readme' not found. 'docs_readme' is not a valid view function or pattern name.
+ERROR 2025-04-28 20:08:51,724 log 55250 6194393088 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 85, in dashboard
+    return render(request, 'converter/dashboard.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'docs_readme' not found. 'docs_readme' is not a valid view function or pattern name.
+ERROR 2025-04-28 20:09:47,127 log 62956 6202961920 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 85, in dashboard
+    return render(request, 'converter/dashboard.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 1005, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/base.py", line 966, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/defaulttags.py", line 471, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/urls/resolvers.py", line 828, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'docs_readme' not found. 'docs_readme' is not a valid view function or pattern name.
+ERROR 2025-04-28 20:14:04,637 log 63186 6190903296 Internal Server Error: /converter/about/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/converter/views.py", line 789, in about
+    return render(request, 'docs/about.html', {
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/jp2forge_web/venv/lib/python3.11/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: docs/about.html
+ERROR 2025-04-28 21:17:25,968 jp2forge_adapter 16034 8474971264 Failed to import JP2Forge modules: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+ERROR 2025-04-28 21:29:50,357 log 16034 6193852416 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: django_session
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapper_view
+    if test_func(request.user):
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 51, in <lambda>
+    lambda u: u.is_authenticated,
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 266, in inner
+    self._setup()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 419, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 25, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 191, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: django_session
+ERROR 2025-04-28 21:30:46,928 log 16034 6193852416 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: django_session
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapper_view
+    if test_func(request.user):
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 51, in <lambda>
+    lambda u: u.is_authenticated,
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 266, in inner
+    self._setup()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 419, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 25, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 191, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: django_session
+ERROR 2025-04-28 21:30:48,522 log 16034 6193852416 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: django_session
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapper_view
+    if test_func(request.user):
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 51, in <lambda>
+    lambda u: u.is_authenticated,
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 266, in inner
+    self._setup()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 419, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 25, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 191, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: django_session
+ERROR 2025-04-28 21:30:48,969 log 16034 6193852416 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: django_session
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapper_view
+    if test_func(request.user):
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 51, in <lambda>
+    lambda u: u.is_authenticated,
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 266, in inner
+    self._setup()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 419, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 25, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 191, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: django_session
+ERROR 2025-04-28 21:30:59,738 log 16034 6193852416 Internal Server Error: /converter/dashboard/
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 187, in _get_session
+    return self._session_cache
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SessionStore' object has no attribute '_session_cache'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: django_session
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapper_view
+    if test_func(request.user):
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/decorators.py", line 51, in <lambda>
+    lambda u: u.is_authenticated,
+              ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 266, in inner
+    self._setup()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/utils/functional.py", line 419, in _setup
+    self._wrapped = self._setupfunc()
+                    ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 25, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/middleware.py", line 11, in get_user
+    request._cached_user = auth.get_user(request)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 191, in get_user
+    user_id = _get_user_session_key(request)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/auth/__init__.py", line 60, in _get_user_session_key
+    return get_user_model()._meta.pk.to_python(request.session[SESSION_KEY])
+                                               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 53, in __getitem__
+    return self._session[key]
+           ^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/base.py", line 192, in _get_session
+    self._session_cache = self.load()
+                          ^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 42, in load
+    s = self._get_session_from_db()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/contrib/sessions/backends/db.py", line 32, in _get_session_from_db
+    return self.model.objects.get(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 633, in get
+    num = len(clone)
+          ^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 380, in __len__
+    self._fetch_all()
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1560, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 102, in execute
+    return super().execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/venv/lib/python3.11/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return super().execute(query, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+django.db.utils.OperationalError: no such table: django_session
+CRITICAL 2025-04-29 06:27:24,737 worker 76348 8474971264 Unrecoverable error: RuntimeError("reentrant call inside <_io.BufferedWriter name='<stderr>'>")
+Traceback (most recent call last):
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/worker/worker.py", line 202, in start
+    self.blueprint.start(self)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/bootsteps.py", line 365, in start
+    return self.obj.start()
+           ^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 336, in start
+    blueprint.start(self)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 726, in start
+    c.loop(*c.loop_args())
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/kombu/asynchronous/hub.py", line 317, in create_loop
+    events = poll(poll_timeout)
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/kombu/utils/eventio.py", line 216, in poll
+    event_list = self._quick_poll(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/apps/worker.py", line 288, in _handle_request
+    callback(worker)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/apps/worker.py", line 320, in on_SIGINT
+    safe_say('worker: Hitting Ctrl+C again will terminate all running tasks!')
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/apps/worker.py", line 289, in _handle_request
+    safe_say(f'worker: {how} shutdown (MainProcess)')
+  File "/Users/syl/Documents/GitHub/jp2forge_web/.venv/lib/python3.11/site-packages/celery/apps/worker.py", line 81, in safe_say
+    print(f'\n{msg}', file=sys.__stderr__, flush=True)
+RuntimeError: reentrant call inside <_io.BufferedWriter name='<stderr>'>

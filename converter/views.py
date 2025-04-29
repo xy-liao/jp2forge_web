@@ -591,6 +591,12 @@ def batch_download_jobs(request, jobs):
     # Create a BytesIO object to store the ZIP file
     zip_buffer = BytesIO()
     
+    # Check if flat structure is requested (default for batch individual files)
+    use_flat_structure = request.GET.get('flat', False) or request.POST.get('flat', False)
+    
+    # Count total files
+    total_files = 0
+    
     # Create a ZIP file
     with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
         for job in download_jobs:
@@ -607,22 +613,40 @@ def batch_download_jobs(request, jobs):
                 
                 # If JP2 files found, add them to the ZIP
                 if jp2_files:
-                    # Create a job-specific folder to avoid filename conflicts
-                    base_folder = os.path.splitext(job.original_filename)[0]
+                    # Determine if this is a multi-page file or individual file
+                    is_multipage = len(jp2_files) > 1
                     
                     # Add each JP2 file to the ZIP
                     for file_path in jp2_files:
                         filename = os.path.basename(file_path)
-                        # Add to a subfolder named after the original file
-                        zip_path = f"{base_folder}/{filename}"
+                        
+                        # Use appropriate folder structure based on settings
+                        if is_multipage or not use_flat_structure:
+                            # For multi-page files or when folder structure is preferred
+                            base_folder = os.path.splitext(job.original_filename)[0]
+                            zip_path = f"{base_folder}/{filename}"
+                        else:
+                            # For individual files with flat structure
+                            # Add the original filename (without extension) as prefix to avoid conflicts
+                            base_name = os.path.splitext(job.original_filename)[0]
+                            zip_path = f"{base_name}_{filename}"
+                            
                         zip_file.write(file_path, zip_path)
+                        total_files += 1
                 else:
                     # Fallback to the main result file if no JP2 files found in output dir
                     if job.result_file and os.path.exists(job.result_file.path):
                         filename = os.path.basename(job.result_file.name)
-                        base_folder = os.path.splitext(job.original_filename)[0]
-                        zip_path = f"{base_folder}/{filename}"
+                        
+                        if use_flat_structure:
+                            base_name = os.path.splitext(job.original_filename)[0]
+                            zip_path = f"{base_name}_{filename}"
+                        else:
+                            base_folder = os.path.splitext(job.original_filename)[0]
+                            zip_path = f"{base_folder}/{filename}"
+                            
                         zip_file.write(job.result_file.path, zip_path)
+                        total_files += 1
     
     # Check if any files were added to the ZIP
     if zip_buffer.tell() == 0:
@@ -634,10 +658,13 @@ def batch_download_jobs(request, jobs):
     
     # Create response with ZIP file
     response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="jp2forge_batch_download.zip"'
+    
+    # Add structure type to filename
+    structure_type = "flat" if use_flat_structure else "folders"
+    response['Content-Disposition'] = f'attachment; filename="jp2forge_batch_download_{structure_type}.zip"'
     
     # Log the download
-    logger.info(f"User {request.user.username} batch downloaded {download_jobs.count()} jobs")
+    logger.info(f"User {request.user.username} batch downloaded {download_jobs.count()} jobs ({total_files} files) using {structure_type} structure")
     
     return response
 
@@ -672,23 +699,42 @@ def job_download_all(request, job_id):
         messages.error(request, "No JP2 files found to download.")
         return redirect('job_detail', job_id=job.id)
     
+    # Check if flat structure is requested
+    use_flat_structure = request.GET.get('flat', False)
+    
     # Create a ZIP file with all JP2 files
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+        # Determine if this is a multi-page file
+        is_multipage = len(jp2_files) > 1
+        
+        # Process each file
         for file_path in jp2_files:
-            # Add the file to the ZIP with just its filename (not the full path)
+            # Get just the filename (not the full path)
             filename = os.path.basename(file_path)
-            zip_file.write(file_path, filename)
+            
+            # Use appropriate path within ZIP based on settings
+            if use_flat_structure and not is_multipage:
+                # For individual files with flat structure, prefix with original filename
+                base_name = os.path.splitext(job.original_filename)[0]
+                zip_path = f"{base_name}_{filename}"
+            else:
+                # For multi-page files or default structure, use the filename directly
+                zip_path = filename
+            
+            # Add file to ZIP
+            zip_file.write(file_path, zip_path)
     
     # Reset buffer position
     zip_buffer.seek(0)
     
     # Create filename for the ZIP file
     base_name = os.path.splitext(job.original_filename)[0]
+    structure_type = "flat" if use_flat_structure else "folders"
     zip_filename = f"{base_name}_jp2_files.zip"
     
     # Log the download
-    logger.info(f"User {request.user.username} downloaded all JP2 files for job {job.id} as ZIP")
+    logger.info(f"User {request.user.username} downloaded all JP2 files for job {job.id} as ZIP with {structure_type} structure")
     
     # Return the ZIP file as a response
     response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
@@ -716,8 +762,26 @@ def download_selected_files(request):
         messages.warning(request, "No files were selected for download.")
         return redirect('job_list')
     
+    # Check if flat structure is requested
+    use_flat_structure = request.GET.get('flat', False) or request.POST.get('flat', False)
+    
     # Create a BytesIO object to store the ZIP file
     zip_buffer = BytesIO()
+    
+    # Track files by original name to detect multi-page files
+    files_by_job = {}
+    
+    # First pass: gather file info to determine if we have multi-page files
+    for file_url in file_urls:
+        parts = file_url.split('/')
+        if 'media' in parts and 'jobs' in parts and 'output' in parts:
+            # Find indexes
+            job_idx = parts.index('jobs')
+            if job_idx + 1 < len(parts):
+                job_id = parts[job_idx + 1]
+                if job_id not in files_by_job:
+                    files_by_job[job_id] = 0
+                files_by_job[job_id] += 1
     
     # Create a ZIP file
     with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
@@ -740,10 +804,23 @@ def download_selected_files(request):
                         file_path = os.path.join(settings.MEDIA_ROOT, f'jobs/{job_id}/output/{filename}')
                         
                         if os.path.exists(file_path):
-                            # Create a base folder for the job to avoid filename conflicts
-                            base_name = os.path.splitext(filename)[0]
-                            # Use the filename directly as it already contains identifiers
-                            zip_path = filename
+                            # Determine if this is from a multi-page job
+                            is_multipage = files_by_job.get(job_id, 0) > 1
+                            
+                            # Try to get the original filename to use as a prefix
+                            try:
+                                job = ConversionJob.objects.get(id=job_id)
+                                original_name = os.path.splitext(job.original_filename)[0]
+                            except:
+                                original_name = f"file_{job_id}"
+                            
+                            if is_multipage or not use_flat_structure:
+                                # For multi-page files or when folder structure is preferred
+                                zip_path = f"{original_name}/{filename}"
+                            else:
+                                # For individual files with flat structure
+                                zip_path = f"{original_name}_{filename}"
+                            
                             zip_file.write(file_path, zip_path)
                 
             except Exception as e:
@@ -759,10 +836,13 @@ def download_selected_files(request):
     
     # Create response with ZIP file
     response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
-    response['Content-Disposition'] = 'attachment; filename="jp2forge_selected_files.zip"'
+    
+    # Add structure type to filename
+    structure_type = "flat" if use_flat_structure else "folders"
+    response['Content-Disposition'] = f'attachment; filename="jp2forge_selected_files_{structure_type}.zip"'
     
     # Log the download
-    logger.info(f"User {request.user.username} downloaded {len(file_urls)} selected files")
+    logger.info(f"User {request.user.username} downloaded {len(file_urls)} selected files using {structure_type} structure")
     
     return response
 

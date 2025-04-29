@@ -170,6 +170,65 @@ The application provides a user-friendly interface for JP2Forge's powerful conve
 - Manage and delete conversion jobs
 - Retry failed conversions
 
+## Maintenance & Cleanup
+
+The JP2Forge Web application includes a cleanup tool to help maintain your installation and reset it to a clean state after testing or when encountering issues.
+
+### Using the Cleanup Script
+
+The `cleanup.py` script provides comprehensive cleanup capabilities:
+
+```bash
+# Clean everything
+python cleanup.py
+
+# Show what would be cleaned without actually deleting anything
+python cleanup.py --dry-run
+
+# Clean specific components
+python cleanup.py --jobs      # Job records and media files
+python cleanup.py --logs      # Log files
+python cleanup.py --temp      # Temporary cache files
+python cleanup.py --celery    # Reset Celery tasks
+python cleanup.py --sqlite    # Clean SQLite journal files and optimize DB
+python cleanup.py --static    # Remove collected static files (requires collectstatic afterward)
+python cleanup.py --sessions  # Clean Django session files
+
+# Combine multiple cleanup operations
+python cleanup.py --jobs --logs --sqlite
+```
+
+### Cleanup Features
+
+The script provides the following cleanup features:
+
+- **Database cleanup**: Removes conversion job records while preserving user accounts
+- **Media files cleanup**: Deletes all job-related files in the media/jobs directory
+- **Log files cleanup**: Creates backups of log files before clearing them
+- **Temporary files cleanup**: Removes Python cache files and other temporary data
+- **Celery task management**: Resets the Celery task queue for a fresh start
+- **SQLite optimization**: Cleans journal files and optimizes the database
+- **Static files management**: Removes collected static files when needed
+- **Session management**: Cleans Django session files
+
+### When to Use Cleanup
+
+- **After testing**: Clear out test data while preserving your user account
+- **Before demos**: Start with a clean slate when demonstrating features
+- **Storage management**: Free up disk space by removing old job files
+- **Troubleshooting**: Reset the application to a clean state when diagnosing issues
+
+### Regular Maintenance
+
+For regular maintenance, consider running the cleanup script periodically, especially if you're performing lots of conversions or tests:
+
+```bash
+# Monthly maintenance (cleans jobs and logs while keeping user accounts)
+python cleanup.py --jobs --logs
+```
+
+**Note**: The script creates backups of log files before clearing them, ensuring you don't lose important debugging information.
+
 ## Configuration
 
 ### Environment Variables

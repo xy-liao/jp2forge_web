@@ -423,9 +423,18 @@
                         <span class="badge bg-primary rounded-pill ms-2" id="file-count">
                             {{ output_files|length|add:"1" }} files
                         </span>
+                        
+                        <!-- Download structure toggle option -->
+                        <div class="form-check form-switch ms-3 d-inline-block">
+                            <input class="form-check-input" type="checkbox" id="flat-structure-toggle">
+                            <label class="form-check-label" for="flat-structure-toggle">Flat structure</label>
+                            <span class="ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="When enabled, files will be downloaded in a flat structure instead of folders.">
+                                <i class="bi bi-question-circle-fill text-muted small"></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Selected files actions -->
                 <div class="batch-actions" id="batch-actions">
                     <button class="btn btn-sm btn-success" id="batch-download-btn">
@@ -803,9 +812,16 @@
             batchDownloadBtn.addEventListener('click', () => {
                 if (selectedFiles.length === 0) return;
                 
-                // If all files are selected, use the "Download All" URL
+                // Get structure preference
+                const useFlatStructure = document.getElementById('flat-structure-toggle').checked;
+                
+                // If all files are selected, use the "Download All" URL with flat structure parameter if needed
                 if (selectedFiles.length === checkboxes.length) {
-                    window.location.href = "{% url 'job_download_all' job.id %}";
+                    let url = "{% url 'job_download_all' job.id %}";
+                    if (useFlatStructure) {
+                        url += "?flat=true";
+                    }
+                    window.location.href = url;
                     return;
                 }
                 
@@ -848,6 +864,15 @@
                         csrfInput.value = csrftoken;
                         form.appendChild(csrfInput);
                     }
+                }
+                
+                // Add flat structure preference
+                if (useFlatStructure) {
+                    const flatInput = document.createElement('input');
+                    flatInput.type = 'hidden';
+                    flatInput.name = 'flat';
+                    flatInput.value = 'true';
+                    form.appendChild(flatInput);
                 }
                 
                 // Add each selected file URL as a form field
