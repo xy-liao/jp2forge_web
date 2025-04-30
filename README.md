@@ -6,7 +6,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 ## Features
 
-- **Interactive Dashboard** with conversion statistics, storage metrics, and job monitoring
+- Interactive Dashboard with conversion statistics, storage metrics, and job monitoring
 - Convert images to JPEG2000 format with various options
 - Support for different compression modes: lossless, lossy, supervised, and BnF-compliant
 - Support for multiple document types: photograph, heritage document, color, grayscale
