@@ -1,6 +1,15 @@
+"""
+JP2Forge Web Configuration
+
+Django settings for jp2forge_web project.
+"""
+
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+
+# JP2Forge Web version
+VERSION = '0.1.0'
 
 # Load environment variables from .env file
 load_dotenv()

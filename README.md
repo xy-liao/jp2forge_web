@@ -1,4 +1,4 @@
-# JP2Forge Web
+# JP2Forge Web Application v0.1.0
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
