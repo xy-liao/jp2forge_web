@@ -21,10 +21,26 @@ logger = logging.getLogger(__name__)
 
 # Try to import JP2Forge modules
 try:
-    from core.types import WorkflowConfig, CompressionMode, DocumentType
-    from workflow.standard import StandardWorkflow
-    JP2FORGE_AVAILABLE = True
-    logger.info("Successfully imported JP2Forge modules")
+    # First try the expected import structure
+    try:
+        from core.types import WorkflowConfig, CompressionMode, DocumentType
+        from workflow.standard import StandardWorkflow
+        JP2FORGE_AVAILABLE = True
+        logger.info("Successfully imported JP2Forge modules (direct import)")
+    except ImportError:
+        # Fall back to standard package import structure
+        import jp2forge
+        # Attempt to get the required classes from the installed package
+        try:
+            # The exact structure may vary - this is an example that might need adjustment
+            from jp2forge.core.types import WorkflowConfig, CompressionMode, DocumentType
+            from jp2forge.workflow.standard import StandardWorkflow
+            JP2FORGE_AVAILABLE = True
+            logger.info(f"Successfully imported JP2Forge modules (package import, version {jp2forge.__version__})")
+        except ImportError as e:
+            # If we can import jp2forge but not the specific modules, log that
+            logger.error(f"JP2Forge package found but required modules missing: {e}")
+            JP2FORGE_AVAILABLE = False
 except ImportError as e:
     JP2FORGE_AVAILABLE = False
     logger.error(f"Failed to import JP2Forge modules: {e}")

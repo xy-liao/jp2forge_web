@@ -65,11 +65,28 @@ def check_dependencies():
         print("  - Ubuntu/Debian: sudo service redis-server start")
         print("  - Windows: start Redis server")
     
-    # Check if JP2Forge is installed
+    # Check if JP2Forge is installed - try multiple import strategies
+    jp2forge_installed = False
+    jp2forge_version = None
+    
+    # First, check standard package
     try:
         import jp2forge
-        print(f"JP2Forge: Installed (version {jp2forge.__version__})")
+        jp2forge_installed = True
+        jp2forge_version = getattr(jp2forge, '__version__', 'unknown')
     except ImportError:
+        # Package not installed in standard way, but might be available as modules
+        try:
+            # Try direct module import strategy (used by the adapter)
+            from core.types import WorkflowConfig
+            jp2forge_installed = True
+            jp2forge_version = "module version"
+        except ImportError:
+            pass
+    
+    if jp2forge_installed:
+        print(f"JP2Forge: Installed (version {jp2forge_version})")
+    else:
         print("JP2Forge: NOT INSTALLED")
         print("Please install JP2Forge: pip install jp2forge")
     
