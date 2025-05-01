@@ -71,10 +71,9 @@ ESSENTIAL_DIRS = [
     STATIC_ROOT
 ]
 
-# Multiple potential session directories
+# Multiple potential session directories - using only project-specific paths for security
 SESSION_DIRS = [
     os.path.join(PROJECT_ROOT, 'tmp', 'sessions'),
-    os.path.join('/tmp', 'django_sessions'),
     os.path.join(PROJECT_ROOT, '.sessions'),
 ]
 
