@@ -88,6 +88,23 @@ if ! redis-cli ping > /dev/null 2>&1; then
     fi
 fi
 
+# Configure Redis persistence for reliability - this is critical for preventing stuck jobs
+echo "Configuring Redis for reliable operation..."
+if redis-cli ping > /dev/null 2>&1; then
+    # Disable 'stop-writes-on-bgsave-error' to prevent Redis from rejecting writes
+    # when it can't save snapshots to disk (common cause of stuck "pending" jobs)
+    redis-cli config set stop-writes-on-bgsave-error no > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "Redis configured successfully for reliable operation."
+    else
+        echo "Warning: Could not configure Redis settings. You may experience issues with tasks getting stuck."
+    fi
+    
+    # Check Redis memory usage to ensure it's not getting too full
+    REDIS_MEMORY=$(redis-cli info memory | grep used_memory_human | cut -d: -f2 | xargs)
+    echo "Redis current memory usage: $REDIS_MEMORY"
+fi
+
 echo "Starting JP2Forge Web Application in development mode..."
 
 # Create log directory if it doesn't exist

@@ -147,6 +147,140 @@ python init.py
 - **Missing media directory**: Create the directory structure with `mkdir -p media/jobs`
 - **Permission issues**: Make sure that all script files are executable with `chmod +x *.sh`
 
+## Troubleshooting Redis and Task Processing Issues
+
+### Preventing Stuck Jobs
+
+The JP2Forge Web application uses Redis as a message broker for Celery tasks. Sometimes jobs may get stuck in the "pending" state due to Redis configuration issues. We've implemented several solutions to help prevent this:
+
+1. **Automatic Redis Configuration**: The startup script now automatically configures Redis to prevent the most common cause of stuck jobs - the `stop-writes-on-bgsave-error` setting.
+
+2. **Redis Health Monitoring**: A dedicated monitoring script checks and fixes Redis issues:
+
+   ```bash
+   # Run the Redis monitor to check for issues and fix them
+   python monitor_redis.py
+   ```
+
+3. **Recovery Management Command**: A Django management command to recover stuck jobs:
+
+   ```bash
+   # Find and recover jobs stuck in pending state for more than 15 minutes
+   python manage.py recover_stuck_jobs
+
+   # Dry run to see what would be done without making changes
+   python manage.py recover_stuck_jobs --dry-run
+
+   # Fix Redis configuration to prevent future issues
+   python manage.py recover_stuck_jobs --fix-redis-config
+
+   # Reset Redis task queues if they appear corrupted
+   python manage.py recover_stuck_jobs --reset-redis
+   ```
+
+### Common Redis Issues
+
+#### Jobs Stuck in "Pending" State
+
+If your jobs are stuck in the "pending" state, it's often due to one of these Redis issues:
+
+1. **Redis Persistence Error**: Redis is configured to stop accepting writes when it can't save snapshots to disk. This can be fixed with:
+
+   ```bash
+   # Via Redis CLI
+   redis-cli config set stop-writes-on-bgsave-error no
+
+   # Or use our management command
+   python manage.py recover_stuck_jobs --fix-redis-config
+   ```
+
+2. **Queue Corruption**: Sometimes the Celery task queue in Redis can become corrupted. Reset it with:
+
+   ```bash
+   # Reset the queue and recover jobs
+   python manage.py recover_stuck_jobs --reset-redis
+   ```
+
+3. **Redis Memory Issues**: If Redis runs out of memory, it can't store new tasks. Check memory usage:
+
+   ```bash
+   # Check Redis memory usage
+   redis-cli info memory | grep used_memory_human
+   ```
+
+#### Redis Connection Issues
+
+If the application can't connect to Redis:
+
+1. **Check if Redis is running**:
+   ```bash
+   redis-cli ping
+   ```
+   
+   If this doesn't return "PONG", Redis isn't running.
+
+2. **Start Redis**:
+   ```bash
+   # On macOS
+   brew services start redis
+   
+   # On Ubuntu/Debian
+   sudo service redis-server start
+   ```
+
+3. **Check Redis log files** for errors:
+   ```bash
+   # Typical locations (may vary by system)
+   cat /var/log/redis/redis-server.log  # Linux
+   ```
+
+### Monitoring Redis Health
+
+To ensure Redis operates correctly and prevent issues:
+
+1. **Run the Redis Monitor Periodically**:
+   ```bash
+   python monitor_redis.py
+   ```
+
+2. **Set up a Cron Job** for automatic monitoring:
+   ```bash
+   # Edit crontab
+   crontab -e
+   
+   # Add this line to run every 15 minutes
+   */15 * * * * cd /path/to/jp2forge_web && /path/to/python monitor_redis.py >> logs/redis_monitor_cron.log 2>&1
+   ```
+
+3. **Check Web App Logs** for Redis-related errors:
+   ```bash
+   # Look for Redis errors in the django log
+   grep "Redis" logs/django.log
+   ```
+
+### If All Else Fails: Full Reset
+
+If you're still experiencing issues, a complete reset of the Redis system can help:
+
+```bash
+# Stop Redis
+brew services stop redis  # macOS
+sudo service redis-server stop  # Ubuntu/Debian
+
+# Delete Redis data file (⚠️ Warning: This removes all Redis data)
+rm /usr/local/var/db/redis/dump.rdb  # macOS (location may vary)
+rm /var/lib/redis/dump.rdb  # Ubuntu/Debian (location may vary)
+
+# Start Redis fresh
+brew services start redis  # macOS
+sudo service redis-server start  # Ubuntu/Debian
+
+# Recover any stuck jobs
+python manage.py recover_stuck_jobs
+```
+
+This section of documentation provides practical solutions to the Redis issues that can cause JP2Forge processing jobs to get stuck in "pending" state.
+
 ## Application Structure
 
 ### Dashboard
