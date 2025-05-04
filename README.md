@@ -439,7 +439,7 @@ The production settings include:
 ## Dependencies
 
 - **Django 4.2**: Web framework
-- **JP2Forge 0.9.1**: JPEG2000 conversion library
+- **JP2Forge 0.9.6**: JPEG2000 conversion library (updated from 0.9.1)
 - **Celery 5.3.1**: Distributed task queue
 - **Redis**: Message broker for Celery
 - **ExifTool**: For metadata handling
@@ -459,6 +459,8 @@ The application depends on the JP2Forge JPEG2000 conversion library. There are t
    - Set `JP2FORGE_MOCK_MODE=True` in your .env file
    - This will simulate JPEG2000 conversions without actually performing them
    - Useful for testing the UI and workflows
+
+**Important Update (May 2025)**: JP2Forge 0.9.6 includes significant improvements to the reporting mechanism, fixing issues in single file processing mode and adding comprehensive testing capabilities. The JP2Forge Web adapter is fully compatible with this new version and benefits from the enhanced reporting features.
 
 **Note**: The mock mode provides a simulated experience but does not perform actual JPEG2000 conversions.
 
