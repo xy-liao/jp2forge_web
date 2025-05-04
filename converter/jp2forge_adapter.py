@@ -27,12 +27,12 @@ try:
         from core.types import WorkflowConfig, CompressionMode, DocumentType
         from cli.workflow import StandardWorkflow  # Updated import path
         JP2FORGE_AVAILABLE = True
-        JP2FORGE_VERSION = "0.9.2"  # Hardcoded since direct import doesn't provide __version__
+        JP2FORGE_VERSION = "0.9.6"  # Hardcoded since direct import doesn't provide __version__
         logger.info(f"Successfully imported JP2Forge modules (direct import, assuming version {JP2FORGE_VERSION})")
         
         # Version warning for clarity
-        if JP2FORGE_VERSION != "0.9.2":
-            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.2 is recommended")
+        if JP2FORGE_VERSION != "0.9.6":
+            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.6 is recommended")
     except ImportError as direct_import_error:
         logger.debug(f"Direct import failed: {direct_import_error}")
         # Fall back to standard package import structure

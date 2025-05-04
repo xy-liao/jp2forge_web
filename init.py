@@ -80,7 +80,7 @@ def check_dependencies():
             # Try direct module import strategy (used by the adapter)
             from core.types import WorkflowConfig
             jp2forge_installed = True
-            jp2forge_version = "module version"
+            jp2forge_version = "0.9.6"  # Updated version number
         except ImportError:
             pass
     

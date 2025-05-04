@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 # Install JP2Forge from GitHub
-RUN pip install --no-cache-dir git+https://github.com/xy-liao/jp2forge.git@v0.9.2
+RUN pip install --no-cache-dir git+https://github.com/xy-liao/jp2forge.git@v0.9.6
 
 # Copy project files
 COPY . /app/
