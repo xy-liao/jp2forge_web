@@ -41,6 +41,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 15. [Contributing](#contributing)
 16. [License](#license)
 17. [Acknowledgments](#acknowledgments)
+18. [BnF Compliance Information](#bnf-compliance-information)
 
 ## Features
 
@@ -1119,3 +1120,17 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Django](https://www.djangoproject.com/) - The web framework used
 - [Celery](https://docs.celeryq.dev/) - Distributed task queue
 - [Bootstrap](https://getbootstrap.com/) - Frontend framework
+
+## BnF Compliance Information
+
+The JP2Forge Web application supports the creation of JPEG2000 files that comply with the Bibliothèque nationale de France (BnF) digitization standards. This implementation is based on:
+
+1. **BnF's Digital Preservation Guidelines**: The application follows established JPEG2000 encoding parameters that meet BnF's requirements for digital preservation.
+
+2. **JP2 Format Implementation**: The JP2Forge library has been configured to produce JPEG2000 files that conform to BnF's technical specifications.
+
+Users can activate BnF compliance either by:
+- Selecting the dedicated "BnF Compliant" compression mode in the interface
+- Enabling the BnF compliance checkbox while using other compression modes
+
+For the most current and detailed BnF digitization specifications, please consult the official BnF documentation or contact the BnF's digital preservation department directly.

@@ -6,6 +6,16 @@ This guide explains how to use the JP2Forge Web application for converting image
 
 JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script and its BnF (Bibliothèque nationale de France) compliance capabilities. This web interface implements a curated subset of JP2Forge's full functionality, focusing on showcasing key features in an accessible way. For access to all JP2Forge capabilities, users are encouraged to work directly with the [JP2Forge script](https://github.com/xy-liao/jp2forge).
 
+## BnF Compliance Information
+
+The JP2Forge Web application includes options for creating JPEG2000 files that comply with Bibliothèque nationale de France (BnF) digitization standards. These compliance settings are based on:
+
+1. **BnF's Technical Guidelines for Digitization**: The BnF maintains technical requirements for digital preservation of cultural heritage materials, which include specific parameters for JPEG2000 encoding.
+
+2. **JP2 Format Implementation**: The JP2Forge implementation follows the BnF's recommendations for JPEG2000 codestream parameters, progression order, and metadata requirements.
+
+The BnF compliance mode ensures that your JPEG2000 files meet the technical specifications required for submission to the BnF or similar cultural heritage institutions that follow these standards. For the most current and detailed BnF digitization specifications, please consult the official BnF documentation at [https://www.bnf.fr/en/digital-preservation](https://www.bnf.fr/en/digital-preservation).
+
 ## Table of Contents
 
 1. [Creating a New Conversion Job](#creating-a-new-conversion-job)
