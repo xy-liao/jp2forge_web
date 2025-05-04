@@ -1,5 +1,25 @@
 # Release Notes
 
+## v0.1.1 (May 4, 2025) - Redis Stability & Security Updates
+
+This release focuses on improving Redis stability to prevent jobs from getting stuck and updating dependencies to address security vulnerabilities.
+
+### Critical Fixes
+
+- Fixed Redis persistence issues that were causing jobs to get stuck in "pending" state
+- Added automatic Redis configuration in startup script to prevent write errors
+- Created `monitor_redis.py` tool to detect and fix Redis configuration issues 
+- Added `recover_stuck_jobs` management command to recover stuck jobs
+- Updated documentation with comprehensive Redis troubleshooting guide
+
+### Security Updates
+
+- Updated Django from 4.2 to 4.2.10 to address security vulnerabilities
+- Updated Pillow from 10.0.0 to 10.1.0 to fix security issues
+- Updated Celery from 5.3.1 to 5.3.6
+- Updated Redis from 4.6.0 to 5.0.1
+- Updated other dependencies to latest secure versions
+
 ## v0.1.0 (May 1, 2025) - Initial Release
 
 This is the first release of JP2Forge Web Application, a Django-based web interface for the JP2Forge JPEG2000 conversion library.
