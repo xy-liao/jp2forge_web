@@ -738,6 +738,12 @@ Here's a comparison of file sizes and quality metrics for typical input files:
 | A4 Color TIFF | 70 MB | 30 MB (2.3:1) | 7 MB (10:1) | 2.5 MB (28:1) | 8.75 MB (8:1) |
 | A3 Grayscale TIFF | 40 MB | 15 MB (2.7:1) | 4 MB (10:1) | 1.5 MB (27:1) | 6.7 MB (6:1) |
 
+**Important Note About BnF Mode**: The "BnF Mode" column shows results when using the Bibliothèque nationale de France (BnF) compliant settings. This mode applies specific standardized compression ratios required by the BnF for digital preservation:
+- 8:1 compression ratio for color documents (fixed, not adjustable)
+- 6:1 compression ratio for grayscale documents (fixed, not adjustable)
+
+These standardized ratios ensure that cultural heritage materials meet the BnF's specific requirements for digital archives. Unlike other modes where compression can be adjusted, BnF mode uses these preset ratios to guarantee compliance with their preservation standards.
+
 #### Quality Metrics Explained
 
 The application provides two key metrics to assess the quality of converted images:
@@ -1123,14 +1129,28 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## BnF Compliance Information
 
-The JP2Forge Web application supports the creation of JPEG2000 files that comply with the Bibliothèque nationale de France (BnF) digitization standards. This implementation is based on:
+The JP2Forge Web application provides support for creating JPEG2000 files that comply with the Bibliothèque nationale de France (BnF) digitization standards. This implementation is based on the following official BnF documents:
 
-1. **BnF's Digital Preservation Guidelines**: The application follows established JPEG2000 encoding parameters that meet BnF's requirements for digital preservation.
+1. **BnF Referential (2015)**: "Référentiel de format de fichier image v2"  
+   https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf
 
-2. **JP2 Format Implementation**: The JP2Forge library has been configured to produce JPEG2000 files that conform to BnF's technical specifications.
+2. **BnF Documentation (2021)**: "Formats de données pour la préservation à long terme"  
+   https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf
 
-Users can activate BnF compliance either by:
-- Selecting the dedicated "BnF Compliant" compression mode in the interface
-- Enabling the BnF compliance checkbox while using other compression modes
+### BnF Compliance Features
 
-For the most current and detailed BnF digitization specifications, please consult the official BnF documentation or contact the BnF's digital preservation department directly.
+The BnF compliance mode ensures that JPEG2000 files meet the specific technical requirements set by the Bibliothèque nationale de France for digital preservation of cultural heritage materials. Key characteristics include:
+
+- **Fixed Compression Ratios**: 
+  - 8:1 compression ratio for color documents
+  - 6:1 compression ratio for grayscale documents
+
+- **Technical Parameters**:
+  - Specific codestream markers and tags
+  - Required metadata embedding
+  - Appropriate progression order
+  - Optimized code-block sizing
+
+Users can enable BnF compliance in two ways:
+1. By selecting the dedicated "BnF Compliant" compression mode
+2. By enabling the BnF compliance checkbox while using other compression modes

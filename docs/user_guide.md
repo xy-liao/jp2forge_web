@@ -8,13 +8,15 @@ JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge sc
 
 ## BnF Compliance Information
 
-The JP2Forge Web application includes options for creating JPEG2000 files that comply with Bibliothèque nationale de France (BnF) digitization standards. These compliance settings are based on:
+The JP2Forge Web application includes options for creating JPEG2000 files that comply with Bibliothèque nationale de France (BnF) digitization standards. These compliance settings are based on the following official BnF documents:
 
-1. **BnF's Technical Guidelines for Digitization**: The BnF maintains technical requirements for digital preservation of cultural heritage materials, which include specific parameters for JPEG2000 encoding.
+1. **BnF Referential (2015)**: "Référentiel de format de fichier image v2"  
+   https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf
 
-2. **JP2 Format Implementation**: The JP2Forge implementation follows the BnF's recommendations for JPEG2000 codestream parameters, progression order, and metadata requirements.
+2. **BnF Documentation (2021)**: "Formats de données pour la préservation à long terme"  
+   https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf
 
-The BnF compliance mode ensures that your JPEG2000 files meet the technical specifications required for submission to the BnF or similar cultural heritage institutions that follow these standards. For the most current and detailed BnF digitization specifications, please consult the official BnF documentation at [https://www.bnf.fr/en/digital-preservation](https://www.bnf.fr/en/digital-preservation).
+The BnF compliance mode ensures that your JPEG2000 files meet the technical specifications required for submission to the BnF or similar cultural heritage institutions that follow these standards.
 
 ## Table of Contents
 
