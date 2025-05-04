@@ -83,59 +83,67 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 ## Multi-Page TIFF Support
 
-JP2Forge Web provides comprehensive support for processing multi-page TIFF files, which is particularly useful for document scanning and archival applications.
+JP2Forge Web includes support for processing multi-page TIFF files, converting each page to an individual JPEG2000 file.
 
-### Multi-Page Processing Features
+### Basic Multi-Page Implementation
 
-- **Page Limit**: By default, the application supports up to 200 pages per TIFF file (configurable via `MAX_PAGES_PER_FILE` in `.env`)
-- **Individual Page Access**: Each page is converted separately and can be downloaded individually
-- **Thumbnail Generation**: Automatic thumbnail generation for each page
-- **Progress Tracking**: Page-by-page progress reporting for large files
-- **Parallel Processing**: Multi-page files benefit from parallel processing for faster conversion
+The application can detect when a conversion job has produced multiple output files (as from a multi-page TIFF) and handles them appropriately:
 
-### Sample Processing Times
+```python
+# From converter/tasks.py
+# Handle single file output or multipage output
+if isinstance(result.output_file, list):
+    # Multi-page result - use the first file for the job record
+    job.output_filename = os.path.basename(result.output_file[0])
+    job.result_file = f'jobs/{job.id}/output/{os.path.basename(result.output_file[0])}'
+```
 
-Processing times for multi-page TIFFs depend on server resources, but typical estimates are:
+The model provides a helper method to identify multi-page results:
+
+```python
+# From converter/models.py
+@property
+def has_multiple_outputs(self):
+    """Check if this job has multiple output JP2 files (like from a multi-page TIFF)"""
+    # Count JP2 files in the job's output directory
+    # If there are more than one JP2 file, it's a multi-page document
+```
+
+### Using Multi-Page TIFF Files
+
+When you upload a multi-page TIFF file:
+1. Each page will be extracted and converted separately to individual JP2 files
+2. After conversion, you can download each page individually
+3. The job detail page will show that the file contains multiple pages
+
+### Estimated Processing Times
+
+Multi-page TIFF processing times are proportional to the number of pages. As a general guideline:
 
 | Pages | Average Size | Estimated Processing Time |
 |-------|-------------:|----------------------------|
 | 10    | 50 MB        | 2-5 minutes                |
 | 50    | 250 MB       | 10-20 minutes              |
 | 100   | 500 MB       | 20-40 minutes              |
-| 200   | 1 GB         | 40-80 minutes              |
 
-### Memory Requirements
+These times will vary based on your server's processing power and the size/complexity of the images.
 
-Multi-page TIFF processing requires more memory than single-page conversions. Approximate memory requirements:
+### Performance Considerations
 
-- **Minimum RAM**: 4GB for files up to 50 pages
-- **Recommended RAM**: 8GB for files up to 200 pages
-- **Production Server**: 16GB+ for concurrent multi-page conversion jobs
+- Processing large multi-page TIFFs will use more memory than single-page images
+- For very large files (>100 pages), consider splitting them into smaller files before uploading
+- Multi-page processing relies on the underlying JP2Forge library's capabilities
+- Monitor server resources when processing large multi-page files
 
-### Error Handling for Large Files
+## API Access (Planned Feature)
 
-When processing large multi-page files:
+**Note: This API is currently under development and not yet implemented in the current release. The documentation below represents the planned functionality for future versions.**
 
-1. **Page Count Limit**: Files exceeding the configured page limit will be rejected with a specific error message
-2. **Recovery Mechanism**: If a single page fails during conversion, the system will continue processing other pages
-3. **Timeout Handling**: Extended conversion times are handled with configurable timeouts (adjust in Celery settings)
+JP2Forge Web plans to provide a RESTful API for programmatic access to its conversion capabilities. This will enable integration with other systems or automation of conversion workflows.
 
-### Usage Recommendations
+### Planned Authentication
 
-For optimal performance with multi-page TIFF files:
-
-1. **Split Very Large Files**: For files with more than 200 pages, consider splitting them before uploading
-2. **Monitor Server Resources**: Watch server memory usage during large file processing
-3. **Consider Batch Size**: Process multiple smaller files rather than one very large file when possible
-4. **Increase Resources for Production**: In production environments with frequent multi-page processing, increase worker memory allocation
-
-## API Access
-
-JP2Forge Web provides a RESTful API for programmatic access to its conversion capabilities. This enables integration with other systems or automation of conversion workflows.
-
-### Authentication
-
-API requests require authentication using token-based authentication:
+API requests will require authentication using token-based authentication:
 
 ```bash
 # Request an authentication token
@@ -154,7 +162,7 @@ curl -H "Authorization: Token 93138ba960fde325b3a20471b3fd449a23fd9b5a" \
   http://localhost:8000/api/jobs/
 ```
 
-### Available Endpoints
+### Planned Endpoints
 
 | Endpoint | HTTP Method | Description |
 |----------|-------------|-------------|
@@ -166,175 +174,11 @@ curl -H "Authorization: Token 93138ba960fde325b3a20471b3fd449a23fd9b5a" \
 | `/api/stats/` | GET | Get system-wide conversion statistics |
 | `/api/health/` | GET | Check system health and component status |
 
-### Creating a Conversion Job
+### Implementation Timeline
 
-To create a new conversion job via the API:
+The API functionality is scheduled for implementation in version 0.2.0. The current web interface already provides all the conversion capabilities that will be exposed through the API. If you need programmatic access in the meantime, you can use the command-line [JP2Forge tool](https://github.com/xy-liao/jp2forge) directly.
 
-```bash
-# Create a new conversion job
-curl -X POST http://localhost:8000/api/jobs/ \
-  -H "Authorization: Token YOUR_TOKEN_HERE" \
-  -F "file=@/path/to/image.tif" \
-  -F "compression_mode=lossless" \
-  -F "document_type=photograph" \
-  -F "bnf_compliant=false"
-```
-
-Required parameters:
-- `file`: The image file to convert
-- `compression_mode`: One of `lossless`, `lossy`, `supervised`, or `bnf_compliant`
-
-Optional parameters:
-- `document_type`: One of `photograph`, `heritage_document`, `color`, or `grayscale` (default: `photograph`)
-- `quality`: Integer between 20-100 (only used for `lossy` and `supervised` modes)
-- `bnf_compliant`: Boolean indicating whether to apply BnF compliance (default: `false`)
-- `description`: Optional text description of the job
-
-### Monitoring Job Status
-
-To check the status of a job:
-
-```bash
-curl -H "Authorization: Token YOUR_TOKEN_HERE" \
-  http://localhost:8000/api/jobs/123/
-```
-
-Response includes job status, progress, and result file URLs when complete:
-
-```json
-{
-  "id": 123,
-  "status": "completed",
-  "created_at": "2025-05-04T14:30:45Z",
-  "updated_at": "2025-05-04T14:32:12Z",
-  "compression_mode": "lossless",
-  "document_type": "photograph",
-  "bnf_compliant": false,
-  "original_filename": "sample.tif",
-  "original_size": 15728640,
-  "converted_size": 7340032,
-  "compression_ratio": 2.14,
-  "psnr": "Infinity",
-  "ssim": "1.0",
-  "result_files": [
-    {
-      "page": 1,
-      "url": "http://localhost:8000/media/jobs/123/output/sample_page1.jp2"
-    }
-  ]
-}
-```
-
-### API Rate Limits
-
-To ensure system stability:
-- Anonymous requests: 20 per hour
-- Authenticated requests: 100 per hour, 1000 per day
-- File uploads: 50 per day per user
-
-### API Documentation
-
-Complete API documentation is available at `/api/docs/` when the application is running. It provides an interactive interface where you can:
-- Explore all available endpoints
-- Test API calls directly from the browser
-- See detailed parameter requirements and response formats
-
-### Integration Examples
-
-Sample code for common integrations:
-
-#### Python
-
-```python
-import requests
-
-# Authentication
-auth_response = requests.post(
-    'http://localhost:8000/api/token/',
-    json={'username': 'your_username', 'password': 'your_password'}
-)
-token = auth_response.json()['token']
-headers = {'Authorization': f'Token {token}'}
-
-# Upload and convert a file
-with open('image.tif', 'rb') as file:
-    response = requests.post(
-        'http://localhost:8000/api/jobs/',
-        headers=headers,
-        files={'file': file},
-        data={
-            'compression_mode': 'lossless',
-            'document_type': 'photograph'
-        }
-    )
-    
-job_id = response.json()['id']
-
-# Check job status
-job_response = requests.get(
-    f'http://localhost:8000/api/jobs/{job_id}/',
-    headers=headers
-)
-job_data = job_response.json()
-
-# Download result when complete
-if job_data['status'] == 'completed':
-    for result in job_data['result_files']:
-        file_url = result['url']
-        output_filename = f"converted_page{result['page']}.jp2"
-        
-        with requests.get(file_url, stream=True) as r:
-            with open(output_filename, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
-```
-
-#### JavaScript
-
-```javascript
-// Authenticate
-async function getToken() {
-  const response = await fetch('http://localhost:8000/api/token/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: 'your_username',
-      password: 'your_password'
-    })
-  });
-  const data = await response.json();
-  return data.token;
-}
-
-// Convert a file
-async function convertFile(file) {
-  const token = await getToken();
-  
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('compression_mode', 'lossless');
-  formData.append('document_type', 'photograph');
-  
-  const response = await fetch('http://localhost:8000/api/jobs/', {
-    method: 'POST',
-    headers: { 'Authorization': `Token ${token}` },
-    body: formData
-  });
-  
-  return await response.json();
-}
-
-// Monitor job status
-async function checkJobStatus(jobId) {
-  const token = await getToken();
-  
-  const response = await fetch(`http://localhost:8000/api/jobs/${jobId}/`, {
-    headers: { 'Authorization': `Token ${token}` }
-  });
-  
-  return await response.json();
-}
-```
+Stay tuned for updates on API availability in future releases.
 
 ## Installation
 
@@ -1130,19 +974,28 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## BnF Compliance Information
 
-The JP2Forge Web application provides support for creating JPEG2000 files that comply with the Bibliothèque nationale de France (BnF) digitization standards. This implementation is based on the following official BnF documents:
+The JP2Forge Web application provides a simple option for applying Bibliothèque nationale de France (BnF) compliance standards to JPEG2000 conversions. This implementation is based on recommendations from the following BnF documents:
 
 1. **BnF Referential (2015)**: [Référentiel de format de fichier image v2](https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf)
 
 2. **BnF Documentation (2021)**: [Formats de données pour la préservation à long terme](https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf)
 
-### BnF Compliance Features
+### Implementation Note
 
-The BnF compliance mode ensures that JPEG2000 files meet the specific technical requirements set by the Bibliothèque nationale de France for digital preservation of cultural heritage materials. According to the JP2Forge documentation, this includes:
+In the current version, BnF compliance is implemented as a boolean option that can be enabled in two ways:
 
-#### Compression Ratios
+1. By selecting the dedicated "BnF Compliant" compression mode
+2. By checking the "BnF Compliant" checkbox when using other compression modes
 
-BnF mode uses fixed compression ratios based on document types:
+When enabled, this setting is passed to the underlying JP2Forge library which applies the appropriate technical parameters to meet BnF compliance standards.
+
+### BnF Standards Reference
+
+According to BnF documentation, the following standards should be applied to JPEG2000 files for compliance:
+
+#### Target Compression Ratios
+
+These are the standard compression ratios recommended by BnF for different document types:
 
 | Document Type | BnF Notation | Standard Notation | Option |
 |---------------|--------------|-------------------|--------|
@@ -1151,11 +1004,11 @@ BnF mode uses fixed compression ratios based on document types:
 | Color | 1:6 | 6:1 | `document_type=color` |
 | Grayscale | 1:16 | 16:1 | `document_type=grayscale` |
 
-**Note on Notation**: The BnF documentation uses input:output notation (1:X), whereas the compression ratios in JP2Forge Web are typically shown in output:input notation (X:1). For example, a BnF ratio of 1:6 means the output is 6 times smaller than the input, which is equivalent to a 6:1 ratio in standard notation.
+**Note on Notation**: The BnF documentation uses input:output notation (1:X), whereas the compression ratios in JP2Forge Web are typically shown in output:input notation (X:1).
 
 #### Technical Parameters
 
-When BnF compliance mode is enabled, the following technical parameters are applied:
+BnF compliance typically requires the following technical parameters:
 
 - **Compression**: Irreversible (9-7 floating transform, ICT)
 - **Resolution Levels**: 10
@@ -1165,6 +1018,4 @@ When BnF compliance mode is enabled, the following technical parameters are appl
 - **Code Block Size**: 64x64
 - **Tile Size**: 1024x1024
 
-Users can enable BnF compliance in two ways:
-1. By selecting the dedicated "BnF Compliant" compression mode
-2. By enabling the BnF compliance checkbox while using other compression modes
+These parameters are handled by the underlying JP2Forge library when BnF compliance is enabled.
