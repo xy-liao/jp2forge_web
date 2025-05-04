@@ -5,11 +5,14 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libimage-exiftool-perl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
+# Install JP2Forge from GitHub
+RUN pip install --no-cache-dir git+https://github.com/xy-liao/jp2forge.git@v0.9.2
 
 # Copy project files
 COPY . /app/

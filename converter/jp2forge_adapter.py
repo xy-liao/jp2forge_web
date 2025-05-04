@@ -21,29 +21,41 @@ logger = logging.getLogger(__name__)
 
 # Try to import JP2Forge modules
 try:
-    # First try the expected import structure
+    # First try the direct import - this works when the JP2Forge files are installed
+    # directly in site-packages (not in a jp2forge directory)
     try:
         from core.types import WorkflowConfig, CompressionMode, DocumentType
-        from workflow.standard import StandardWorkflow
+        from cli.workflow import StandardWorkflow  # Updated import path
         JP2FORGE_AVAILABLE = True
-        logger.info("Successfully imported JP2Forge modules (direct import)")
-    except ImportError:
+        JP2FORGE_VERSION = "0.9.2"  # Hardcoded since direct import doesn't provide __version__
+        logger.info(f"Successfully imported JP2Forge modules (direct import, assuming version {JP2FORGE_VERSION})")
+        
+        # Version warning for clarity
+        if JP2FORGE_VERSION != "0.9.2":
+            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.2 is recommended")
+    except ImportError as direct_import_error:
+        logger.debug(f"Direct import failed: {direct_import_error}")
         # Fall back to standard package import structure
-        import jp2forge
-        # Attempt to get the required classes from the installed package
         try:
-            # The exact structure may vary - this is an example that might need adjustment
-            from jp2forge.core.types import WorkflowConfig, CompressionMode, DocumentType
-            from jp2forge.workflow.standard import StandardWorkflow
-            JP2FORGE_AVAILABLE = True
-            logger.info(f"Successfully imported JP2Forge modules (package import, version {jp2forge.__version__})")
+            import jp2forge
+            # Attempt to get the required classes from the installed package
+            try:
+                # The exact structure may vary - this is an example that might need adjustment
+                from jp2forge.core.types import WorkflowConfig, CompressionMode, DocumentType
+                from jp2forge.workflow.standard import StandardWorkflow
+                JP2FORGE_AVAILABLE = True
+                JP2FORGE_VERSION = getattr(jp2forge, "__version__", "unknown")
+                logger.info(f"Successfully imported JP2Forge modules (package import, version {JP2FORGE_VERSION})")
+            except ImportError as e:
+                # If we can import jp2forge but not the specific modules, log that
+                logger.error(f"JP2Forge package found but required modules missing: {e}")
+                JP2FORGE_AVAILABLE = False
         except ImportError as e:
-            # If we can import jp2forge but not the specific modules, log that
-            logger.error(f"JP2Forge package found but required modules missing: {e}")
             JP2FORGE_AVAILABLE = False
-except ImportError as e:
+            logger.error(f"Failed to import JP2Forge modules: {e}")
+except Exception as e:
     JP2FORGE_AVAILABLE = False
-    logger.error(f"Failed to import JP2Forge modules: {e}")
+    logger.error(f"Unexpected error importing JP2Forge: {str(e)}")
 
 # Check if mock mode is enabled in settings
 MOCK_MODE = getattr(settings, 'JP2FORGE_SETTINGS', {}).get('MOCK_MODE', False)
