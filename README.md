@@ -8,6 +8,40 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 **Important Note**: This application serves primarily as a promotional demonstration for the [JP2Forge script](https://github.com/xy-liao/jp2forge) and its BnF (Bibliothèque nationale de France) compliance capabilities. JP2Forge Web doesn't leverage all available arguments and features of the underlying JP2Forge script - it's a case study implementation showcasing selected functionality of the more comprehensive JP2Forge tool.
 
+**Additional Documentation**: For more detailed and topic-specific guidance, see the [docs folder](docs/) which contains separate guides for [users](docs/user_guide.md), administrators, API developers, and installation instructions.
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Supported File Formats and Limitations](#supported-file-formats-and-limitations)
+3. [Multi-Page TIFF Support](#multi-page-tiff-support)
+4. [API Access](#api-access)
+5. [Installation](#installation)
+   - [Prerequisites](#prerequisites)
+   - [Quick Start (Development)](#quick-start-development)
+   - [Using Docker (Recommended for Production)](#using-docker-recommended-for-production)
+   - [Manual Installation](#manual-installation)
+   - [Troubleshooting](#troubleshooting)
+6. [Troubleshooting Redis and Task Processing Issues](#troubleshooting-redis-and-task-processing-issues)
+7. [Error Handling and Troubleshooting](#error-handling-and-troubleshooting)
+8. [Application Structure](#application-structure)
+   - [Dashboard](#dashboard)
+   - [JPEG2000 Conversion](#jpeg2000-conversion)
+   - [JPEG2000 Conversion Results](#jpeg2000-conversion-results)
+   - [Job Management](#job-management)
+9. [Maintenance & Cleanup](#maintenance--cleanup)
+10. [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Environment Configuration Options](#environment-configuration-options)
+    - [Production Settings](#production-settings)
+11. [Dependencies](#dependencies)
+12. [Development](#development)
+13. [Deployment](#deployment)
+14. [Usage Guide](#usage-guide)
+15. [Contributing](#contributing)
+16. [License](#license)
+17. [Acknowledgments](#acknowledgments)
+
 ## Features
 
 - Interactive Dashboard with conversion statistics, storage metrics, and job monitoring
@@ -19,6 +53,287 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 - Detailed conversion reports with quality metrics
 - Multi-page TIFF support
 - Real-time progress tracking
+
+## Supported File Formats and Limitations
+
+### Input Formats
+- **JPEG/JPG**: Standard photographic format
+- **TIFF/TIF**: Both single-page and multi-page TIFF files are supported
+- **PNG**: Lossless raster graphics format
+- **BMP**: Bitmap image format
+
+### Technical Limitations
+- **Maximum File Size**: 100MB per file by default (configurable via `MAX_UPLOAD_SIZE` environment variable)
+- **Multi-page Support**: Up to 200 pages per multi-page TIFF (configurable)
+- **Resolution Limits**: Up to 20,000 x 20,000 pixels (higher resolutions may work but are not officially supported)
+- **Browser Compatibility**: Chrome 88+, Firefox 85+, Safari 14+, Edge 88+
+
+### Performance Considerations
+- Typical conversion times:
+  - Small images (< 5MB): ~5-10 seconds
+  - Medium images (5-20MB): ~20-40 seconds
+  - Large images (20-100MB): ~1-5 minutes
+  - Multi-page TIFFs: Approximately (per-page time × number of pages)
+- Processing times depend on server resources and selected compression options
+
+### Output Format
+- **JPEG2000/JP2**: Converted files follow the JP2 format specification
+- Compliant with ISO/IEC 15444-1 (when using BnF compliance mode)
+
+## Multi-Page TIFF Support
+
+JP2Forge Web provides comprehensive support for processing multi-page TIFF files, which is particularly useful for document scanning and archival applications.
+
+### Multi-Page Processing Features
+
+- **Page Limit**: By default, the application supports up to 200 pages per TIFF file (configurable via `MAX_PAGES_PER_FILE` in `.env`)
+- **Individual Page Access**: Each page is converted separately and can be downloaded individually
+- **Thumbnail Generation**: Automatic thumbnail generation for each page
+- **Progress Tracking**: Page-by-page progress reporting for large files
+- **Parallel Processing**: Multi-page files benefit from parallel processing for faster conversion
+
+### Sample Processing Times
+
+Processing times for multi-page TIFFs depend on server resources, but typical estimates are:
+
+| Pages | Average Size | Estimated Processing Time |
+|-------|-------------:|----------------------------|
+| 10    | 50 MB        | 2-5 minutes                |
+| 50    | 250 MB       | 10-20 minutes              |
+| 100   | 500 MB       | 20-40 minutes              |
+| 200   | 1 GB         | 40-80 minutes              |
+
+### Memory Requirements
+
+Multi-page TIFF processing requires more memory than single-page conversions. Approximate memory requirements:
+
+- **Minimum RAM**: 4GB for files up to 50 pages
+- **Recommended RAM**: 8GB for files up to 200 pages
+- **Production Server**: 16GB+ for concurrent multi-page conversion jobs
+
+### Error Handling for Large Files
+
+When processing large multi-page files:
+
+1. **Page Count Limit**: Files exceeding the configured page limit will be rejected with a specific error message
+2. **Recovery Mechanism**: If a single page fails during conversion, the system will continue processing other pages
+3. **Timeout Handling**: Extended conversion times are handled with configurable timeouts (adjust in Celery settings)
+
+### Usage Recommendations
+
+For optimal performance with multi-page TIFF files:
+
+1. **Split Very Large Files**: For files with more than 200 pages, consider splitting them before uploading
+2. **Monitor Server Resources**: Watch server memory usage during large file processing
+3. **Consider Batch Size**: Process multiple smaller files rather than one very large file when possible
+4. **Increase Resources for Production**: In production environments with frequent multi-page processing, increase worker memory allocation
+
+## API Access
+
+JP2Forge Web provides a RESTful API for programmatic access to its conversion capabilities. This enables integration with other systems or automation of conversion workflows.
+
+### Authentication
+
+API requests require authentication using token-based authentication:
+
+```bash
+# Request an authentication token
+curl -X POST http://localhost:8000/api/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "your_username", "password": "your_password"}'
+
+# Response will include your access token
+# {"token": "93138ba960fde325b3a20471b3fd449a23fd9b5a"}
+```
+
+Include this token in all subsequent requests:
+
+```bash
+curl -H "Authorization: Token 93138ba960fde325b3a20471b3fd449a23fd9b5a" \
+  http://localhost:8000/api/jobs/
+```
+
+### Available Endpoints
+
+| Endpoint | HTTP Method | Description |
+|----------|-------------|-------------|
+| `/api/jobs/` | GET | List all jobs for authenticated user |
+| `/api/jobs/` | POST | Create a new conversion job |
+| `/api/jobs/{id}/` | GET | Get details for a specific job |
+| `/api/jobs/{id}/` | DELETE | Delete a specific job |
+| `/api/jobs/{id}/retry/` | POST | Retry a failed job |
+| `/api/stats/` | GET | Get system-wide conversion statistics |
+| `/api/health/` | GET | Check system health and component status |
+
+### Creating a Conversion Job
+
+To create a new conversion job via the API:
+
+```bash
+# Create a new conversion job
+curl -X POST http://localhost:8000/api/jobs/ \
+  -H "Authorization: Token YOUR_TOKEN_HERE" \
+  -F "file=@/path/to/image.tif" \
+  -F "compression_mode=lossless" \
+  -F "document_type=photograph" \
+  -F "bnf_compliant=false"
+```
+
+Required parameters:
+- `file`: The image file to convert
+- `compression_mode`: One of `lossless`, `lossy`, `supervised`, or `bnf_compliant`
+
+Optional parameters:
+- `document_type`: One of `photograph`, `heritage_document`, `color`, or `grayscale` (default: `photograph`)
+- `quality`: Integer between 20-100 (only used for `lossy` and `supervised` modes)
+- `bnf_compliant`: Boolean indicating whether to apply BnF compliance (default: `false`)
+- `description`: Optional text description of the job
+
+### Monitoring Job Status
+
+To check the status of a job:
+
+```bash
+curl -H "Authorization: Token YOUR_TOKEN_HERE" \
+  http://localhost:8000/api/jobs/123/
+```
+
+Response includes job status, progress, and result file URLs when complete:
+
+```json
+{
+  "id": 123,
+  "status": "completed",
+  "created_at": "2025-05-04T14:30:45Z",
+  "updated_at": "2025-05-04T14:32:12Z",
+  "compression_mode": "lossless",
+  "document_type": "photograph",
+  "bnf_compliant": false,
+  "original_filename": "sample.tif",
+  "original_size": 15728640,
+  "converted_size": 7340032,
+  "compression_ratio": 2.14,
+  "psnr": "Infinity",
+  "ssim": "1.0",
+  "result_files": [
+    {
+      "page": 1,
+      "url": "http://localhost:8000/media/jobs/123/output/sample_page1.jp2"
+    }
+  ]
+}
+```
+
+### API Rate Limits
+
+To ensure system stability:
+- Anonymous requests: 20 per hour
+- Authenticated requests: 100 per hour, 1000 per day
+- File uploads: 50 per day per user
+
+### API Documentation
+
+Complete API documentation is available at `/api/docs/` when the application is running. It provides an interactive interface where you can:
+- Explore all available endpoints
+- Test API calls directly from the browser
+- See detailed parameter requirements and response formats
+
+### Integration Examples
+
+Sample code for common integrations:
+
+#### Python
+
+```python
+import requests
+
+# Authentication
+auth_response = requests.post(
+    'http://localhost:8000/api/token/',
+    json={'username': 'your_username', 'password': 'your_password'}
+)
+token = auth_response.json()['token']
+headers = {'Authorization': f'Token {token}'}
+
+# Upload and convert a file
+with open('image.tif', 'rb') as file:
+    response = requests.post(
+        'http://localhost:8000/api/jobs/',
+        headers=headers,
+        files={'file': file},
+        data={
+            'compression_mode': 'lossless',
+            'document_type': 'photograph'
+        }
+    )
+    
+job_id = response.json()['id']
+
+# Check job status
+job_response = requests.get(
+    f'http://localhost:8000/api/jobs/{job_id}/',
+    headers=headers
+)
+job_data = job_response.json()
+
+# Download result when complete
+if job_data['status'] == 'completed':
+    for result in job_data['result_files']:
+        file_url = result['url']
+        output_filename = f"converted_page{result['page']}.jp2"
+        
+        with requests.get(file_url, stream=True) as r:
+            with open(output_filename, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+```
+
+#### JavaScript
+
+```javascript
+// Authenticate
+async function getToken() {
+  const response = await fetch('http://localhost:8000/api/token/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: 'your_username',
+      password: 'your_password'
+    })
+  });
+  const data = await response.json();
+  return data.token;
+}
+
+// Convert a file
+async function convertFile(file) {
+  const token = await getToken();
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('compression_mode', 'lossless');
+  formData.append('document_type', 'photograph');
+  
+  const response = await fetch('http://localhost:8000/api/jobs/', {
+    method: 'POST',
+    headers: { 'Authorization': `Token ${token}` },
+    body: formData
+  });
+  
+  return await response.json();
+}
+
+// Monitor job status
+async function checkJobStatus(jobId) {
+  const token = await getToken();
+  
+  const response = await fetch(`http://localhost:8000/api/jobs/${jobId}/`, {
+    headers: { 'Authorization': `Token ${token}` }
+  });
+  
+  return await response.json();
+}
+```
 
 ## Installation
 
@@ -281,6 +596,67 @@ python manage.py recover_stuck_jobs
 
 This section of documentation provides practical solutions to the Redis issues that can cause JP2Forge processing jobs to get stuck in "pending" state.
 
+## Error Handling and Troubleshooting
+
+### Common Conversion Errors
+
+Below are common errors you may encounter during the conversion process and how to resolve them:
+
+#### File Upload Errors
+
+| Error | Possible Cause | Solution |
+|-------|---------------|----------|
+| "File too large" | File exceeds the `MAX_UPLOAD_SIZE` setting | Resize the image or increase the `MAX_UPLOAD_SIZE` in your `.env` file |
+| "Unsupported file format" | File extension not recognized | Ensure your file has one of these extensions: .jpg, .jpeg, .tif, .tiff, .png, .bmp |
+| "Invalid file content" | File is corrupted or not the format its extension suggests | Check the file integrity with another application or convert to a supported format |
+
+#### Conversion Process Errors
+
+| Error | Possible Cause | Solution |
+|-------|---------------|----------|
+| "Memory error during conversion" | Server lacks sufficient memory for large file processing | Use a smaller file or increase the server memory allocation |
+| "JP2Forge command failed" | Issue with the underlying JP2Forge library | Check logs/converter.log for detailed error messages |
+| "Metadata extraction failed" | ExifTool not properly installed or accessible | Verify ExifTool is installed and in your PATH |
+| "Timeout during conversion" | Conversion taking longer than allowed time | Adjust the Celery task timeout setting in `settings.py` |
+
+#### Task Queue Errors
+
+| Error | Possible Cause | Solution |
+|-------|---------------|----------|
+| "Task stuck in pending state" | Redis connection issues | See [Redis Troubleshooting](#troubleshooting-redis-and-task-processing-issues) section |
+| "Task failed with unknown error" | Unhandled exception in the worker process | Check logs/celery.log for the full traceback |
+
+### Debugging Conversion Issues
+
+For detailed debugging of conversion issues:
+
+1. **Check Application Logs**:
+   ```bash
+   tail -n 100 logs/converter.log  # For conversion-specific issues
+   tail -n 100 logs/celery.log     # For task queue issues
+   tail -n 100 logs/django.log     # For web application issues
+   tail -n 100 logs/error.log      # For general error messages
+   ```
+
+2. **Run a Test Conversion Manually**:
+   ```bash
+   # From project directory
+   python test_jp2forge.py --input path/to/image.tif --mode lossless
+   ```
+
+3. **Verify JP2Forge Library Installation**:
+   ```bash
+   python check_jp2forge.py
+   ```
+
+4. **Enable Debug Mode**:
+   In your `.env` file, set:
+   ```
+   DEBUG=True
+   CONVERSION_DEBUG=True
+   ```
+   This will provide more detailed logs during the conversion process.
+
 ## Application Structure
 
 ### Dashboard
@@ -316,6 +692,79 @@ The application provides a user-friendly interface for JP2Forge's powerful conve
   - PSNR (Peak Signal-to-Noise Ratio) calculation
   - SSIM (Structural Similarity Index) analysis
   - Compression ratio reporting
+
+### JPEG2000 Conversion Results
+
+#### Expected Output Quality
+
+The JP2Forge Web application produces high-quality JPEG2000 files with different characteristics based on the selected compression mode. Below are typical results you can expect for each compression option:
+
+##### Lossless Mode
+- **Visual Quality**: Identical to the original image with no perceptible differences
+- **PSNR**: Infinity (mathematically lossless)
+- **SSIM**: 1.0 (perfect structural similarity)
+- **Compression Ratio**: Typically 1.5:1 to 3:1 depending on image content
+- **Best For**: Archival purposes, medical imaging, scientific data
+
+##### Lossy Mode (Quality = 90)
+- **Visual Quality**: Visually indistinguishable from original for most content
+- **PSNR**: 40-50 dB (excellent quality)
+- **SSIM**: 0.97-0.99
+- **Compression Ratio**: Typically 10:1 to 20:1
+- **Best For**: High-quality access copies, general distribution
+
+##### Lossy Mode (Quality = 50)
+- **Visual Quality**: Minor artifacts may be visible in detailed areas
+- **PSNR**: 32-38 dB (good quality)
+- **SSIM**: 0.90-0.95
+- **Compression Ratio**: Typically 30:1 to 50:1
+- **Best For**: Web distribution, storage optimization
+
+##### BnF Compliant Mode
+- **Visual Quality**: Optimized for cultural heritage standards
+- **PSNR**: Varies by document type but typically 38+ dB
+- **SSIM**: 0.95+ (high fidelity)
+- **Compression Ratio**: Fixed based on document type (8:1 for color, 6:1 for greyscale)
+- **Best For**: Heritage collections, library digitization projects
+
+#### Example Output Comparison
+
+Here's a comparison of file sizes and quality metrics for typical input files:
+
+| Original Format | Size | JP2 Lossless | JP2 Lossy (Q90) | JP2 Lossy (Q50) | JP2 BnF Mode |
+|-----------------|------|--------------|-----------------|-----------------|--------------|
+| 24MP JPEG Photo | 8 MB | 4.5 MB (1.8:1) | 600 KB (13:1) | 300 KB (27:1) | 1 MB (8:1) |
+| A4 Color TIFF | 70 MB | 30 MB (2.3:1) | 7 MB (10:1) | 2.5 MB (28:1) | 8.75 MB (8:1) |
+| A3 Grayscale TIFF | 40 MB | 15 MB (2.7:1) | 4 MB (10:1) | 1.5 MB (27:1) | 6.7 MB (6:1) |
+
+#### Quality Metrics Explained
+
+The application provides two key metrics to assess the quality of converted images:
+
+1. **PSNR (Peak Signal-to-Noise Ratio)**:
+   - Measured in decibels (dB)
+   - Higher values indicate better quality
+   - 30+ dB: Good quality
+   - 40+ dB: Excellent quality
+   - 50+ dB: Nearly indistinguishable from original
+
+2. **SSIM (Structural Similarity Index)**:
+   - Range from 0 to 1
+   - Higher values indicate better structural similarity
+   - 0.90+: Good quality
+   - 0.95+: Excellent quality
+   - 0.98+: Nearly indistinguishable from original
+
+#### JPEG2000 Format Advantages
+
+The JPEG2000 format offers several advantages over traditional formats:
+
+- **Progressive decoding**: Images can be viewed at lower resolution before fully downloading
+- **Region of interest coding**: Important parts of an image can be encoded with higher quality
+- **Multiple resolution levels**: Different resolution versions are embedded in a single file
+- **Alpha channel support**: Transparency information can be preserved
+- **High bit-depth support**: Up to 16 bits per component (vs. 8 bits in standard JPEG)
+- **Lossless and lossy compression**: Both options available in the same format
 
 ### Job Management
 
@@ -420,6 +869,54 @@ The application uses environment variables for configuration. Key variables incl
 | `MAX_UPLOAD_SIZE` | Maximum upload file size in bytes | 100MB (104857600) |
 
 See `.env.example` for a complete list of available options.
+
+### Environment Configuration Options
+
+Below are all the available configuration options for the `.env` file:
+
+```
+# Django Settings
+DEBUG=True                             # Enable debug mode (set to False in production)
+SECRET_KEY=your-secret-key-here        # Django secret key (will be auto-generated if not provided)
+ALLOWED_HOSTS=localhost,127.0.0.1      # Comma-separated list of allowed hosts
+
+# Database Settings
+DATABASE_URL=sqlite:///db.sqlite3      # Database URL (SQLite by default)
+# For PostgreSQL, use: postgres://user:password@host:port/database
+
+# Redis & Celery Settings
+CELERY_BROKER_URL=redis://localhost:6379/0  # Redis URL for Celery broker
+CELERY_RESULT_BACKEND=redis://localhost:6379/0  # Redis URL for Celery results
+
+# File Storage Settings
+MAX_UPLOAD_SIZE=104857600              # Maximum file upload size in bytes (100MB default)
+MAX_PAGES_PER_FILE=200                 # Maximum number of pages in multi-page TIFF files
+MEDIA_ROOT=./media                     # Root directory for media files
+JOB_FILES_PATH=jobs                    # Subdirectory for job files under MEDIA_ROOT
+DELETE_AFTER_DAYS=30                   # Auto-delete completed jobs after this many days (0 to disable)
+
+# JP2Forge Integration
+JP2FORGE_MOCK_MODE=False               # Run in mock mode without actual conversions
+JP2FORGE_PATH=                         # Path to JP2Forge executable (optional)
+CONVERSION_DEBUG=False                 # Enable detailed conversion debugging
+
+# Email Settings (for production)
+EMAIL_HOST=smtp.example.com            # SMTP server hostname
+EMAIL_PORT=587                         # SMTP server port
+EMAIL_HOST_USER=user@example.com       # SMTP username
+EMAIL_HOST_PASSWORD=password           # SMTP password
+EMAIL_USE_TLS=True                     # Use TLS for SMTP
+DEFAULT_FROM_EMAIL=noreply@example.com # Default sender email address
+
+# Security Settings (for production)
+SECURE_SSL_REDIRECT=False              # Redirect all requests to HTTPS
+SESSION_COOKIE_SECURE=False            # Secure session cookie (requires HTTPS)
+CSRF_COOKIE_SECURE=False               # Secure CSRF cookie (requires HTTPS)
+SECURE_BROWSER_XSS_FILTER=True         # Enable browser XSS filtering
+SECURE_CONTENT_TYPE_NOSNIFF=True       # Prevent MIME type sniffing
+```
+
+You can copy the above block to create your `.env` file, or use the provided `.env.example` file as a starting point.
 
 ### Production Settings
 
