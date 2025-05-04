@@ -725,7 +725,7 @@ The JP2Forge Web application produces high-quality JPEG2000 files with different
 - **Visual Quality**: Optimized for cultural heritage standards
 - **PSNR**: Varies by document type but typically 38+ dB
 - **SSIM**: 0.95+ (high fidelity)
-- **Compression Ratio**: Fixed based on document type (8:1 for color, 6:1 for greyscale)
+- **Compression Ratio**: Fixed based on document type (4:1 for photographs and heritage documents, 6:1 for color, 16:1 for grayscale)
 - **Best For**: Heritage collections, library digitization projects
 
 #### Example Output Comparison
@@ -734,13 +734,14 @@ Here's a comparison of file sizes and quality metrics for typical input files:
 
 | Original Format | Size | JP2 Lossless | JP2 Lossy (Q90) | JP2 Lossy (Q50) | JP2 BnF Mode |
 |-----------------|------|--------------|-----------------|-----------------|--------------|
-| 24MP JPEG Photo | 8 MB | 4.5 MB (1.8:1) | 600 KB (13:1) | 300 KB (27:1) | 1 MB (8:1) |
-| A4 Color TIFF | 70 MB | 30 MB (2.3:1) | 7 MB (10:1) | 2.5 MB (28:1) | 8.75 MB (8:1) |
-| A3 Grayscale TIFF | 40 MB | 15 MB (2.7:1) | 4 MB (10:1) | 1.5 MB (27:1) | 6.7 MB (6:1) |
+| 24MP JPEG Photo | 8 MB | 4.5 MB (1.8:1) | 600 KB (13:1) | 300 KB (27:1) | 2 MB (4:1) |
+| A4 Color TIFF | 70 MB | 30 MB (2.3:1) | 7 MB (10:1) | 2.5 MB (28:1) | 11.7 MB (6:1) |
+| A3 Grayscale TIFF | 40 MB | 15 MB (2.7:1) | 4 MB (10:1) | 1.5 MB (27:1) | 2.5 MB (16:1) |
 
 **Important Note About BnF Mode**: The "BnF Mode" column shows results when using the Bibliothèque nationale de France (BnF) compliant settings. This mode applies specific standardized compression ratios required by the BnF for digital preservation:
-- 8:1 compression ratio for color documents (fixed, not adjustable)
-- 6:1 compression ratio for grayscale documents (fixed, not adjustable)
+- 4:1 compression ratio for photographs and heritage documents (fixed, not adjustable)
+- 6:1 compression ratio for color documents (fixed, not adjustable)
+- 16:1 compression ratio for grayscale documents (fixed, not adjustable)
 
 These standardized ratios ensure that cultural heritage materials meet the BnF's specific requirements for digital archives. Unlike other modes where compression can be adjusted, BnF mode uses these preset ratios to guarantee compliance with their preservation standards.
 
