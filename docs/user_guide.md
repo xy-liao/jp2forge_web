@@ -10,11 +10,9 @@ JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge sc
 
 The JP2Forge Web application includes options for creating JPEG2000 files that comply with Bibliothèque nationale de France (BnF) digitization standards. These compliance settings are based on the following official BnF documents:
 
-1. **BnF Referential (2015)**: "Référentiel de format de fichier image v2"  
-   https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf
+1. **BnF Referential (2015)**: [Référentiel de format de fichier image v2](https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf)
 
-2. **BnF Documentation (2021)**: "Formats de données pour la préservation à long terme"  
-   https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf
+2. **BnF Documentation (2021)**: [Formats de données pour la préservation à long terme](https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf)
 
 The BnF compliance mode ensures that your JPEG2000 files meet the technical specifications required for submission to the BnF or similar cultural heritage institutions that follow these standards.
 
@@ -95,6 +93,39 @@ There are two ways to apply BnF (Bibliothèque nationale de France) standards:
 1. **BnF Compliant Compression Mode**: Select "BnF Compliant" from the compression mode dropdown. This applies all BnF standards as a complete preset and automatically checks the BnF Compliant checkbox.
 
 2. **BnF Compliant Checkbox**: When using other compression modes (Lossless, Lossy, or Supervised), you can enable this checkbox to apply BnF standards while maintaining your selected compression approach.
+
+### BnF Compression Ratios
+
+The BnF compliance mode applies fixed compression ratios based on document types:
+
+| Document Type | BnF Notation | Standard Notation | Option |
+|---------------|--------------|-------------------|--------|
+| Photograph | 1:4 | 4:1 | `document_type=photograph` |
+| Heritage Document | 1:4 | 4:1 | `document_type=heritage_document` |
+| Color | 1:6 | 6:1 | `document_type=color` |
+| Grayscale | 1:16 | 16:1 | `document_type=grayscale` |
+
+**Note on Notation**: The BnF documentation uses input:output notation (1:X), whereas compression ratios are often shown in output:input notation (X:1) elsewhere in this application. For example, a BnF ratio of 1:6 means the output is 6 times smaller than the input, which is equivalent to a 6:1 ratio in standard notation.
+
+### BnF Technical Parameters
+
+When BnF compliance mode is enabled, the following technical parameters are applied:
+
+- **Compression**: Irreversible (9-7 floating transform, ICT)
+- **Resolution Levels**: 10
+- **Quality Levels**: 10
+- **Progression Order**: RPCL (Resolution-Position-Component-Layer)
+- **Robustness Markers**: SOP, EPH, PLT
+- **Code Block Size**: 64x64
+- **Tile Size**: 1024x1024
+
+### BnF Reference Documentation
+
+The implementation follows standards defined in these official BnF documents:
+
+1. **BnF Referential (2015)**: [Référentiel de format de fichier image v2](https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf)
+
+2. **BnF Documentation (2021)**: [Formats de données pour la préservation à long terme](https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf)
 
 **Key Difference:**
 - The BnF Compliant mode applies a comprehensive set of BnF specifications

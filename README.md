@@ -1131,25 +1131,38 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 The JP2Forge Web application provides support for creating JPEG2000 files that comply with the Bibliothèque nationale de France (BnF) digitization standards. This implementation is based on the following official BnF documents:
 
-1. **BnF Referential (2015)**: "Référentiel de format de fichier image v2"  
-   https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf
+1. **BnF Referential (2015)**: [Référentiel de format de fichier image v2](https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf)
 
-2. **BnF Documentation (2021)**: "Formats de données pour la préservation à long terme"  
-   https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf
+2. **BnF Documentation (2021)**: [Formats de données pour la préservation à long terme](https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf)
 
 ### BnF Compliance Features
 
-The BnF compliance mode ensures that JPEG2000 files meet the specific technical requirements set by the Bibliothèque nationale de France for digital preservation of cultural heritage materials. Key characteristics include:
+The BnF compliance mode ensures that JPEG2000 files meet the specific technical requirements set by the Bibliothèque nationale de France for digital preservation of cultural heritage materials. According to the JP2Forge documentation, this includes:
 
-- **Fixed Compression Ratios**: 
-  - 8:1 compression ratio for color documents
-  - 6:1 compression ratio for grayscale documents
+#### Compression Ratios
 
-- **Technical Parameters**:
-  - Specific codestream markers and tags
-  - Required metadata embedding
-  - Appropriate progression order
-  - Optimized code-block sizing
+BnF mode uses fixed compression ratios based on document types:
+
+| Document Type | BnF Notation | Standard Notation | Option |
+|---------------|--------------|-------------------|--------|
+| Photograph | 1:4 | 4:1 | `document_type=photograph` |
+| Heritage Document | 1:4 | 4:1 | `document_type=heritage_document` |
+| Color | 1:6 | 6:1 | `document_type=color` |
+| Grayscale | 1:16 | 16:1 | `document_type=grayscale` |
+
+**Note on Notation**: The BnF documentation uses input:output notation (1:X), whereas the compression ratios in JP2Forge Web are typically shown in output:input notation (X:1). For example, a BnF ratio of 1:6 means the output is 6 times smaller than the input, which is equivalent to a 6:1 ratio in standard notation.
+
+#### Technical Parameters
+
+When BnF compliance mode is enabled, the following technical parameters are applied:
+
+- **Compression**: Irreversible (9-7 floating transform, ICT)
+- **Resolution Levels**: 10
+- **Quality Levels**: 10
+- **Progression Order**: RPCL (Resolution-Position-Component-Layer)
+- **Robustness Markers**: SOP, EPH, PLT
+- **Code Block Size**: 64x64
+- **Tile Size**: 1024x1024
 
 Users can enable BnF compliance in two ways:
 1. By selecting the dedicated "BnF Compliant" compression mode
