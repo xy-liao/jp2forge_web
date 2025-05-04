@@ -1,8 +1,8 @@
-# JP2Forge Web Application v0.1.1
+# JP2Forge Web Application v0.1.0
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
-[![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.1)
+[![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.0)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
@@ -42,6 +42,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 16. [License](#license)
 17. [Acknowledgments](#acknowledgments)
 18. [BnF Compliance Information](#bnf-compliance-information)
+19. [Feature Support Mapping](#feature-support-mapping)
 
 ## Features
 
@@ -1019,3 +1020,30 @@ BnF compliance typically requires the following technical parameters:
 - **Tile Size**: 1024x1024
 
 These parameters are handled by the underlying JP2Forge library when BnF compliance is enabled.
+
+## Feature Support Mapping
+
+JP2Forge Web implements a subset of JP2Forge's capabilities, focusing on making the most important features accessible through a user-friendly web interface. This section clarifies which features are supported in the web interface versus the complete JP2Forge command-line tool.
+
+### Features Exposed in JP2Forge Web
+
+The web interface provides access to:
+- **Basic compression modes**: lossless, lossy, supervised, and BnF-compliant
+- **Document type selection**: photograph, heritage document, color, grayscale
+- **Quality metrics reporting**: PSNR, SSIM, and compression ratio
+- **Multi-page TIFF support**: Each page is converted individually
+- **Progress tracking**: Real-time conversion progress updates
+
+### Features Available Only in JP2Forge Command-Line Tool
+
+For advanced functionality, users should work directly with the [JP2Forge command-line tool](https://github.com/xy-liao/jp2forge):
+- **Advanced wavelet parameters**: Custom wavelet transform settings
+- **Progression order selection**: Beyond the default RPCL order
+- **Tile size customization**: For specialized applications
+- **Advanced coding options**: Fine-tuning of code block sizes and other parameters
+- **Custom quality layers**: Advanced control over quality and resolution levels
+- **Raw encoding parameters**: Direct control of underlying encoding algorithms
+- **Batch processing scripts**: Specialized batch conversion options
+- **Custom metadata handling**: Advanced control over embedded metadata
+
+When your needs extend beyond what JP2Forge Web offers, we recommend using the full JP2Forge command-line tool directly.

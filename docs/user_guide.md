@@ -22,8 +22,9 @@ The BnF compliance mode ensures that your JPEG2000 files meet the technical spec
 2. [Understanding Compression Options](#understanding-compression-options)
 3. [Document Types](#document-types)
 4. [BnF Compliance Options](#bnf-compliance-options)
-5. [Viewing and Managing Jobs](#viewing-and-managing-jobs)
-6. [Downloading Converted Files](#downloading-converted-files)
+5. [Mock Mode Information](#mock-mode-information)
+6. [Viewing and Managing Jobs](#viewing-and-managing-jobs)
+7. [Downloading Converted Files](#downloading-converted-files)
 
 ## Creating a New Conversion Job
 
@@ -114,6 +115,43 @@ According to these documents, BnF recommended compression ratios for different d
 | Heritage Document | 1:4 | 4:1 | `document_type=heritage_document` |
 | Color | 1:6 | 6:1 | `document_type=color` |
 | Grayscale | 1:16 | 16:1 | `document_type=grayscale` |
+
+## Mock Mode Information
+
+JP2Forge Web includes a testing/development feature called "Mock Mode" which can be enabled by setting `JP2FORGE_MOCK_MODE=True` in your `.env` file. This feature is important to understand:
+
+### What Mock Mode Does
+
+When mock mode is enabled, JP2Forge Web simulates the conversion process without requiring the actual JP2Forge library:
+
+1. Files are **not** truly converted to JPEG2000 format - they are merely copied or small placeholder files are created
+2. The resulting files with `.jp2` extension are **not valid JPEG2000 files** and lack the expected compression benefits
+3. The system generates fictitious quality metrics (PSNR, SSIM) and compression ratios for display purposes
+4. All the web interface functionality can be tested without the actual conversion engine
+
+### When to Use Mock Mode
+
+Mock mode is appropriate for:
+- UI development work on JP2Forge Web
+- Testing the application flow without installing the JP2Forge library
+- Demonstration purposes when actual conversion functionality is not needed
+
+### Limitations of Mock Mode
+
+Important limitations to be aware of:
+- Files are not actually compressed - they remain their original size or become small placeholders
+- Image information is not preserved in any meaningful way
+- The output files cannot be viewed as JPEG2000 images by other software
+- Reported statistics are simulated, not real measurements
+
+### Identifying Mock Mode
+
+When mock mode is active, the following indicators appear:
+- A notice appears on the status page indicating mock mode
+- Job history shows mock conversions labeled as such
+- Log files record that mock mode is being used
+
+For actual JPEG2000 conversion, you must disable mock mode and ensure the JP2Forge library is properly installed and configured.
 
 ## Viewing and Managing Jobs
 

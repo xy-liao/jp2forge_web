@@ -7,6 +7,9 @@ It handles differences in API and provides fallback implementations when necessa
 Note that JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script
 and its BnF compliance capabilities. This adapter implements only a subset of JP2Forge's
 features rather than leveraging all available arguments of the underlying script.
+
+JP2Forge Web is compatible with JP2Forge versions 0.9.1 through 0.9.6, with 0.9.6 being recommended
+for its improved reporting capabilities and enhanced support for BnF compliance.
 """
 
 import os
@@ -21,26 +24,26 @@ logger = logging.getLogger(__name__)
 
 # Try to import JP2Forge modules
 try:
-    # First try the direct import - this works when the JP2Forge files are installed
-    # directly in site-packages (not in a jp2forge directory)
+    # First try the direct import - this works when JP2Forge files are directly in site-packages
+    # This structure is typically used in development environments or when installed from source
     try:
         from core.types import WorkflowConfig, CompressionMode, DocumentType
-        from cli.workflow import StandardWorkflow  # Updated import path
+        from cli.workflow import StandardWorkflow
         JP2FORGE_AVAILABLE = True
         JP2FORGE_VERSION = "0.9.6"  # Hardcoded since direct import doesn't provide __version__
         logger.info(f"Successfully imported JP2Forge modules (direct import, assuming version {JP2FORGE_VERSION})")
         
         # Version warning for clarity
         if JP2FORGE_VERSION != "0.9.6":
-            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.6 is recommended")
+            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.6 is recommended for optimal compatibility")
     except ImportError as direct_import_error:
         logger.debug(f"Direct import failed: {direct_import_error}")
         # Fall back to standard package import structure
+        # This structure is typically used when JP2Forge is installed via pip or as a package
         try:
             import jp2forge
             # Attempt to get the required classes from the installed package
             try:
-                # The exact structure may vary - this is an example that might need adjustment
                 from jp2forge.core.types import WorkflowConfig, CompressionMode, DocumentType
                 from jp2forge.workflow.standard import StandardWorkflow
                 JP2FORGE_AVAILABLE = True
