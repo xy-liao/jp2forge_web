@@ -81,3 +81,24 @@ COMPLETED_TASKS.md
 test_output/
 test_jp2forge.py
 analyze_logs.py
+
+# Database files
+*.sqlite3
+db.sqlite3
+db2.sqlite3
+"db 2.sqlite3"
+*.sqlite3.*.bak
+
+# Additional sensitive files
+.env.local
+.env.development
+.env.production
+credentials.json
+secrets.json
+auth_tokens.txt
+
+# Exclude any backups or dumps
+*.dump
+*.bak
+dump/
+backup/
