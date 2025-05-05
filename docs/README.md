@@ -1,6 +1,13 @@
 # JP2Forge Web Application Documentation
 
-This directory contains documentation for the **JP2Forge Web** application, which provides a web-based interface for the JP2Forge JPEG2000 conversion tool.
+This directory contains comprehensive documentation for the **JP2Forge Web** application, which provides a web-based interface for the JP2Forge JPEG2000 conversion tool.
+
+## Documentation Contents
+
+1. [User Guide](user_guide.md) - How to use the web application features
+2. [Docker Setup](docker_setup.md) - Docker installation and configuration instructions
+3. [BnF Compliance Information](bnf_compliance_improvements.md) - Details about Bibliothèque nationale de France standards support
+4. [Troubleshooting](troubleshooting.md) - Solutions for common issues with Redis, Docker, and conversions
 
 ## About JP2Forge Web
 
@@ -13,16 +20,9 @@ Key aspects of this demonstration implementation include:
 - Job status tracking and notifications
 - Downloadable converted files
 
-## Documentation Contents
-
-1. [User Guide](user_guide.md) - How to use the web application
-2. [Installation](installation.md) - Setup instructions for the web application
-3. [Administration](administration.md) - Managing the application (for administrators)
-4. [API Reference](api_reference.md) - If you want to interact with the web application programmatically
-
 ## Relationship to JP2Forge Core
 
-This documentation covers only the web application interface. For documentation on the underlying JP2Forge core conversion scripts and their parameters, please refer to the separate JP2Forge documentation.
+This documentation covers only the web application interface. For documentation on the underlying JP2Forge core conversion scripts and their parameters, please refer to the separate [JP2Forge repository](https://github.com/xy-liao/jp2forge).
 
 ## Screenshots
 
