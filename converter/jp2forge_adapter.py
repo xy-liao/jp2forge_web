@@ -19,6 +19,9 @@ import time
 from typing import Dict, Any, Optional, Callable, Union, List
 from django.conf import settings
 
+# Import BnF validator
+from .bnf_validator import get_validator, BnFStandards
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -64,6 +67,9 @@ except Exception as e:
 MOCK_MODE = getattr(settings, 'JP2FORGE_SETTINGS', {}).get('MOCK_MODE', False)
 if MOCK_MODE:
     logger.info("JP2Forge mock mode is enabled in settings")
+
+# Get the BnF validator with default tolerance
+bnf_validator = get_validator()
 
 class JP2ForgeResult:
     """
@@ -123,6 +129,24 @@ class JP2ForgeAdapter:
             if param not in kwargs:
                 logger.error(f"Missing required parameter: {param}")
                 return None
+                
+        # Apply BnF compliance enforcement if BnF mode is enabled
+        if kwargs.get('compression_mode') == 'bnf_compliant' or kwargs.get('bnf_compliant') is True:
+            logger.info("BnF compliance mode detected - enforcing BnF parameters")
+            
+            # Enforce BnF compliance parameters including document type-specific compression ratio
+            kwargs = bnf_validator.enforce_bnf_parameters(kwargs, kwargs['document_type'])
+            
+            # Ensure the bnf_compliant flag is set
+            kwargs['bnf_compliant'] = True
+            
+            # Force resolution levels to BnF required value
+            kwargs['resolution_levels'] = BnFStandards.REQUIRED_RESOLUTION_LEVELS
+            
+            # Log the enforced parameters
+            logger.info(f"Enforced BnF parameters for document type '{kwargs['document_type']}': "
+                       f"Compression ratio {kwargs.get('compression_ratio', 'unknown')}, "
+                       f"Resolution levels: {kwargs.get('resolution_levels', 'unknown')}")
         
         # Check which parameters are actually supported by the WorkflowConfig in this version
         import inspect
@@ -381,6 +405,79 @@ class JP2ForgeAdapter:
             metrics=metrics,
             success=True
         )
+
+    def validate_bnf_compliance(self, result: JP2ForgeResult, document_type: str) -> Dict[str, Any]:
+        """
+        Validate BnF compliance for conversion results.
+        
+        Args:
+            result (JP2ForgeResult): Conversion result to validate
+            document_type (str): Document type for determining expected compression ratio
+            
+        Returns:
+            dict: Validation results with compliance details
+        """
+        if not result.success or not result.output_file:
+            return {
+                'is_compliant': False,
+                'error': 'Invalid conversion result, cannot validate'
+            }
+            
+        # Handle both single and multi-page outputs
+        output_files = result.output_file if isinstance(result.output_file, list) else [result.output_file]
+        
+        # Only validate the first file for now
+        # In a complete implementation, we would validate all files
+        if not output_files:
+            return {
+                'is_compliant': False,
+                'error': 'No output files to validate'
+            }
+            
+        # Validate the first file
+        validation_result = bnf_validator.validate_jp2_file(output_files[0], document_type)
+        
+        # Initialize checks dictionary if it doesn't exist
+        if 'checks' not in validation_result:
+            validation_result['checks'] = {}
+        
+        # Additional validation for compression ratio if metrics are available
+        if result.metrics and result.file_sizes:
+            # Extract compression ratio from metrics or calculate it
+            if 'compression_ratio' in result.file_sizes:
+                # Parse ratio if it's a string in format "X.YY:1"
+                compression_ratio = result.file_sizes['compression_ratio']
+                if isinstance(compression_ratio, str) and ':' in compression_ratio:
+                    compression_ratio = float(compression_ratio.split(':')[0])
+                else:
+                    compression_ratio = float(compression_ratio) if compression_ratio else 1.0
+            elif 'original_size' in result.file_sizes and 'converted_size' in result.file_sizes:
+                # Calculate it from file sizes
+                original_size = result.file_sizes['original_size']
+                converted_size = result.file_sizes['converted_size']
+                compression_ratio = original_size / converted_size if converted_size > 0 else 1.0
+            else:
+                compression_ratio = None
+                
+            if compression_ratio is not None:
+                is_ratio_compliant, target_ratio = bnf_validator.is_compression_ratio_compliant(
+                    compression_ratio, document_type
+                )
+                
+                # Add compression ratio check to validation results
+                validation_result['checks']['compression_ratio'] = {
+                    'passed': is_ratio_compliant,
+                    'expected': target_ratio,
+                    'actual': compression_ratio,
+                    'message': (
+                        f'Compression ratio {compression_ratio:.2f}:1 '
+                        f'{"meets" if is_ratio_compliant else "does not meet"} '
+                        f'requirements for document type "{document_type}" '
+                        f'(target: {target_ratio:.2f}:1)'
+                    )
+                }
+                
+        return validation_result
 
 # Create a singleton instance
 adapter = JP2ForgeAdapter()

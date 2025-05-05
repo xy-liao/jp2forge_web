@@ -12,9 +12,13 @@ import time
 
 # Import the JP2Forge adapter
 from .jp2forge_adapter import adapter as jp2forge_adapter, JP2ForgeResult
+# Import BnF validator
+from .bnf_validator import get_validator, BnFStandards
 
 # Setup dedicated logger for tasks
 logger = get_task_logger(__name__)
+# Get the BnF validator
+bnf_validator = get_validator()
 
 def prepare_for_json(data):
     """
@@ -26,12 +30,26 @@ def prepare_for_json(data):
     Returns:
         A JSON-serializable version of the data
     """
+    import math
+    import json
+    
+    if data is None:
+        return {}
+        
     if isinstance(data, bool):
         # Convert boolean values to strings
         return str(data).lower()  # Returns "true" or "false"
-    elif isinstance(data, (int, float, str, type(None))):
+    elif isinstance(data, (int, str)):
         # These types are already JSON serializable
         return data
+    elif isinstance(data, float):
+        # Handle special float values
+        if math.isnan(data):
+            return "NaN"
+        elif math.isinf(data):
+            return "Infinity" if data > 0 else "-Infinity"
+        else:
+            return data
     elif isinstance(data, dict):
         # Process each item in the dictionary
         return {k: prepare_for_json(v) for k, v in data.items()}
@@ -40,7 +58,39 @@ def prepare_for_json(data):
         return [prepare_for_json(item) for item in data]
     else:
         # For any other type, convert to string
-        return str(data)
+        try:
+            # Try JSON serialization test
+            json.dumps(str(data))
+            return str(data)
+        except (TypeError, OverflowError, ValueError):
+            # If that fails, use a generic representation
+            return f"<Non-serializable: {type(data).__name__}>"
+
+def ensure_json_serializable(data):
+    """
+    Ensures that data is JSON serializable by running it through prepare_for_json
+    and then validating the result. Returns a guaranteed serializable dict.
+    
+    Args:
+        data: Any data structure to be prepared for JSON serialization
+        
+    Returns:
+        A JSON serializable version of the data
+    """
+    import json
+    
+    # First pass: prepare data for serialization
+    prepared_data = prepare_for_json(data)
+    
+    try:
+        # Test serialization explicitly
+        json.dumps(prepared_data)
+        return prepared_data
+    except (TypeError, OverflowError, ValueError) as e:
+        # If serialization still fails, return a safe empty dictionary
+        # and log the error
+        logger.error(f"JSON serialization failure: {str(e)}")
+        return {}
 
 @shared_task(bind=True, max_retries=2)
 def process_conversion_job(self, job_id):
@@ -152,30 +202,50 @@ def process_conversion_job(self, job_id):
             if settings.DEBUG and hasattr(settings, 'SIMULATED_CONVERSION_DELAY'):
                 time.sleep(settings.SIMULATED_CONVERSION_DELAY)
         
-        # Create configuration directly - avoid the adapter for this specific step
+        # Determine if BnF mode is active (either compression_mode is 'bnf_compliant' or bnf_compliant is True)
+        is_bnf_mode = (job.compression_mode == 'bnf_compliant' or job.bnf_compliant)
+        
+        # Create configuration
         try:
-            # Import directly to ensure we're using the correct types
-            from core.types import WorkflowConfig, CompressionMode, DocumentType
+            # Get BnF-specific configuration params if needed
+            if is_bnf_mode:
+                logger.info(f"Job {job_id} using BnF compliance mode with document type: {job.document_type}")
+                
+                # Get the target compression ratio for the document type
+                target_ratio = BnFStandards.COMPRESSION_RATIOS.get(job.document_type, 4.0)
+                
+                # Log BnF parameters being applied
+                logger.info(
+                    f"BnF compliance parameters: Compression ratio {target_ratio:.1f}:1, "
+                    f"Resolution levels: {BnFStandards.REQUIRED_RESOLUTION_LEVELS}, "
+                    f"Document type: {job.document_type}"
+                )
             
-            # Map string values to enum values
-            compression_mode_enum = getattr(CompressionMode, job.compression_mode.upper())
-            document_type_enum = getattr(DocumentType, job.document_type.upper())
+            # Build configuration dictionary
+            config_dict = {
+                'output_dir': output_dir,
+                'report_dir': report_dir,
+                'temp_dir': temp_dir,
+                'compression_mode': job.compression_mode,
+                'document_type': job.document_type,
+                'quality_threshold': job.quality,
+                'bnf_compliant': job.bnf_compliant or (job.compression_mode == 'bnf_compliant'),
+                'resolution_levels': BnFStandards.REQUIRED_RESOLUTION_LEVELS if is_bnf_mode else None
+            }
             
-            # Create minimal config with only the essential parameters
-            # that are guaranteed to be supported
-            config = WorkflowConfig(
-                output_dir=output_dir,
-                report_dir=report_dir,
-                compression_mode=compression_mode_enum,
-                document_type=document_type_enum,
-                quality_threshold=job.quality,
-                bnf_compliant=job.bnf_compliant,
-            )
+            # Filter out None values
+            config_dict = {k: v for k, v in config_dict.items() if v is not None}
             
-            logger.info(f"Job {job_id} configuration: mode={job.compression_mode}, "
-                      f"type={job.document_type}, quality={job.quality}")
+            # Create configuration
+            config = jp2forge_adapter.create_config(**config_dict)
+            
+            if config is None:
+                raise ValueError("Invalid configuration parameters")
+                
+            logger.info(f"Job {job_id} configuration created successfully")
+                
         except Exception as e:
-            raise ValueError(f"Invalid configuration parameters: {str(e)}")
+            raise ValueError(f"Failed to create configuration: {str(e)}")
         
         # Process the file using the adapter
         try:
@@ -186,6 +256,26 @@ def process_conversion_job(self, job_id):
                 raise ValueError(result.error or "Unknown conversion error")
                 
             logger.info(f"Job {job_id} processing completed successfully")
+            
+            # Validate BnF compliance if in BnF mode
+            if is_bnf_mode:
+                logger.info(f"Validating BnF compliance for job {job_id}")
+                validation_result = jp2forge_adapter.validate_bnf_compliance(result, job.document_type)
+                
+                # Log validation result
+                if validation_result.get('is_compliant', False):
+                    logger.info(f"Job {job_id} result is BnF compliant")
+                else:
+                    logger.warning(
+                        f"Job {job_id} result may not be fully BnF compliant: "
+                        f"{validation_result.get('error', 'Unknown validation error')}"
+                    )
+                
+                # Store validation results in metrics
+                if not result.metrics:
+                    result.metrics = {}
+                result.metrics['bnf_validation'] = validation_result
+                
         except Exception as e:
             logger.error(f"Error during workflow processing for job {job_id}: {str(e)}")
             raise
@@ -226,18 +316,53 @@ def process_conversion_job(self, job_id):
             logger.info(f"Job {job_id} - Original: {job.original_size} bytes, "
                       f"Converted: {job.converted_size} bytes, "
                       f"Ratio: {job.compression_ratio}:1")
+            
+            # For BnF mode, check if compression ratio meets requirements
+            if is_bnf_mode:
+                is_compliant, target_ratio = bnf_validator.is_compression_ratio_compliant(
+                    job.compression_ratio, job.document_type
+                )
+                
+                # Store compliance info in metrics
+                if not result.metrics:
+                    result.metrics = {}
+                    
+                result.metrics['bnf_compliance'] = {
+                    'is_compliant': is_compliant,
+                    'target_ratio': target_ratio,
+                    'actual_ratio': job.compression_ratio,
+                    'document_type': job.document_type,
+                    'tolerance': bnf_validator.tolerance
+                }
+                
+                # Log compliance status
+                if is_compliant:
+                    logger.info(
+                        f"Job {job_id} achieves BnF compliant ratio of {job.compression_ratio:.2f}:1 "
+                        f"for {job.document_type} (target: {target_ratio:.2f}:1)"
+                    )
+                else:
+                    logger.warning(
+                        f"Job {job_id} compression ratio {job.compression_ratio:.2f}:1 does not meet "
+                        f"BnF requirements for {job.document_type} (target: {target_ratio:.2f}:1)"
+                    )
         
         # Store quality metrics - make sure to prepare them for JSON serialization
         if result.metrics:
-            # Process metrics to make them JSON serializable
-            job.metrics = prepare_for_json(result.metrics)
-            
-            # Format common metrics for easier display
-            if 'psnr' in result.metrics and isinstance(result.metrics['psnr'], (int, float)):
-                logger.info(f"Job {job_id} - PSNR: {result.metrics['psnr']:.2f} dB")
+            # Process metrics to make them JSON serializable with robust error handling
+            try:
+                job.metrics = ensure_json_serializable(result.metrics)
                 
-            if 'ssim' in result.metrics and isinstance(result.metrics['ssim'], (int, float)):
-                logger.info(f"Job {job_id} - SSIM: {result.metrics['ssim']:.4f}")
+                # Format common metrics for easier display
+                if 'psnr' in result.metrics and isinstance(result.metrics['psnr'], (int, float)):
+                    logger.info(f"Job {job_id} - PSNR: {result.metrics['psnr']:.2f} dB")
+                    
+                if 'ssim' in result.metrics and isinstance(result.metrics['ssim'], (int, float)):
+                    logger.info(f"Job {job_id} - SSIM: {result.metrics['ssim']:.4f}")
+            except Exception as e:
+                # Ultimate fallback: if all else fails, use an empty dict
+                logger.error(f"Failed to process metrics for job {job_id}: {str(e)}")
+                job.metrics = {}
         else:
             job.metrics = {}
         

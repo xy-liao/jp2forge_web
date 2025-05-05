@@ -2,16 +2,13 @@ from django import forms
 from .models import ConversionJob
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, HTML
+from .bnf_validator import BnFStandards
 
 class ConversionJobForm(forms.ModelForm):
-    # Unified file field that supports multiple uploads
+    # Simple file field without multiple attribute
     files = forms.FileField(
-        widget=forms.ClearableFileInput(attrs={
-            'multiple': True,
-            'class': 'unified-file-input'
-        }),
         required=True,
-        help_text="Select one or multiple image files to convert to JPEG2000. Supported formats include JPEG, TIFF, PNG, and BMP."
+        help_text="Select an image file to convert to JPEG2000. Supported formats include JPEG, TIFF, PNG, and BMP."
     )
     
     class Meta:
@@ -58,6 +55,49 @@ class ConversionJobForm(forms.ModelForm):
                     const compressionSelect = document.querySelector('[name="compression_mode"]');
                     const qualityField = document.querySelector('[name="quality"]').closest('.form-group');
                     const qualityInput = document.querySelector('[name="quality"]');
+                    const bnfCompliantField = document.querySelector('[name="bnf_compliant"]').closest('.form-group');
+                    const documentTypeSelect = document.querySelector('[name="document_type"]');
+                    
+                    function updateBnfInfo() {
+                        const selectedDocType = documentTypeSelect.value;
+                        const isBnfMode = compressionSelect.value === 'bnf_compliant' || 
+                                         document.querySelector('[name="bnf_compliant"]').checked;
+                        
+                        // Get the existing BnF info element or create it
+                        let bnfInfoEl = document.getElementById('bnf-info');
+                        if (!bnfInfoEl) {
+                            bnfInfoEl = document.createElement('div');
+                            bnfInfoEl.id = 'bnf-info';
+                            bnfInfoEl.className = 'alert alert-info mt-3';
+                            documentTypeSelect.parentNode.appendChild(bnfInfoEl);
+                        }
+                        
+                        // Get the ratio for the selected document type
+                        let ratio = '4:1';
+                        switch (selectedDocType) {
+                            case 'photograph':
+                            case 'heritage_document':
+                                ratio = '4:1';
+                                break;
+                            case 'color':
+                                ratio = '6:1';
+                                break;
+                            case 'grayscale':
+                                ratio = '16:1';
+                                break;
+                        }
+                        
+                        // Show/hide BnF info based on mode
+                        if (isBnfMode) {
+                            bnfInfoEl.innerHTML = `
+                                <strong>BnF Mode:</strong> Document type "${selectedDocType}" requires a compression ratio of <strong>${ratio}</strong> with 5% tolerance.
+                                <br>BnF compliance uses 10 resolution levels and applies special technical parameters per BnF standards.
+                            `;
+                            bnfInfoEl.style.display = 'block';
+                        } else {
+                            bnfInfoEl.style.display = 'none';
+                        }
+                    }
                     
                     function updateQualityField() {
                         const selectedMode = compressionSelect.value;
@@ -66,10 +106,21 @@ class ConversionJobForm(forms.ModelForm):
                             qualityField.style.display = 'none';
                             qualityInput.value = '40';  // Default value
                             qualityInput.required = false;
+                            
+                            // If BnF mode, hide the BnF checkbox (it's redundant)
+                            if (selectedMode === 'bnf_compliant') {
+                                bnfCompliantField.style.display = 'none';
+                            } else {
+                                bnfCompliantField.style.display = 'block';
+                            }
                         } else {
                             qualityField.style.display = 'block';
                             qualityInput.required = true;
+                            bnfCompliantField.style.display = 'block';
                         }
+                        
+                        // Update BnF info
+                        updateBnfInfo();
                     }
                     
                     // Run once on page load
@@ -77,6 +128,12 @@ class ConversionJobForm(forms.ModelForm):
                     
                     // Run when compression mode changes
                     compressionSelect.addEventListener('change', updateQualityField);
+                    
+                    // Run when document type changes
+                    documentTypeSelect.addEventListener('change', updateBnfInfo);
+                    
+                    // Run when BnF checkbox changes
+                    document.querySelector('[name="bnf_compliant"]').addEventListener('change', updateBnfInfo);
                     
                     // Files handling
                     const filesInput = document.querySelector('input[name="files"]');
@@ -141,22 +198,33 @@ class ConversionJobForm(forms.ModelForm):
             <strong>Supervised</strong><br>
             Balanced compression with quality controls.<br>
             <strong>BnF Compliant</strong><br>
-            Meets Bibliothèque nationale de France standards.
+            Meets Bibliothèque nationale de France standards with fixed compression ratios based on document type.
         """
         
-        self.fields['document_type'].help_text = """
-            <strong>Photograph</strong><br>
-            Optimal for detailed photos.<br>
-            <strong>Heritage Document</strong><br>
-            Best for historical manuscripts and documents.<br>
-            <strong>Color</strong><br>
-            Optimized for vibrant color images.<br>
-            <strong>Grayscale</strong><br>
-            Best for black & white or grayscale content.
-        """
+        # Build document type help text with BnF compression ratios
+        doc_type_help = "<strong>Document Types:</strong><br>"
+        for doc_type, ratio in BnFStandards.COMPRESSION_RATIOS.items():
+            doc_type_label = doc_type.replace('_', ' ').title()
+            doc_type_help += f"<strong>{doc_type_label}</strong>: "
+            
+            if doc_type in ['photograph', 'heritage_document']:
+                doc_type_help += "For detailed photographic or heritage content. "
+            elif doc_type == 'color':
+                doc_type_help += "For general color documents. "
+            elif doc_type == 'grayscale':
+                doc_type_help += "For black & white or grayscale content. "
+                
+            doc_type_help += f"<span class='text-muted'>(BnF ratio: {ratio:.1f}:1)</span><br>"
+        
+        self.fields['document_type'].help_text = doc_type_help
         
         self.fields['bnf_compliant'].help_text = """
             When enabled, sets parameters according to BnF (Bibliothèque nationale de France) preservation standards.
+            <ul class='small mt-2'>
+              <li>Enforces document type-specific compression ratios</li>
+              <li>Sets 10 resolution levels as required by BnF</li>
+              <li>Applies RPCL progression order and required markers</li>
+            </ul>
         """
         
         self.fields['quality'].help_text = """
@@ -171,6 +239,10 @@ class ConversionJobForm(forms.ModelForm):
                 <div class="quality-range">
                     <strong>70-100</strong> - High quality but larger files
                 </div>
+            </div>
+            <div class="alert alert-warning small mt-2">
+                <i class="fa fa-info-circle"></i> Note: Quality setting is ignored when using BnF compliance mode, 
+                which uses fixed compression ratios based on document type.
             </div>
         """
     

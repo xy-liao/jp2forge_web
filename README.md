@@ -1,8 +1,8 @@
-# JP2Forge Web Application v0.1.1
+# JP2Forge Web Application v0.1.2
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
-[![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.1)
+[![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.2)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
@@ -21,6 +21,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
    - [Quick Start (Development)](#quick-start-development)
    - [Using Docker (Recommended for Production)](#using-docker-recommended-for-production)
    - [Manual Installation](#manual-installation)
+   - [Running the Celery Worker](#running-the-celery-worker)
    - [Troubleshooting](#troubleshooting)
 6. [Troubleshooting Redis and Task Processing Issues](#troubleshooting-redis-and-task-processing-issues)
 7. [Error Handling and Troubleshooting](#error-handling-and-troubleshooting)
@@ -301,6 +302,68 @@ python init.py
    ```
 
 8. Access the application at http://localhost:8000
+
+### Running the Celery Worker
+
+The JP2Forge Web application requires a running Celery worker to process conversion jobs in the background. Here are the consistent methods to start the Celery worker:
+
+#### Option 1: Using the start_celery.sh Script (Recommended)
+
+```bash
+# Make sure the script is executable
+chmod +x start_celery.sh
+
+# Start the Celery worker
+./start_celery.sh
+```
+
+#### Option 2: Running Celery Directly
+
+```bash
+# Activate your virtual environment first
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Start the Celery worker
+celery -A jp2forge_web worker -l INFO
+```
+
+#### Option 3: Using Docker (if using Docker setup)
+
+```bash
+docker-compose up -d celery
+```
+
+#### Restarting the Celery Worker After Code Changes
+
+When you make changes to the code that affects task processing, you need to restart the Celery worker:
+
+```bash
+# Kill any existing Celery worker processes
+pkill -f "celery worker" || true
+
+# Wait a moment for processes to terminate
+sleep 2
+
+# Start a new Celery worker
+celery -A jp2forge_web worker -l INFO
+```
+
+You can also combine these commands into a single line for convenience:
+
+```bash
+pkill -f "celery worker" || true && sleep 2 && celery -A jp2forge_web worker -l INFO
+```
+
+The `|| true` part ensures that the command succeeds even if no Celery processes are found to kill.
+
+#### Verifying the Celery Worker is Running
+
+```bash
+# Check if Celery processes are running
+ps aux | grep celery
+```
+
+If you see processes containing "celery worker" in the output, the worker is running.
 
 ### Troubleshooting
 

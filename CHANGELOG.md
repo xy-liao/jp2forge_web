@@ -1,5 +1,29 @@
 # Release Notes
 
+## v0.1.2 (May 5, 2025) - JSON Serialization Fix & Documentation Improvements
+
+This release fixes the JSON serialization issue that caused some conversion jobs to fail and improves documentation for running the Celery worker.
+
+### Critical Fixes
+
+- Fixed JSON serialization error in metrics handling that was causing jobs to fail with "CHECK constraint failed: JSON_VALID("metrics")" error
+- Fixed KeyError 'checks' in BnF compliance validation that was causing BnF mode jobs to fail
+- Enhanced JSON data handling with robust error recovery for special values like infinity and NaN
+- Added comprehensive validation and fallback mechanisms to prevent job failures due to serialization issues
+
+### Documentation & Usability Improvements
+
+- Added dedicated section in README on running and managing the Celery worker
+- Created new `restart_celery.sh` script for easily restarting Celery worker after code changes
+- Improved consistency in worker management commands
+- Enhanced troubleshooting guidance for Celery-related issues
+
+### Technical Improvements
+
+- Implemented `ensure_json_serializable()` function with better validation for metrics data
+- Improved error handling throughout the task processing pipeline
+- Added proper handling for special numeric values in quality metrics
+
 ## v0.1.1 (May 4, 2025) - Redis Stability & Security Updates
 
 This release focuses on improving Redis stability to prevent jobs from getting stuck and updating dependencies to address security vulnerabilities.
