@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
+from django.views.decorators.http import require_GET
 
 # Define a hardcoded mapping of documentation files and their paths
 DOCUMENTATION_FILES = {
@@ -51,24 +52,31 @@ def render_doc_page(request, doc_key, title=None):
     return render(request, 'docs/markdown_page.html', context)
 
 # Individual view functions for each documentation page
+@require_GET
 def docs_installation(request):
     return render_doc_page(request, 'installation', 'Installation Guide')
 
+@require_GET
 def docs_user_guide(request):
     return render_doc_page(request, 'user_guide', 'User Guide')
 
+@require_GET
 def docs_troubleshooting(request):
     return render_doc_page(request, 'troubleshooting', 'Troubleshooting')
 
+@require_GET
 def docs_docker_setup(request):
     return render_doc_page(request, 'docker_setup', 'Docker Setup Guide')
 
+@require_GET
 def docs_bnf_compliance(request):
     return render_doc_page(request, 'bnf_compliance_improvements', 'BnF Compliance Improvements')
 
+@require_GET
 def docs_readme(request):
     return render_doc_page(request, 'README', 'Documentation Home')
 
+@require_GET
 def docs_index(request):
     """
     Documentation index page
