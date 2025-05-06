@@ -66,6 +66,7 @@ services:
       - DB_PORT=5432
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CREATE_SUPERUSER=true
+      - SECURE_DOCKER_ENVIRONMENT=true
     ports:
       - "8000:8000"
     restart: unless-stopped

@@ -72,6 +72,10 @@ sys.exit(0)
 END
 }
 
+# Security enhancements for Docker environment
+echo "Setting up enhanced security for Docker environment..."
+export SECURE_DOCKER_ENVIRONMENT=true
+
 echo "Checking PostgreSQL connectivity..."
 # Wait for PostgreSQL to become available (up to 60 seconds)
 max_attempts=20

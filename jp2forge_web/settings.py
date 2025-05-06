@@ -278,6 +278,19 @@ ADMIN_NAME = os.environ.get('ADMIN_NAME', 'Admin')
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
 ADMINS = [(ADMIN_NAME, ADMIN_EMAIL)]  # For error emails
 
+# Security settings
+# Enhanced security in Docker environments
+if os.environ.get('SECURE_DOCKER_ENVIRONMENT') == 'true':
+    # Apply stricter security settings for Docker deployment
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # Configure proper static files handling with security in mind
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
 # JP2Forge specific settings
 JP2FORGE_SETTINGS = {
     'SUPPORTED_INPUT_FORMATS': ['jpg', 'jpeg', 'png', 'tif', 'tiff', 'bmp'],
