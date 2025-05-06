@@ -33,6 +33,7 @@ import subprocess
 import time
 import sys
 from pathlib import Path
+import psutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Clean up JP2Forge Web environment.")
@@ -76,7 +77,9 @@ def stop_running_processes():
                 
                 # Only kill processes that are related to our application
                 if 'python' in proc_cmd and ('runserver' in proc_cmd or 'jp2forge_web' in proc_cmd):
-                    os.kill(pid_int, signal.SIGTERM)
+                    # Use the safer psutil interface instead of os.kill directly
+                    proc = psutil.Process(pid_int)
+                    proc.terminate()  # Send SIGTERM through psutil
                     killed_count += 1
                     print(f"  Terminated process with PID {pid}")
                 else:
