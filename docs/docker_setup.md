@@ -1,6 +1,6 @@
 # JP2Forge Web Docker Setup Guide
 
-This guide provides step-by-step instructions for setting up and running the JP2Forge web application using Docker. Version 0.2.0 introduces significant security improvements and dependency updates.
+This guide provides step-by-step instructions for setting up and running the JP2Forge web application using Docker. Version 0.1.3 introduces fixes for context processor imports and improved logout functionality.
 
 ## Prerequisites
 
@@ -28,15 +28,13 @@ chmod +x docker_setup.sh
 ./docker_setup.sh
 ```
 
-The enhanced script (v0.2.0) now includes:
+The script (v0.1.3) now includes:
 - Support for Docker Compose v2 plugin
-- Automatic security checks and base image updates
-- Enhanced password security with strong random generation
+- Fixed context processor import issue with stats_processor
+- Improved logout functionality with custom view handler for both GET and POST methods
 - Support for Redis authentication
-- Multi-stage Docker builds for improved security
-- More robust service health checks
+- Robust service health checks
 - Detailed security recommendations and best practices
-- Automatic vulnerability scanning with pip-audit
 
 ## Manual Setup
 
@@ -76,9 +74,9 @@ docker-compose up -d
 ```
 
 This will start the following services:
-- `db`: PostgreSQL 16 database (upgraded from 13)
-- `redis`: Redis 7.2 for Celery task queue (upgraded from 6.0)
-- `web`: Django web application using Python 3.12 (upgraded from 3.11)
+- `db`: PostgreSQL database
+- `redis`: Redis for Celery task queue
+- `web`: Django web application
 - `worker`: Celery worker for background tasks
 
 ### 4. Initialize the Database
@@ -164,23 +162,6 @@ docker compose down
 To stop and remove volumes (will delete database data):
 ```bash
 docker compose down -v
-```
-
-## Security Audit and Checking for Vulnerabilities
-
-JP2Forge Web 0.2.0 includes integrated vulnerability scanning:
-
-```bash
-# Run vulnerability check on installed Python packages
-docker compose exec web pip-audit
-
-# Check for outdated base images
-docker pull python:3.12-slim
-docker pull postgres:16-alpine
-docker pull redis:7.2-alpine
-
-# View dependency versions
-docker compose exec web pip list
 ```
 
 ## Troubleshooting Common Issues
@@ -274,41 +255,28 @@ For production deployments, consider the following security enhancements:
    - Use Docker secrets or environment variables from your deployment platform
    - Set `no-new-privileges:true` for all containers
    - Regularly update base images with `docker compose build --pull`
-   - Run periodic vulnerability scans with `pip-audit`
 
 4. Container resource limits:
    - Set appropriate CPU and memory limits in docker-compose.yml
    - Monitor container resource usage
 
-## Major Security Improvements in v0.2.0
+## Fixes in v0.1.3
 
-The Docker configuration has been completely redesigned with security in mind:
+The latest Docker configuration includes important fixes:
 
-1. **Updated Base Images**:
-   - Python updated to 3.12 (from 3.11)
-   - PostgreSQL updated to 16-alpine (from 13)
-   - Redis updated to 7.2-alpine (from 6)
+1. **Context Processor Fix**:
+   - Fixed import issue with stats_processor in the converter.context_processors.stats module
+   - Improved error handling for template context processors
 
-2. **Multi-stage Build Process**:
-   - Smaller attack surface
-   - Reduced image size
-   - Separation of build and runtime environments
+2. **Logout Functionality**:
+   - Replaced Django's built-in LogoutView with a custom logout_view
+   - Added support for both GET and POST methods for logout
+   - Properly redirects to login page after logout
+   - Created custom logout template
 
-3. **Dependency Security**:
-   - Automatic vulnerability scanning with pip-audit
-   - Updated all Python dependencies to latest versions
-   - More secure version pinning with >= operators
-
-4. **Enhanced Authentication**:
-   - Required Redis password authentication
-   - Stronger password generation
-   - Improved database security
-
-5. **Container Hardening**:
-   - Non-root user execution
-   - No-new-privileges restriction
-   - Proper health checks and monitoring
-   - Improved container dependency chains
+3. **Version Consistency**:
+   - Updated version numbers across all files for consistency
+   - Ensured version matches between code and documentation
 
 ## Maintenance and Updates
 

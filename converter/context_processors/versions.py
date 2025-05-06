@@ -9,6 +9,7 @@ import django
 import platform
 import sys
 import importlib.metadata
+from django.conf import settings
 
 
 def get_version_info():
@@ -22,7 +23,7 @@ def get_version_info():
         'django': django.get_version(),
         'python': platform.python_version(),
         'system': f"{platform.system()} {platform.release()}",
-        'jp2forge_web': '0.2.0',  # Application version
+        'jp2forge_web': getattr(settings, 'VERSION', '0.1.3'),  # Get version from settings
     }
     
     # Try to get versions of other key dependencies
@@ -31,7 +32,6 @@ def get_version_info():
         'redis',
         'pillow',
         'jp2forge',
-        'psycopg2',
         'gunicorn',
         'markdown',
     ]
@@ -41,6 +41,15 @@ def get_version_info():
             versions[package] = importlib.metadata.version(package)
         except importlib.metadata.PackageNotFoundError:
             versions[package] = 'not installed'
+    
+    # Special handling for psycopg2 - check both psycopg2 and psycopg2-binary
+    try:
+        versions['psycopg2'] = importlib.metadata.version('psycopg2')
+    except importlib.metadata.PackageNotFoundError:
+        try:
+            versions['psycopg2'] = importlib.metadata.version('psycopg2-binary')
+        except importlib.metadata.PackageNotFoundError:
+            versions['psycopg2'] = 'not installed'
     
     return versions
 

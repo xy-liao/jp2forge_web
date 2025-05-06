@@ -2,8 +2,8 @@
 set -e
 
 # Docker Entrypoint Script for JP2Forge Web
-# Version: 0.2.0 (May 6, 2025)
-# Handles container initialization with enhanced security and error recovery
+# Version: 0.1.3 (May 6, 2025)
+# Handles container initialization with improved error handling and fixes
 
 # Function to check if Postgres is available
 postgres_ready() {

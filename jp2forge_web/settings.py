@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # JP2Forge Web version
-VERSION = '0.2.0'  # Updated version
+VERSION = '0.1.3'  # Updated to match version in README.md
 
 # Load environment variables from .env file
 load_dotenv()
@@ -79,12 +79,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'jp2forge_web.wsgi.application'
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get('DOCKER_ENVIRONMENT') == 'true' or os.environ.get('SECURE_DOCKER_ENVIRONMENT') == 'true':
+    # Use PostgreSQL in Docker environment
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB', 'jp2forge'),
+            'USER': os.environ.get('POSTGRES_USER', 'jp2forge'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'jp2forge_password'),
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
     }
-}
+else:
+    # Use SQLite in development environment
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

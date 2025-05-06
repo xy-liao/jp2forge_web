@@ -1,7 +1,2 @@
-from .stats import stats_processor
-from .versions import version_info
-
-__all__ = [
-    'stats_processor',
-    'version_info',
-]
+from .stats import global_stats as stats_processor
+from .versions import versions

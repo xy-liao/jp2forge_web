@@ -1,13 +1,10 @@
 # JP2Forge Web Dockerfile
-# Version: 0.2.0 (May 6, 2025)
+# Version: 0.1.3 (May 6, 2025)
 # 
 # This Dockerfile builds an environment for running the JP2Forge Web application.
-# V0.2.0 updates:
-# - Updated to the latest Python 3.12 base image for improved security
-# - Enhanced dependency management with pip-audit for vulnerability scanning
-# - Implemented multi-stage build for smaller final image
-# - Added security scanning during build process
-# Previous V0.1.3 improvements:
+# V0.1.3 improvements and fixes:
+# - Fixed context processor import issue with stats_processor
+# - Improved logout functionality with custom view handler for both GET and POST methods
 # - Added Git dependency for properly installing requirements from Git repositories
 # - Improved entrypoint handling and error recovery
 # - Added necessary system dependencies for proper functionality

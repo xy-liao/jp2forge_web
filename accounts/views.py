@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
@@ -22,3 +22,11 @@ def signup(request):
 @login_required
 def profile(request):
     return render(request, 'accounts/profile.html')
+
+def logout_view(request):
+    """
+    Custom logout view that handles both GET and POST methods
+    and redirects to the login page after logout
+    """
+    logout(request)
+    return redirect('login')
