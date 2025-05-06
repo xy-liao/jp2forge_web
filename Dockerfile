@@ -1,15 +1,49 @@
 # JP2Forge Web Dockerfile
-# Version: 0.1.3 (May 6, 2025)
+# Version: 0.2.0 (May 6, 2025)
 # 
 # This Dockerfile builds an environment for running the JP2Forge Web application.
-# V0.1.3 improvements:
+# V0.2.0 updates:
+# - Updated to the latest Python 3.12 base image for improved security
+# - Enhanced dependency management with pip-audit for vulnerability scanning
+# - Implemented multi-stage build for smaller final image
+# - Added security scanning during build process
+# Previous V0.1.3 improvements:
 # - Added Git dependency for properly installing requirements from Git repositories
 # - Improved entrypoint handling and error recovery
 # - Added necessary system dependencies for proper functionality
 # - Optimized image layer structure for better caching
 # - Enhanced startup process with proper health checks
 
-FROM python:3.11-slim
+FROM python:3.12-slim AS builder
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set work directory
+WORKDIR /build
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install pip-audit
+
+# Run security audit on dependencies
+RUN pip-audit
+
+# Final stage
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -19,7 +53,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     libpq-dev \
     netcat-traditional \
     libexif-dev \
@@ -27,15 +60,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     exiftool \
     pkg-config \
     wget \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy installed packages from builder stage
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Create a non-root user to run the app
 RUN groupadd -r appuser && useradd -r -g appuser appuser
@@ -69,6 +101,10 @@ RUN chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health/ || exit 1
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 

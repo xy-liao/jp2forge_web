@@ -6,11 +6,14 @@ This guide provides detailed instructions for installing and configuring the JP2
 
 Before installing JP2Forge Web, ensure you have the following prerequisites installed:
 
-- Python 3.8 or higher
-- Redis (required for Celery task queue)
+- Python 3.11 or higher (Python 3.12 recommended for best security)
+- Redis 7.0 or higher (required for Celery task queue)
   - On macOS: `brew install redis && brew services start redis`
   - On Ubuntu/Debian: `sudo apt install redis-server && sudo service redis-server start`
   - On Windows: Download from [Redis for Windows](https://github.com/tporadowski/redis/releases)
+- PostgreSQL 16.x (recommended for production)
+  - On macOS: `brew install postgresql@16 && brew services start postgresql@16`
+  - On Ubuntu/Debian: `sudo apt install postgresql-16`
 - ExifTool (for metadata functionality)
   - On macOS: `brew install exiftool`
   - On Ubuntu/Debian: `sudo apt install libimage-exiftool-perl`
@@ -33,16 +36,18 @@ JP2Forge Web can be installed using one of the following methods:
 
 For Docker-based installation, please see the separate [Docker Setup Guide](docker_setup.md). 
 
-**Version 0.1.3 Update**: The Docker setup has been completely redesigned with significant reliability improvements. The new Docker configuration provides:
+**Version 0.2.0 Update**: The Docker setup has been completely redesigned with significant security and reliability improvements. The new Docker configuration provides:
 
-- Enhanced error handling and dependency checks
-- Automatic environment configuration
-- Better service health checks and timeout management
-- Improved container startup sequence
+- Updated to Python 3.12, PostgreSQL 16, and Redis 7.2 for enhanced security
+- Implemented multi-stage Docker builds to reduce attack surface
+- Added automatic vulnerability scanning with pip-audit
+- Enhanced password security for Redis and database connections
+- Improved health monitoring and container security options
+- Proper service dependency chains with health checks
 - Fixed Git-based dependency issues
 - Comprehensive troubleshooting support
 
-This makes it much easier to deploy JP2Forge Web using Docker, even for users with minimal Docker experience.
+This makes it much easier and more secure to deploy JP2Forge Web using Docker, even for users with minimal Docker experience.
 
 ## Manual Installation
 
@@ -58,6 +63,7 @@ cd jp2forge_web
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -212,7 +218,7 @@ ps aux | grep celery
 
 ## JP2Forge Library Installation
 
-The application depends on the JP2Forge JPEG2000 conversion library. There are two ways to use it:
+The application depends on the JP2Forge JPEG2000 conversion library version 0.9.6 or higher. There are two ways to use it:
 
 1. **Install the JP2Forge library** (recommended for production):
    - Visit the [JP2Forge repository](https://github.com/xy-liao/jp2forge)
@@ -237,7 +243,8 @@ The application uses environment variables for configuration. Key variables incl
 | `DEBUG` | Debug mode | `True` in development, `False` in production |
 | `ALLOWED_HOSTS` | Allowed hosts (comma-separated) | `localhost,127.0.0.1` |
 | `DATABASE_URL` | Database connection string | SQLite in development, PostgreSQL in production |
-| `CELERY_BROKER_URL` | Celery broker URL | `redis://localhost:6379/0` |
+| `CELERY_BROKER_URL` | Celery broker URL | `redis://:password@localhost:6379/0` |
+| `REDIS_PASSWORD` | Password for Redis authentication | Generated randomly in Docker setup |
 | `MAX_UPLOAD_SIZE` | Maximum upload file size in bytes | 100MB (104857600) |
 
 ### Environment Configuration Options
@@ -255,8 +262,9 @@ DATABASE_URL=sqlite:///db.sqlite3      # Database URL (SQLite by default)
 # For PostgreSQL, use: postgres://user:password@host:port/database
 
 # Redis & Celery Settings
-CELERY_BROKER_URL=redis://localhost:6379/0  # Redis URL for Celery broker
-CELERY_RESULT_BACKEND=redis://localhost:6379/0  # Redis URL for Celery results
+REDIS_PASSWORD=your-redis-password     # Password for Redis authentication (highly recommended)
+CELERY_BROKER_URL=redis://:password@localhost:6379/0  # Redis URL for Celery broker
+CELERY_RESULT_BACKEND=django-db        # Recommended backend (more reliable than Redis)
 
 # File Storage Settings
 MAX_UPLOAD_SIZE=104857600              # Maximum file upload size in bytes (100MB default)
@@ -284,6 +292,7 @@ SESSION_COOKIE_SECURE=False            # Secure session cookie (requires HTTPS)
 CSRF_COOKIE_SECURE=False               # Secure CSRF cookie (requires HTTPS)
 SECURE_BROWSER_XSS_FILTER=True         # Enable browser XSS filtering
 SECURE_CONTENT_TYPE_NOSNIFF=True       # Prevent MIME type sniffing
+SECURE_DOCKER_ENVIRONMENT=False        # Set to True when running in Docker
 ```
 
 ## Production Settings

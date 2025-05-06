@@ -521,7 +521,11 @@
     <footer class="footer">
         <div class="container d-flex justify-content-between align-items-center">
             <span class="text-muted">&copy; {% now "Y" %} JP2Forge Web</span>
-            <span class="text-muted">v{{ VERSION|default:'0.1.0' }} | JPEG2000 Conversion Tool</span>
+            <span class="text-muted">
+                <a href="{% url 'version_info' %}" class="text-muted text-decoration-none" title="View system information">
+                    v{{ versions.jp2forge_web|default:'0.2.0' }} <i class="bi bi-info-circle-fill"></i>
+                </a> | JPEG2000 Conversion Tool
+            </span>
         </div>
     </footer>
 

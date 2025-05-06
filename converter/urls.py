@@ -20,4 +20,5 @@ urlpatterns = [
     path('docs/', views.docs_readme, name='docs_readme'),
     path('docs/user-guide/', views.docs_user_guide, name='docs_user_guide'),
     path('about/', views.about, name='about'),
+    path('version-info/', views.version_info, name='version_info'),
 ]

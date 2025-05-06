@@ -869,3 +869,10 @@ def about(request):
     return render(request, 'docs/about.html', {
         'title': 'About JP2Forge Web'
     })
+
+def version_info(request):
+    """
+    View that displays the version information for the application
+    and its dependencies.
+    """
+    return render(request, 'converter/version_info.html')

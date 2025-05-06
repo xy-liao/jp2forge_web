@@ -1,15 +1,15 @@
-django==4.2.20
+django>=4.2.20
 # Install JP2Forge from GitHub for the latest version (0.9.6)
 # Note: The PyPI version may be older, so we use GitHub directly
 git+https://github.com/xy-liao/jp2forge.git@v0.9.6
-celery==5.3.6
-redis==5.0.1
-django-crispy-forms==2.1
-crispy-bootstrap4==2023.1
-django-celery-results==2.5.1
-Pillow==10.3.0
-python-dotenv==1.0.0
-gunicorn==23.0.0
-psycopg2-binary==2.9.9
+celery>=5.3.6
+redis>=5.0.1
+django-crispy-forms>=2.1
+crispy-bootstrap4>=2023.1
+django-celery-results>=2.5.1
+Pillow>=10.3.0
+python-dotenv>=1.0.0
+gunicorn>=23.0.0
+psycopg2-binary>=2.9.9
 # Added for documentation system
-markdown==3.8
+markdown>=3.8

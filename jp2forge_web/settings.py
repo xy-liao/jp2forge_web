@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # JP2Forge Web version
-VERSION = '0.1.0'
+VERSION = '0.2.0'  # Updated version
 
 # Load environment variables from .env file
 load_dotenv()
@@ -70,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'converter.context_processors.stats.global_stats',  # Our custom processor
+                'converter.context_processors.versions.versions',  # Added version information
             ],
         },
     },
