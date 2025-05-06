@@ -1,5 +1,44 @@
 # Release Notes
 
+## v0.1.8 (May 6, 2025) - Django Security Update
+
+This release addresses a potential denial-of-service vulnerability in Django.
+
+### Security Updates
+
+- Updated Django from 4.2.17 to 4.2.20 to address:
+  - Potential denial-of-service vulnerability in django.utils.text.wrap() method and wordwrap template filter when used with very long strings
+
+## v0.1.7 (May 6, 2025) - Django Security Update
+
+This release addresses a SQL injection vulnerability in Django when using Oracle databases.
+
+### Security Updates
+
+- Updated Django from 4.2.15 to 4.2.17 to address:
+  - SQL injection vulnerability in django.db.models.fields.json.HasKey lookup when using Oracle databases
+  - The vulnerability affects direct usage of the HasKey lookup with untrusted data as an lhs value
+
+## v0.1.6 (May 6, 2025) - Gunicorn Security Update
+
+This release addresses a critical HTTP Request/Response Smuggling vulnerability in Gunicorn.
+
+### Security Updates
+
+- Updated Gunicorn from 22.0.0 to 23.0.0 to address:
+  - HTTP Request/Response Smuggling vulnerability (CVE not assigned yet)
+  - Vulnerability related to improper validation of 'Transfer-Encoding' header
+  - This fixes potential issues including cache poisoning, data exposure, session manipulation, and other serious security risks
+
+## v0.1.5 (May 6, 2025) - Django Security Update
+
+This release addresses a critical SQL injection vulnerability in Django.
+
+### Security Updates
+
+- Updated Django from 4.2.14 to 4.2.15 to address:
+  - SQL injection vulnerability in QuerySet.values() and values_list() methods when using JSONField
+
 ## v0.1.4 (May 6, 2025) - Security Updates
 
 This release addresses critical security vulnerabilities in several dependencies.
