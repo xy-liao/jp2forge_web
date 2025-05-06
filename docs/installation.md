@@ -36,7 +36,7 @@ JP2Forge Web can be installed using one of the following methods:
 
 For Docker-based installation, please see the separate [Docker Setup Guide](docker_setup.md). 
 
-**Version 0.2.0 Update**: The Docker setup has been completely redesigned with significant security and reliability improvements. The new Docker configuration provides:
+**Version 0.1.3 Update**: The Docker setup has been completely redesigned with significant security and reliability improvements. The new Docker configuration provides:
 
 - Updated to Python 3.12, PostgreSQL 16, and Redis 7.2 for enhanced security
 - Implemented multi-stage Docker builds to reduce attack surface
@@ -45,7 +45,9 @@ For Docker-based installation, please see the separate [Docker Setup Guide](dock
 - Improved health monitoring and container security options
 - Proper service dependency chains with health checks
 - Fixed Git-based dependency issues
+- Fixed PostgreSQL driver detection in system information page
 - Comprehensive troubleshooting support
+- Updated critical security dependencies (Django 4.2.20, Pillow 10.3.0, Gunicorn 23.0.0)
 
 This makes it much easier and more secure to deploy JP2Forge Web using Docker, even for users with minimal Docker experience.
 
