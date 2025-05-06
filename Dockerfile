@@ -55,7 +55,7 @@ COPY *.sh ./
 COPY docker-compose.yml ./
 
 # Create necessary directories
-RUN mkdir -p /app/media/jobs /app/media/reports /app/media/reports /app/staticfiles /app/logs
+RUN mkdir -p /app/media/jobs /app/media/reports /app/staticfiles /app/logs
 
 # Ensure script permissions
 RUN chmod +x /app/*.sh
