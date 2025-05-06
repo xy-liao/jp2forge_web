@@ -278,6 +278,16 @@ The latest Docker configuration includes important fixes:
    - Updated version numbers across all files for consistency
    - Ensured version matches between code and documentation
 
+4. **PostgreSQL Driver Detection**:
+   - Fixed system information page to correctly detect psycopg2-binary package
+   - Added support for both psycopg2 and psycopg2-binary package detection
+   - System information page now properly shows the installed PostgreSQL driver
+
+5. **Security Updates**:
+   - Updated Django to 4.2.20 to address multiple security vulnerabilities
+   - Updated Pillow to 10.3.0 to address critical security issues
+   - Updated Gunicorn to 23.0.0 to fix HTTP Request/Response Smuggling vulnerability
+
 ## Maintenance and Updates
 
 ### Updating the Application

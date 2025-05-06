@@ -125,4 +125,3 @@ Future testing should include:
 
 1. BnF Referential (2015): [Référentiel de format de fichier image v2](https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf)
 2. BnF Documentation (2021): [Formats de données pour la préservation à long terme](https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf)
-3. JP2Forge Web Evaluation Notice: Review provided May 2025

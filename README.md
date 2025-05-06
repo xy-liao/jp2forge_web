@@ -48,7 +48,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 Before installing JP2Forge Web, ensure you have the following prerequisites installed:
 
-- Python 3.8 or higher
+- Python 3.11 or higher (Python 3.12 recommended for best security)
 - Redis (required for Celery task queue)
 - ExifTool (for metadata functionality)
 
