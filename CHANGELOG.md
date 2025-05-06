@@ -1,64 +1,17 @@
 # Release Notes
 
-## v0.1.8 (May 6, 2025) - Django Security Update
+## v0.1.3 (May 6, 2025) - Docker Improvements & Security Updates
 
-This release addresses a potential denial-of-service vulnerability in Django.
-
-### Security Updates
-
-- Updated Django from 4.2.17 to 4.2.20 to address:
-  - Potential denial-of-service vulnerability in django.utils.text.wrap() method and wordwrap template filter when used with very long strings
-
-## v0.1.7 (May 6, 2025) - Django Security Update
-
-This release addresses a SQL injection vulnerability in Django when using Oracle databases.
+This release significantly improves the Docker setup with a more reliable and robust configuration, fixes the PostgreSQL driver detection, and includes critical security updates to multiple dependencies.
 
 ### Security Updates
 
-- Updated Django from 4.2.15 to 4.2.17 to address:
-  - SQL injection vulnerability in django.db.models.fields.json.HasKey lookup when using Oracle databases
-  - The vulnerability affects direct usage of the HasKey lookup with untrusted data as an lhs value
-
-## v0.1.6 (May 6, 2025) - Gunicorn Security Update
-
-This release addresses a critical HTTP Request/Response Smuggling vulnerability in Gunicorn.
-
-### Security Updates
-
-- Updated Gunicorn from 22.0.0 to 23.0.0 to address:
-  - HTTP Request/Response Smuggling vulnerability (CVE not assigned yet)
-  - Vulnerability related to improper validation of 'Transfer-Encoding' header
-  - This fixes potential issues including cache poisoning, data exposure, session manipulation, and other serious security risks
-
-## v0.1.5 (May 6, 2025) - Django Security Update
-
-This release addresses a critical SQL injection vulnerability in Django.
-
-### Security Updates
-
-- Updated Django from 4.2.14 to 4.2.15 to address:
-  - SQL injection vulnerability in QuerySet.values() and values_list() methods when using JSONField
-
-## v0.1.4 (May 6, 2025) - Security Updates
-
-This release addresses critical security vulnerabilities in several dependencies.
-
-### Security Updates
-
-- Updated Django from 4.2.10 to 4.2.14 to address:
-  - CVE-2024-53908 (High severity)
-  - CVE-2024-27351 (Moderate severity)
-  - CVE-2024-53907 (Moderate severity)
-- Updated Pillow from 10.1.0 to 10.3.0 to address:
-  - CVE-2023-50447 (Critical severity)
-  - CVE-2024-28219 (High severity)
-- Updated Gunicorn from 21.2.0 to 22.0.0 to address:
-  - CVE-2024-1135 (High severity)
-  - CVE-2024-6827 (High severity)
-
-## v0.1.3 (May 6, 2025) - Docker Improvements & Build Reliability
-
-This release significantly improves the Docker setup with a more reliable and robust configuration that addresses previous deployment issues.
+- Updated Django from 4.2.10 to 4.2.20 to address:
+  - SQL injection vulnerabilities in JSONField and QuerySet methods
+  - Denial-of-service vulnerability in django.utils.text.wrap()
+  - Multiple other security issues (CVE-2024-53908, CVE-2024-27351, CVE-2024-53907)
+- Updated Pillow from 10.1.0 to 10.3.0 to address critical vulnerabilities (CVE-2023-50447, CVE-2024-28219)
+- Updated Gunicorn from 21.2.0 to 23.0.0 to address HTTP Request/Response Smuggling vulnerability
 
 ### Docker Improvements
 
