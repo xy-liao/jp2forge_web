@@ -1,31 +1,28 @@
 import os
 import markdown
-import re
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
-# Define a list of allowed documentation files
-ALLOWED_DOCS = [
-    'installation',
-    'user_guide',
-    'troubleshooting',
-    'docker_setup',
-    'bnf_compliance_improvements',
-    'README'
-]
+# Define a hardcoded mapping of documentation files and their paths
+DOCUMENTATION_FILES = {
+    'installation': os.path.join(settings.BASE_DIR, 'docs', 'installation.md'),
+    'user_guide': os.path.join(settings.BASE_DIR, 'docs', 'user_guide.md'),
+    'troubleshooting': os.path.join(settings.BASE_DIR, 'docs', 'troubleshooting.md'),
+    'docker_setup': os.path.join(settings.BASE_DIR, 'docs', 'docker_setup.md'),
+    'bnf_compliance_improvements': os.path.join(settings.BASE_DIR, 'docs', 'bnf_compliance_improvements.md'),
+    'README': os.path.join(settings.BASE_DIR, 'docs', 'README.md')
+}
 
-def get_markdown_content(filename):
+def get_markdown_content(doc_key):
     """
-    Read and convert a Markdown file to HTML
+    Read and convert a Markdown file to HTML using a hardcoded lookup
     """
-    # Security: Validate the filename is in our allowed list to prevent path traversal
-    if filename not in ALLOWED_DOCS:
+    if doc_key not in DOCUMENTATION_FILES:
         return None
         
-    docs_dir = os.path.join(settings.BASE_DIR, 'docs')
-    filepath = os.path.join(docs_dir, f"{filename}.md")
+    filepath = DOCUMENTATION_FILES[doc_key]
     
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
@@ -40,36 +37,50 @@ def get_markdown_content(filename):
     except FileNotFoundError:
         return None
 
-def docs_view(request, doc_name):
-    """
-    View to render a Markdown documentation file
-    """
-    content = get_markdown_content(doc_name)
+def render_doc_page(request, doc_key, title=None):
+    """Helper function to render a documentation page"""
+    content = get_markdown_content(doc_key)
     
     if content is None:
         raise Http404("Documentation page not found")
     
     context = {
-        'title': doc_name.replace('_', ' ').title(),
+        'title': title or doc_key.replace('_', ' ').title(),
         'content': content
     }
     return render(request, 'docs/markdown_page.html', context)
+
+# Individual view functions for each documentation page
+def docs_installation(request):
+    return render_doc_page(request, 'installation', 'Installation Guide')
+
+def docs_user_guide(request):
+    return render_doc_page(request, 'user_guide', 'User Guide')
+
+def docs_troubleshooting(request):
+    return render_doc_page(request, 'troubleshooting', 'Troubleshooting')
+
+def docs_docker_setup(request):
+    return render_doc_page(request, 'docker_setup', 'Docker Setup Guide')
+
+def docs_bnf_compliance(request):
+    return render_doc_page(request, 'bnf_compliance_improvements', 'BnF Compliance Improvements')
+
+def docs_readme(request):
+    return render_doc_page(request, 'README', 'Documentation Home')
 
 def docs_index(request):
     """
     Documentation index page
     """
-    # Get all available documentation files
-    docs_dir = os.path.join(settings.BASE_DIR, 'docs')
     docs_files = []
     
-    # Only list allowed documentation files that actually exist
-    for allowed_doc in ALLOWED_DOCS:
-        file_path = os.path.join(docs_dir, f"{allowed_doc}.md")
-        if os.path.isfile(file_path):
-            title = allowed_doc.replace('_', ' ').title()
+    # List all available documentation based on our hardcoded mapping
+    for doc_id, filepath in DOCUMENTATION_FILES.items():
+        if os.path.isfile(filepath):
+            title = doc_id.replace('_', ' ').title()
             docs_files.append({
-                'name': allowed_doc,
+                'name': doc_id,
                 'title': title
             })
     
