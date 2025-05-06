@@ -1,73 +1,59 @@
 #!/bin/bash
 # JP2Forge Web Environment Reset Script
-# This script helps ensure a clean environment before and after tests
+# This script performs a complete reset of the JP2Forge Web application environment:
+# 1. Cleans up Python cache, virtual envs, and other temporary files
+# 2. Sets up a fresh virtual environment with all dependencies
+# 3. Prepares the database and static files
 
-# Show usage if requested
-if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-  echo "JP2Forge Web Environment Reset Script"
-  echo ""
-  echo "Usage: ./reset_environment.sh [command]"
-  echo ""
-  echo "Commands:"
-  echo "  clean    Stop all services and clean environment (default)"
-  echo "  start    Start all services after cleaning"
-  echo "  restart  Stop, clean, and restart all services"
-  echo "  status   Check status of all services"
-  echo ""
-  echo "Examples:"
-  echo "  ./reset_environment.sh           # Stop services and clean environment"
-  echo "  ./reset_environment.sh clean     # Same as above"
-  echo "  ./reset_environment.sh start     # Start all services"
-  echo "  ./reset_environment.sh restart   # Full restart of all services"
-  echo "  ./reset_environment.sh status    # Check what's running"
-  exit 0
+set -e  # Exit on any error
+
+echo "==================================================================="
+echo "JP2FORGE WEB ENVIRONMENT RESET"
+echo "==================================================================="
+echo ""
+echo "This script will perform a complete reset of your JP2Forge Web environment:"
+echo "  - Remove Python cache files and virtual environments"
+echo "  - Remove compiled static files"
+echo "  - Remove media files (uploaded images and results)"
+echo "  - Reset the database"
+echo "  - Remove log files"
+echo "  - Set up a fresh environment with all dependencies"
+echo ""
+read -p "Continue with the reset? (y/n): " -n 1 -r
+echo ""
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Reset canceled."
+    exit 0
 fi
 
-# Set default command if not provided
-COMMAND=${1:-clean}
+# Make sure the script is executable
+chmod +x ./cleanup.py
 
-# Check if pip and psutil are installed
-check_dependencies() {
-  echo "Checking dependencies..."
-  
-  # Check for psutil
-  if ! python -c "import psutil" &>/dev/null; then
-    echo "Installing required Python package: psutil"
-    pip install psutil
-  fi
-}
+echo ""
+echo "Step 1: Cleaning up environment..."
+echo "==================================================================="
+python ./cleanup.py
+echo ""
 
-# Main execution
-echo "JP2Forge Web Environment Manager"
-echo "================================"
+echo "Step 2: Setting up fresh environment..."
+echo "==================================================================="
+# Make setup.sh executable
+chmod +x ./setup.sh
 
-# Ensure dependencies are installed
-check_dependencies
+# Run setup script
+./setup.sh
 
-# Execute the requested command
-case "$COMMAND" in
-  clean)
-    echo "Stopping all services and cleaning environment..."
-    python manage_services.py clean
-    ;;
-  start)
-    echo "Starting all services..."
-    python manage_services.py start
-    ;;
-  restart)
-    echo "Restarting all services..."
-    python manage_services.py restart
-    ;;
-  status)
-    echo "Checking service status..."
-    python manage_services.py status
-    ;;
-  *)
-    echo "Unknown command: $COMMAND"
-    echo "Use --help for usage information"
-    exit 1
-    ;;
-esac
-
-echo "Done!"
-exit 0
+echo ""
+echo "==================================================================="
+echo "RESET COMPLETED SUCCESSFULLY!"
+echo "==================================================================="
+echo ""
+echo "Your JP2Forge Web environment has been completely reset."
+echo ""
+echo "To start the development server:"
+echo "  ./start_dev.sh"
+echo ""
+echo "To start the Celery worker (in a separate terminal):"
+echo "  ./start_celery.sh"
+echo ""

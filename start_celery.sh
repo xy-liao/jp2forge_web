@@ -2,22 +2,24 @@
 # Start Celery worker with unique name
 cd "$(dirname "$0")"
 
-# Deactivate any active virtual environments first
-# This ensures we start with a clean slate
-if [[ -n "$VIRTUAL_ENV" ]]; then
-    echo "Deactivating current virtual environment..."
-    deactivate 2>/dev/null || true
-    # Give the system a moment to complete deactivation
-    sleep 1
-fi
+# Don't attempt to deactivate - this causes issues when run as a script
+# Instead, we'll just activate the virtual environment directly
 
 # Check for virtual environment (.venv preferred)
 if [ -d ".venv" ]; then
     echo "Activating virtual environment..."
-    source .venv/bin/activate
+    VIRTUAL_ENV_PATH="$(pwd)/.venv"
+    export VIRTUAL_ENV="$VIRTUAL_ENV_PATH"
+    export PATH="$VIRTUAL_ENV_PATH/bin:$PATH"
+    unset PYTHONHOME
+    echo "Virtual environment activated."
 elif [ -d "venv" ]; then
     echo "Activating legacy virtual environment..."
-    source venv/bin/activate
+    VIRTUAL_ENV_PATH="$(pwd)/venv"
+    export VIRTUAL_ENV="$VIRTUAL_ENV_PATH"
+    export PATH="$VIRTUAL_ENV_PATH/bin:$PATH"
+    unset PYTHONHOME
+    echo "Legacy virtual environment activated."
     echo "Note: Consider migrating to .venv by running setup.sh"
 else
     echo "Error: No virtual environment found. Please run setup.sh first."

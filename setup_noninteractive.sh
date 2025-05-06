@@ -1,6 +1,8 @@
 #!/bin/bash
+# Non-interactive version of setup.sh
+# Automatically answers 'yes' to all prompts
 
-echo "Setting up JP2Forge Web Application..."
+echo "Setting up JP2Forge Web Application (non-interactive mode)..."
 
 # Don't attempt to deactivate - this causes issues when run as a script
 # Instead, we'll just create a fresh virtual environment
@@ -21,32 +23,12 @@ fi
 echo "Checking Redis installation..."
 if ! command -v redis-cli &> /dev/null; then
     echo "Warning: Redis is not installed or not in PATH."
-    echo "Redis is required for Celery. Please install Redis:"
-    echo "  - On macOS: brew install redis && brew services start redis"
-    echo "  - On Ubuntu/Debian: sudo apt install redis-server && sudo service redis-server start"
-    echo "  - On Windows: Download from https://github.com/tporadowski/redis/releases"
-    
-    read -p "Do you want to continue without Redis? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please install Redis and try again."
-        exit 1
-    fi
+    echo "Redis is required for Celery. The app will be set up without Redis."
 else
     # Check if Redis is running
     if ! redis-cli ping > /dev/null 2>&1; then
         echo "Warning: Redis is installed but not running."
-        echo "Please start Redis:"
-        echo "  - On macOS: brew services start redis"
-        echo "  - On Ubuntu/Debian: sudo service redis-server start"
-        echo "  - On Windows: Start the Redis service"
-        
-        read -p "Do you want to continue without starting Redis? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Setup aborted. Please start Redis and try again."
-            exit 1
-        fi
+        echo "The app will be set up, but you'll need to start Redis before using Celery."
     else
         echo "Redis is running correctly."
     fi
@@ -56,17 +38,7 @@ fi
 echo "Checking ExifTool installation..."
 if ! command -v exiftool &> /dev/null; then
     echo "Warning: ExifTool is not installed or not in PATH."
-    echo "ExifTool is required for metadata extraction. Please install ExifTool:"
-    echo "  - On macOS: brew install exiftool"
-    echo "  - On Ubuntu/Debian: sudo apt install libimage-exiftool-perl"
-    echo "  - On Windows: Download from https://exiftool.org"
-    
-    read -p "Do you want to continue without ExifTool? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please install ExifTool and try again."
-        exit 1
-    fi
+    echo "The app will be set up without ExifTool, but metadata extraction may be limited."
 fi
 
 # Clean up any existing virtual environments to avoid conflicts
@@ -99,7 +71,7 @@ pip install --upgrade pip
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
-# Install markdown package (needed for documentation) 
+# Install markdown package (needed for documentation)
 echo "Installing markdown package for documentation..."
 pip install markdown
 
@@ -147,22 +119,14 @@ if ! python -c "import markdown" &> /dev/null; then
 fi
 
 # Check for JP2Forge if it's supposed to be available
-# Note: JP2Forge might not be pip-installable, so we'll just warn if it's not found
 if ! python -c "import core.types" &> /dev/null; then
     echo "Warning: JP2Forge core modules are not found."
     echo "The application will run in mock mode without real JPEG2000 conversion capabilities."
-    echo "This is acceptable for testing the UI, but not for production use."
 fi
 
 if [ $MISSING_DEPS -eq 1 ]; then
     echo "Warning: Some dependencies could not be installed properly."
-    echo "The application may not function correctly."
-    read -p "Do you want to continue anyway? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please resolve the dependency issues and try again."
-        exit 1
-    fi
+    echo "The application may not function correctly, but setup will continue."
 else
     echo "All critical dependencies verified!"
 fi
@@ -209,12 +173,20 @@ mkdir -p media/jobs
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
-# Offer to create a superuser
-read -p "Do you want to create a superuser now? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    python manage.py createsuperuser
-fi
+# Create a default admin user
+echo "Creating a default admin user (admin/admin123)..."
+python -c "
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jp2forge_web.settings')
+django.setup()
+from django.contrib.auth.models import User
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+    print('Superuser created successfully')
+else:
+    print('Superuser already exists')
+"
 
 echo "Setup complete!"
 echo ""
@@ -227,5 +199,6 @@ echo ""
 echo "To run the Celery worker (in a separate terminal):"
 echo "./start_celery.sh"
 echo ""
-echo "Or manually:"
-echo "celery -A jp2forge_web worker -l INFO"
+echo "Default admin credentials:"
+echo "Username: admin"
+echo "Password: admin123"
