@@ -201,30 +201,68 @@ python manage.py recover_stuck_jobs
 
 ## Docker Setup Issues
 
-If you encounter issues with the Docker setup:
+The v0.1.3 release includes significant improvements to Docker setup reliability. However, if you still encounter issues:
 
-1. **Check container logs**:
+1. **General Docker setup troubleshooting**:
+   ```bash
+   # Get a comprehensive setup with improved error handling
+   ./docker_setup.sh
+   ```
+
+2. **Container logs for specific services**:
    ```bash
    docker-compose logs web
+   docker-compose logs worker
+   docker-compose logs db
+   docker-compose logs redis
    ```
 
-2. **Ensure database migrations are applied**:
-   ```bash
-   docker-compose exec web python manage.py migrate
+3. **Git-based dependency issues** (fixed in v0.1.3):
+   - If you see errors about 'git not found' or errors fetching GitHub repositories, ensure your Dockerfile has Git installed:
+   ```
+   RUN apt-get update && apt-get install -y git
    ```
 
-3. **If you have database connection errors**:
+4. **Database connection errors**:
    ```bash
+   # Check if the PostgreSQL service is running
+   docker-compose ps db
+   
+   # Check if the database is ready to accept connections
+   docker-compose exec db pg_isready
+   
+   # Rebuild from scratch in case of persistent issues
    docker-compose down -v  # Remove volumes to start fresh
    docker-compose up -d    # Restart containers
    docker-compose exec web python manage.py migrate  # Apply migrations
    ```
 
-4. **For PostgreSQL authentication failures**:
-   - Check the database credentials in your .env file
-   - Ensure the PostgreSQL container has been initialized with the correct credentials
+5. **Redis connection issues**:
+   ```bash
+   # Verify Redis is responding
+   docker-compose exec redis redis-cli ping
+   # Should return "PONG"
+   
+   # Check connectivity from the web container
+   docker-compose exec web nc -zv redis 6379
+   ```
 
-5. **If you're switching from a local development environment to Docker**:
+6. **Container restart loops** (improved handling in v0.1.3):
+   - Check container logs to determine why a service keeps restarting
+   - Use the enhanced docker-entrypoint.sh script from v0.1.3 that includes better error handling
+   - Look for connection failures to dependent services (DB or Redis)
+
+7. **Environment variable issues**:
+   - Ensure your .env file is properly located in the project root
+   - Verify that environment variables are being passed correctly to containers
+   - The improved docker_setup.sh script in v0.1.3 creates a default .env file if needed
+
+8. **Volume mounting issues**:
+   - Check if Docker has permissions to mount volumes on your host system
+   - Inspect volume status: `docker volume ls` and `docker volume inspect [volume_name]`
+   - The v0.1.3 Docker setup uses properly defined named volumes for better persistence
+
+9. **If you're switching from a local development environment to Docker**:
    - Ensure no local processes are using the same ports (8000, 6379, etc.)
    - Stop any local Celery workers that might be running
    - Run `pkill -f "celery -A jp2forge_web"` to stop any running Celery processes

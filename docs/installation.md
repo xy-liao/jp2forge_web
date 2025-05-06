@@ -31,7 +31,18 @@ JP2Forge Web can be installed using one of the following methods:
 
 ## Docker Installation
 
-For Docker-based installation, please see the separate [Docker Setup Guide](docker_setup.md).
+For Docker-based installation, please see the separate [Docker Setup Guide](docker_setup.md). 
+
+**Version 0.1.3 Update**: The Docker setup has been completely redesigned with significant reliability improvements. The new Docker configuration provides:
+
+- Enhanced error handling and dependency checks
+- Automatic environment configuration
+- Better service health checks and timeout management
+- Improved container startup sequence
+- Fixed Git-based dependency issues
+- Comprehensive troubleshooting support
+
+This makes it much easier to deploy JP2Forge Web using Docker, even for users with minimal Docker experience.
 
 ## Manual Installation
 

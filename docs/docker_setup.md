@@ -1,6 +1,6 @@
 # JP2Forge Web Docker Setup Guide
 
-This guide provides step-by-step instructions for setting up and running the JP2Forge web application using Docker.
+This guide provides step-by-step instructions for setting up and running the JP2Forge web application using Docker. Version 0.1.3 introduces significant improvements to the Docker setup process with enhanced reliability and error handling.
 
 ## Prerequisites
 
@@ -27,12 +27,14 @@ chmod +x docker_setup.sh
 ./docker_setup.sh
 ```
 
-The script will:
-- Check for required dependencies
-- Create configuration files
-- Build and start all Docker containers
-- Apply database migrations
-- Set up an admin user (or prompt you to create one)
+The improved script (v0.1.3) now:
+- Performs thorough checks for required dependencies
+- Creates robust configuration files with secure defaults
+- Builds and starts all Docker containers with proper error handling
+- Waits for services to be ready with intelligent timeouts
+- Provides detailed feedback and troubleshooting guidance
+- Creates a default admin user automatically
+- Shows container status and helpful commands after setup
 
 ## Manual Setup
 

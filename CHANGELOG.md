@@ -1,5 +1,35 @@
 # Release Notes
 
+## v0.1.3 (May 6, 2025) - Docker Improvements & Build Reliability
+
+This release significantly improves the Docker setup with a more reliable and robust configuration that addresses previous deployment issues.
+
+### Docker Improvements
+
+- Completely redesigned Docker setup with improved reliability and error handling
+- Added proper dependency checks for both PostgreSQL and Redis in container startup
+- Fixed Git dependency issue that prevented proper installation of requirements
+- Added robust error recovery and fallbacks in the entrypoint script
+- Enhanced container networking and service discovery
+- Added comprehensive health checks for all services
+
+### Build & Setup Enhancements
+
+- Fixed the issue with Git-based dependencies in Docker build
+- Improved Docker Compose configuration with better volume management
+- Enhanced environment variable handling with sane defaults
+- Added more robust container restart policies
+- Created new docker_setup.sh script with comprehensive error handling
+- Improved database initialization and migration handling
+
+### Technical Improvements
+
+- Removed obsolete Docker Compose configuration attributes
+- Added socket connectivity checks before database connection attempts
+- Improved startup sequence with proper service dependency handling
+- Enhanced logging for easier troubleshooting
+- Added timeout management with multiple retry attempts
+
 ## v0.1.2 (May 5, 2025) - JSON Serialization Fix & Documentation Improvements
 
 This release fixes the JSON serialization issue that caused some conversion jobs to fail and improves documentation for running the Celery worker.
