@@ -30,6 +30,7 @@ import psutil
 import logging
 import argparse
 from pathlib import Path
+import shlex
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
@@ -70,7 +71,7 @@ def find_processes(pattern):
     matching_processes = []
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
         try:
-            cmdline = ' '.join(proc.cmdline())
+            cmdline = ' '.join(filter(None, proc.cmdline()))
             if pattern in cmdline:
                 matching_processes.append(proc)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
@@ -102,7 +103,7 @@ def stop_process(proc, force=False):
 
 def stop_services(services=None, force=False):
     """Stop specified services or all if None provided"""
-    services_to_stop = services or SERVICES.keys()
+    services_to_stop = services or list(SERVICES.keys())
     
     for service_name in services_to_stop:
         if service_name not in SERVICES:
@@ -121,7 +122,7 @@ def stop_services(services=None, force=False):
             for proc in processes:
                 try:
                     pid = proc.pid
-                    cmdline = ' '.join(proc.cmdline())
+                    cmdline = ' '.join(filter(None, proc.cmdline()))
                     
                     # Skip if the process is this script
                     if 'manage_services.py' in cmdline:
@@ -138,6 +139,23 @@ def stop_services(services=None, force=False):
         else:
             logger.info(f"No running {service['name']} processes found")
     
+    return True
+
+def validate_script_path(script_path):
+    """Validate that a script path is safe to execute"""
+    # Convert to absolute path and resolve any symlinks
+    abs_path = os.path.abspath(os.path.realpath(script_path))
+    
+    # Check that the script is within our project directory
+    if not abs_path.startswith(os.path.abspath(PROJECT_ROOT)):
+        logger.error(f"Security error: Script path {script_path} is outside project directory")
+        return False
+        
+    # Check that the script exists and is a file
+    if not os.path.isfile(abs_path):
+        logger.error(f"Script {script_path} does not exist or is not a file")
+        return False
+        
     return True
 
 def start_services(services=None):
@@ -179,33 +197,46 @@ def start_services(services=None):
         
         # Start service using script if available
         if 'start_script' in service and os.path.exists(service['start_script']):
-            logger.info(f"Starting {service['name']} using {service['start_script']}...")
-            try:
-                # Make sure script is executable
-                os.chmod(service['start_script'], os.stat(service['start_script']).st_mode | 0o111)
-                
-                # Start the script detached from our process
-                with open(os.devnull, 'w') as devnull:
-                    subprocess.Popen(
-                        [service['start_script']], 
-                        stdout=devnull, 
-                        stderr=devnull,
-                        start_new_session=True  # Detach from our process group
-                    )
-                logger.info(f"Started {service['name']} with script")
-            except Exception as e:
-                logger.error(f"Error starting {service['name']} with script: {e}")
+            script_path = service['start_script']
+            if validate_script_path(script_path):
+                logger.info(f"Starting {service['name']} using {script_path}...")
+                try:
+                    # Make script executable in a more secure way
+                    current_mode = os.stat(script_path).st_mode
+                    executable_mode = current_mode | 0o111  # Add execute permission
+                    os.chmod(script_path, executable_mode)
+                    
+                    # Start the script detached from our process with proper security
+                    with open(os.devnull, 'w') as devnull:
+                        subprocess.Popen(
+                            [os.path.abspath(script_path)],  # Use absolute path
+                            stdout=devnull, 
+                            stderr=devnull,
+                            start_new_session=True,  # Detach from our process group
+                            shell=False  # Avoid shell injection
+                        )
+                    logger.info(f"Started {service['name']} with script")
+                except Exception as e:
+                    logger.error(f"Error starting {service['name']} with script: {e}")
+            else:
+                logger.error(f"Cannot start {service['name']}: Script validation failed")
                 
         # Fall back to command if script fails or doesn't exist
         elif 'start_cmd' in service:
             logger.info(f"Starting {service['name']} using direct command...")
             try:
+                # Ensure all commands are properly specified as lists to avoid shell injection
+                if not isinstance(service['start_cmd'], list):
+                    logger.error(f"Invalid command format for {service['name']}: must be a list")
+                    continue
+                    
                 with open(os.devnull, 'w') as devnull:
                     subprocess.Popen(
-                        service['start_cmd'], 
+                        service['start_cmd'],
                         stdout=devnull, 
                         stderr=devnull,
-                        start_new_session=True  # Detach from our process group
+                        start_new_session=True,  # Detach from our process group
+                        shell=False  # Avoid shell injection
                     )
                 logger.info(f"Started {service['name']} with command")
             except Exception as e:
@@ -264,18 +295,21 @@ def clean_environment():
     # First stop all services
     stop_services(force=True)
     
-    # Try to import cleanup module
+    # Run cleanup tasks
     try:
         logger.info("Running cleanup tasks...")
         
         # We'll use the existing cleanup.py script directly
-        if os.path.exists('cleanup.py'):
-            # Make sure it's executable
-            os.chmod('cleanup.py', os.stat('cleanup.py').st_mode | 0o111)
-            
+        cleanup_script = os.path.join(PROJECT_ROOT, 'cleanup.py')
+        if os.path.exists(cleanup_script) and os.path.isfile(cleanup_script):
             # Run cleanup with --temp to clean temporary files and __pycache__
-            subprocess.run(['python', 'cleanup.py', '--temp'], 
-                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(
+                [sys.executable, cleanup_script, '--temp'],
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE,
+                check=False,  # Don't raise exception on non-zero exit
+                shell=False   # Avoid shell injection
+            )
             
             logger.info("Cleanup completed")
         else:

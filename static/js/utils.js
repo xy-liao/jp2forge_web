@@ -12,10 +12,13 @@
  */
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
+    if (typeof bytes !== 'number') {
+        throw new TypeError('Expected a number');
+    }
     
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.max(0, Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1));
     
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
@@ -28,16 +31,22 @@ function formatFileSize(bytes) {
  * @return {HTMLElement} The created alert element
  */
 function createAlert(message, type = 'info', dismissible = true) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} ${dismissible ? 'alert-dismissible fade show' : ''}`;
-    alertDiv.role = 'alert';
+    // Validate parameters
+    const validTypes = ['success', 'danger', 'warning', 'info'];
+    const validatedType = validTypes.includes(type) ? type : 'info';
+    const sanitizedMessage = String(message);
     
-    alertDiv.textContent = message;
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${validatedType} ${dismissible ? 'alert-dismissible fade show' : ''}`;
+    alertDiv.setAttribute('role', 'alert');
+    
+    // Use textContent for proper DOM sanitization
+    alertDiv.textContent = sanitizedMessage;
     
     if (dismissible) {
         const closeButton = document.createElement('button');
-        closeButton.type = 'button';
-        closeButton.className = 'btn-close';
+        closeButton.setAttribute('type', 'button');
+        closeButton.setAttribute('class', 'btn-close');
         closeButton.setAttribute('data-bs-dismiss', 'alert');
         closeButton.setAttribute('aria-label', 'Close');
         alertDiv.appendChild(closeButton);
@@ -52,28 +61,25 @@ function createAlert(message, type = 'info', dismissible = true) {
  * @param {string} status - Job status (pending, processing, completed, failed)
  */
 function updateStatusBadge(badgeElement, status) {
-    if (!badgeElement) return;
+    if (!badgeElement || !(badgeElement instanceof HTMLElement)) {
+        return;
+    }
+    
+    // Define valid statuses and their corresponding classes/labels
+    const statusConfigs = {
+        'pending': { classes: ['bg-secondary'], text: 'Pending' },
+        'processing': { classes: ['bg-primary'], text: 'Processing' },
+        'completed': { classes: ['bg-success'], text: 'Completed' },
+        'failed': { classes: ['bg-danger'], text: 'Failed' }
+    };
     
     // Clear existing classes
     badgeElement.classList.remove('bg-secondary', 'bg-primary', 'bg-success', 'bg-danger');
     
-    // Set new classes and text based on status
-    switch (status) {
-        case 'pending':
-            badgeElement.classList.add('bg-secondary');
-            badgeElement.textContent = 'Pending';
-            break;
-        case 'processing':
-            badgeElement.classList.add('bg-primary');
-            badgeElement.textContent = 'Processing';
-            break;
-        case 'completed':
-            badgeElement.classList.add('bg-success');
-            badgeElement.textContent = 'Completed';
-            break;
-        case 'failed':
-            badgeElement.classList.add('bg-danger');
-            badgeElement.textContent = 'Failed';
-            break;
+    // Apply new classes and text if status is valid
+    const config = statusConfigs[status];
+    if (config) {
+        config.classes.forEach(cls => badgeElement.classList.add(cls));
+        badgeElement.textContent = config.text;
     }
 }
