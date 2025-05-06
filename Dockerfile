@@ -11,14 +11,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Explicitly install markdown for documentation
+RUN pip install --no-cache-dir markdown
+
 # Install JP2Forge from GitHub
 RUN pip install --no-cache-dir git+https://github.com/xy-liao/jp2forge.git@v0.9.6
+
+# Create required directories
+RUN mkdir -p media/jobs media/reports logs
 
 # Copy project files
 COPY . /app/
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --no-post-process
 
 # Run gunicorn
 CMD ["gunicorn", "jp2forge_web.wsgi:application", "--bind", "0.0.0.0:8000"]
