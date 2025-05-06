@@ -18,8 +18,7 @@ See the [CHANGELOG.md](../CHANGELOG.md) file for complete details about this rel
 
 1. [User Guide](user_guide.md) - How to use the web application features
 2. [Docker Setup](docker_setup.md) - Docker installation and configuration instructions
-3. [BnF Compliance Information](bnf_compliance_improvements.md) - Details about Bibliothèque nationale de France standards support
-4. [Troubleshooting](troubleshooting.md) - Solutions for common issues with Redis, Docker, and conversions
+3. [Troubleshooting](troubleshooting.md) - Solutions for common issues with Redis, Docker, and conversions
 
 ## About JP2Forge Web
 

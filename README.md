@@ -14,7 +14,6 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 - [User Guide](docs/user_guide.md) - How to use the application
 - [Docker Setup](docs/docker_setup.md) - Docker installation instructions
-- [BnF Compliance Information](docs/bnf_compliance_improvements.md) - Details on BnF standards implementation
 - [Troubleshooting](docs/troubleshooting.md) - Solutions for common issues
 
 ## Features

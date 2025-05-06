@@ -12,7 +12,6 @@ DOCUMENTATION_FILES = {
     'user_guide': os.path.join(settings.BASE_DIR, 'docs', 'user_guide.md'),
     'troubleshooting': os.path.join(settings.BASE_DIR, 'docs', 'troubleshooting.md'),
     'docker_setup': os.path.join(settings.BASE_DIR, 'docs', 'docker_setup.md'),
-    'bnf_compliance_improvements': os.path.join(settings.BASE_DIR, 'docs', 'bnf_compliance_improvements.md'),
     'README': os.path.join(settings.BASE_DIR, 'docs', 'README.md')
 }
 
@@ -67,10 +66,6 @@ def docs_troubleshooting(request):
 @require_GET
 def docs_docker_setup(request):
     return render_doc_page(request, 'docker_setup', 'Docker Setup Guide')
-
-@require_GET
-def docs_bnf_compliance(request):
-    return render_doc_page(request, 'bnf_compliance_improvements', 'BnF Compliance Improvements')
 
 @require_GET
 def docs_readme(request):
