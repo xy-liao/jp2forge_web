@@ -110,10 +110,3 @@ These tools ensure a clean environment for each test run and prevent port confli
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- [JP2Forge](https://github.com/xy-liao/jp2forge) - The core JPEG2000 conversion library
-- [Django](https://www.djangoproject.com/) - The web framework used
-- [Celery](https://docs.celeryq.dev/) - Distributed task queue
-- [Bootstrap](https://getbootstrap.com/) - Frontend framework
