@@ -73,37 +73,91 @@ python manage.py createsuperuser
 ```
 Follow the prompts to create your admin user.
 
-### 6. Start the Development Server
+### 6. Start the Application Services
 
+JP2Forge Web provides a service management script that makes it easy to start all required services in the correct order:
+
+```bash
+# Make the script executable (first time only)
+chmod +x reset_environment.sh
+
+# Start all services (Django, Celery, Redis)
+./reset_environment.sh start
+```
+
+Alternatively, you can start services manually:
+
+**Start the Django Development Server**:
 ```bash
 python manage.py runserver
 ```
 
-### 7. Start the Celery Worker
-
-In a separate terminal window:
-
+**Start the Celery Worker** (in a separate terminal):
 ```bash
 source .venv/bin/activate  # Activate the virtual environment again
 celery -A jp2forge_web worker -l INFO
 ```
 
-You can also use the provided script:
-
-```bash
-chmod +x start_celery.sh
-./start_celery.sh
-```
-
-### 8. Access the Application
+### 7. Access the Application
 
 The application should now be available at http://localhost:8000
+
+## Managing Application Services
+
+JP2Forge Web includes tools to manage all related services (Django server, Celery workers, Redis, PostgreSQL) and prevent issues with multiple instances running during development and testing.
+
+### Using the Service Management Scripts
+
+#### For Daily Development and Testing
+
+The `reset_environment.sh` script provides a simple interface for common service management tasks:
+
+```bash
+# Check status of all services
+./reset_environment.sh status
+
+# Stop all services and clean up the environment
+./reset_environment.sh clean
+
+# Start all services in the correct order
+./reset_environment.sh start
+
+# Restart all services (stop, clean, and restart)
+./reset_environment.sh restart
+```
+
+#### Advanced Service Management
+
+For more control, you can use the `manage_services.py` script directly:
+
+```bash
+# Stop only specific services (e.g., just Celery)
+python manage_services.py stop --services=celery
+
+# Force kill services that won't stop gracefully
+python manage_services.py stop --force
+
+# Start only Django server
+python manage_services.py start --services=django
+```
+
+These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances.
 
 ## Running the Celery Worker
 
 The JP2Forge Web application requires a running Celery worker to process conversion jobs in the background. Here are the consistent methods to start the Celery worker:
 
-### Option 1: Using the start_celery.sh Script (Recommended)
+### Option 1: Using Service Management Script (Recommended)
+
+```bash
+# Start all services including Celery
+./reset_environment.sh start
+
+# Or start just the Celery worker
+python manage_services.py start --services=celery
+```
+
+### Option 2: Using the start_celery.sh Script
 
 ```bash
 # Make sure the script is executable
@@ -113,7 +167,7 @@ chmod +x start_celery.sh
 ./start_celery.sh
 ```
 
-### Option 2: Running Celery Directly
+### Option 3: Running Celery Directly
 
 ```bash
 # Activate your virtual environment first
@@ -128,30 +182,22 @@ celery -A jp2forge_web worker -l INFO
 When you make changes to the code that affects task processing, you need to restart the Celery worker:
 
 ```bash
-# Kill any existing Celery worker processes
-pkill -f "celery worker" || true
+# Recommended approach
+./reset_environment.sh restart --services=celery
 
-# Wait a moment for processes to terminate
-sleep 2
-
-# Start a new Celery worker
-celery -A jp2forge_web worker -l INFO
-```
-
-You can also use the provided restart script:
-
-```bash
+# Alternative approach
 ./restart_celery.sh
 ```
 
 ### Verifying the Celery Worker is Running
 
 ```bash
-# Check if Celery processes are running
+# Check service status
+./reset_environment.sh status
+
+# Alternative: check processes directly
 ps aux | grep celery
 ```
-
-If you see processes containing "celery worker" in the output, the worker is running.
 
 ## JP2Forge Library Installation
 
@@ -246,11 +292,26 @@ The production settings include:
 
 ## Maintenance & Cleanup
 
-The JP2Forge Web application includes a cleanup tool to help maintain your installation and reset it to a clean state after testing or when encountering issues.
+The JP2Forge Web application includes several tools to help maintain your installation and reset it to a clean state after testing or when encountering issues.
+
+### Using the Service Management Scripts
+
+For quick maintenance operations:
+
+```bash
+# Stop all services and clean the environment
+./reset_environment.sh clean
+
+# Check what services are currently running
+./reset_environment.sh status
+
+# Restart all services
+./reset_environment.sh restart
+```
 
 ### Using the Cleanup Script
 
-The `cleanup.py` script provides comprehensive cleanup capabilities:
+For more comprehensive cleanup capabilities, use the `cleanup.py` script:
 
 ```bash
 # Clean everything (standard safe options)

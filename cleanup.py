@@ -448,47 +448,52 @@ def clean_temp_files(dry_run=False):
 
 @handle_errors("reset_celery_tasks")
 def reset_celery_tasks(dry_run=False):
-    """Reset Celery tasks"""
-    logger.info("Resetting Celery tasks...")
+    """Reset Celery tasks by using the service management script"""
+    logger.info("Resetting Celery tasks using service management tools...")
     
     if dry_run:
-        logger.info("Would restart Celery workers")
-        return
-    
-    # Check if we're running in VS Code's integrated terminal
-    in_vscode = os.environ.get('TERM_PROGRAM') == 'vscode' or 'VSCODE_PID' in os.environ
-    if in_vscode:
-        logger.info("Detected VS Code integrated terminal - using safer Celery restart method")
-        logger.info("Skipping Celery process operations in VS Code integrated terminal")
-        logger.info("Please restart Celery manually if needed")
+        logger.info("Would restart Celery workers using manage_services.py")
         return
         
-    # First try to gracefully stop Celery
-    logger.info("Attempting to stop Celery workers gracefully...")
-    subprocess.run(["pkill", "-f", "celery"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
-    # Small delay to allow Celery to stop
-    time.sleep(2)
-    
-    # Check if Celery is still running
-    result = subprocess.run(["pgrep", "-f", "celery"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if result.returncode == 0:
-        # Force kill if still running
-        logger.info("Force stopping Celery workers...")
-        subprocess.run(["pkill", "-9", "-f", "celery"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        logger.info("Celery workers stopped forcefully.")
-    else:
-        logger.info("Celery workers stopped gracefully.")
-    
-    # Optionally restart Celery using the project's start script
-    if os.path.exists('./start_celery.sh'):
-        logger.info("Restarting Celery workers...")
-        subprocess.Popen(["./start_celery.sh"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        logger.info("Celery workers restarted.")
-    else:
-        logger.warning("Celery start script not found. You may need to restart Celery manually.")
+    try:
+        # First attempt to stop Celery using the service management script
+        logger.info("Stopping Celery workers using service management script...")
+        stop_result = subprocess.run(
+            ["python", "manage_services.py", "stop", "--services=celery", "--force"],
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+            text=True
+        )
         
-    logger.info("Please restart Celery manually if needed")
+        if stop_result.returncode == 0:
+            logger.info("Successfully stopped Celery workers with service management script")
+        else:
+            logger.warning(f"Warning: Service management script reported an issue: {stop_result.stderr}")
+            
+            # Fall back to manual stop if needed
+            logger.info("Attempting fallback method to stop Celery workers...")
+            subprocess.run(["pkill", "-f", "celery"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            time.sleep(2)
+            subprocess.run(["pkill", "-9", "-f", "celery"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        # Start Celery using the service management script
+        logger.info("Starting Celery workers using service management script...")
+        start_result = subprocess.run(
+            ["python", "manage_services.py", "start", "--services=celery"],
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        if start_result.returncode == 0:
+            logger.info("Successfully started Celery workers with service management script")
+        else:
+            logger.error(f"Error starting Celery workers: {start_result.stderr}")
+            logger.info("Please start Celery manually using: ./reset_environment.sh start --services=celery")
+    
+    except Exception as e:
+        logger.error(f"Error using service management script: {e}")
+        logger.info("Please restart Celery manually using: ./reset_environment.sh restart --services=celery")
 
 @handle_errors("clean_sqlite_files")
 def clean_sqlite_files(dry_run=False, clean_backups=False):

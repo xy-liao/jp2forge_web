@@ -521,17 +521,8 @@
             .then(data => {
                 // Update status badge
                 if (statusBadge) {
-                    let badgeClass = 'badge bg-secondary';
-                    if (data.status === 'processing') {
-                        badgeClass = 'badge bg-primary';
-                    } else if (data.status === 'completed') {
-                        badgeClass = 'badge bg-success';
-                    } else if (data.status === 'failed') {
-                        badgeClass = 'badge bg-danger';
-                    }
-                    
-                    statusBadge.className = `status-badge ${badgeClass}`;
-                    statusBadge.textContent = data.status.charAt(0).toUpperCase() + data.status.slice(1);
+                    // Use utility function to update the badge
+                    updateStatusBadge(statusBadge, data.status);
                 }
                 
                 // Show/hide status section based on status

@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('converter/', include('converter.urls')),
+    path('docs/', include('docs.urls')),  # Add the documentation URLs
     path('dashboard/', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
     path('', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
 ]

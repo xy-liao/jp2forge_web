@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - JP2Forge Documentation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .markdown-content {
+        line-height: 1.6;
+        padding: 1rem;
+    }
+    
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3,
+    .markdown-content h4,
+    .markdown-content h5,
+    .markdown-content h6 {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .markdown-content h1 {
+        padding-bottom: 0.3rem;
+        border-bottom: 1px solid #eaecef;
+    }
+    
+    .markdown-content h2 {
+        padding-bottom: 0.3rem;
+        border-bottom: 1px solid #eaecef;
+    }
+    
+    .markdown-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .markdown-content ul,
+    .markdown-content ol {
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+    }
+    
+    .markdown-content blockquote {
+        padding: 0.5rem 1rem;
+        margin-left: 0;
+        margin-right: 0;
+        border-left: 0.25rem solid #dfe2e5;
+        color: #6a737d;
+    }
+    
+    .markdown-content pre {
+        padding: 16px;
+        overflow: auto;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: #f6f8fa;
+        border-radius: 3px;
+    }
+    
+    .markdown-content code {
+        padding: 0.2em 0.4em;
+        margin: 0;
+        font-size: 85%;
+        background-color: rgba(27, 31, 35, 0.05);
+        border-radius: 3px;
+    }
+    
+    .markdown-content pre code {
+        padding: 0;
+        background-color: transparent;
+    }
+
+    .markdown-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .markdown-content table th,
+    .markdown-content table td {
+        padding: 6px 13px;
+        border: 1px solid #dfe2e5;
+    }
+    
+    .markdown-content table tr {
+        background-color: #fff;
+        border-top: 1px solid #c6cbd1;
+    }
+    
+    .markdown-content table tr:nth-child(2n) {
+        background-color: #f6f8fa;
+    }
+    
+    /* Dark mode adjustments */
+    [data-bs-theme="dark"] .markdown-content h1,
+    [data-bs-theme="dark"] .markdown-content h2 {
+        border-bottom-color: #495057;
+    }
+    
+    [data-bs-theme="dark"] .markdown-content blockquote {
+        border-left-color: #495057;
+        color: #adb5bd;
+    }
+    
+    [data-bs-theme="dark"] .markdown-content pre {
+        background-color: #2b3035;
+    }
+    
+    [data-bs-theme="dark"] .markdown-content code {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    [data-bs-theme="dark"] .markdown-content table tr {
+        background-color: #343a40;
+        border-top-color: #495057;
+    }
+    
+    [data-bs-theme="dark"] .markdown-content table tr:nth-child(2n) {
+        background-color: #2b3035;
+    }
+    
+    [data-bs-theme="dark"] .markdown-content table th,
+    [data-bs-theme="dark"] .markdown-content table td {
+        border-color: #495057;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'docs:index' %}">Documentation</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+                </ol>
+            </nav>
+            <h1>{{ title }}</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'docs:index' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Documentation
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-body markdown-content">
+                    {{ content }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

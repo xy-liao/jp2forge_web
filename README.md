@@ -28,6 +28,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 - Detailed conversion reports with quality metrics
 - Multi-page TIFF support
 - Real-time progress tracking
+- Service management tools to prevent multiple running instances during testing
 
 ## Supported File Formats
 
@@ -79,11 +80,32 @@ chmod +x setup.sh
 # Initialize the application
 python init.py
 
-# Start the development server and Celery worker
-./start_dev.sh
+# Start the application services
+chmod +x reset_environment.sh
+./reset_environment.sh start
 ```
 
 For complete installation instructions and configuration options, see the [Installation Guide](docs/installation.md).
+
+## Managing Services
+
+JP2Forge Web includes tools to manage all related services (Django, Celery, Redis) and prevent issues with multiple instances running during development and testing:
+
+```bash
+# Check status of all services
+./reset_environment.sh status
+
+# Stop all services and clean up the environment
+./reset_environment.sh clean
+
+# Start all services in the correct order
+./reset_environment.sh start
+
+# Restart all services
+./reset_environment.sh restart
+```
+
+These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances.
 
 ## License
 

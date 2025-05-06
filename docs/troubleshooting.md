@@ -3,10 +3,69 @@
 This guide provides solutions for common issues you might encounter when using the JP2Forge Web application.
 
 ## Table of Contents
-1. [Redis and Task Processing Issues](#redis-and-task-processing-issues)
-2. [Docker Setup Issues](#docker-setup-issues)
-3. [Conversion Errors](#conversion-errors)
-4. [Debugging Conversion Issues](#debugging-conversion-issues)
+1. [Managing Multiple Service Instances](#managing-multiple-service-instances)
+2. [Redis and Task Processing Issues](#redis-and-task-processing-issues)
+3. [Docker Setup Issues](#docker-setup-issues)
+4. [Conversion Errors](#conversion-errors)
+5. [Debugging Conversion Issues](#debugging-conversion-issues)
+
+## Managing Multiple Service Instances
+
+One of the most common issues during development and testing is having multiple instances of services (Django, Celery, Redis) running simultaneously, which can cause port conflicts, resource contention, and unexpected behavior.
+
+### Using Service Management Tools
+
+JP2Forge Web now includes dedicated tools to manage services and prevent these issues:
+
+```bash
+# Check what services are currently running
+./reset_environment.sh status
+
+# Stop all services and clean up the environment
+./reset_environment.sh clean
+
+# Start fresh instances of all required services
+./reset_environment.sh start
+
+# Restart all services (combines clean and start)
+./reset_environment.sh restart
+```
+
+### Common Service Management Issues
+
+| Issue | Symptoms | Solution |
+|-------|----------|----------|
+| Multiple Celery workers | Jobs processed multiple times or inconsistent results | `./reset_environment.sh clean` to stop all workers |
+| Django port conflicts | "Address already in use" errors when starting the server | `./reset_environment.sh status` to find the conflicting process, then `clean` |
+| Multiple Redis instances | Celery tasks not processed, inconsistent caching | `./reset_environment.sh clean` to stop all Redis instances |
+| Resource contention | System running slow, high CPU/memory usage | `./reset_environment.sh status` to identify the processes, then `clean` |
+
+### When Starting a New Testing Session
+
+Before starting a new testing session, always clean up the environment to ensure you're starting fresh:
+
+```bash
+# Stop services and clean environment
+./reset_environment.sh clean
+
+# Start fresh services
+./reset_environment.sh start
+```
+
+### Advanced Service Management
+
+For more control over specific services:
+
+```bash
+# Stop only specific services
+python manage_services.py stop --services=celery,redis
+
+# Force kill services that won't stop gracefully
+python manage_services.py stop --force
+
+# Start only the Django server
+python manage_services.py start --services=django
+```
 
 ## Redis and Task Processing Issues
 
