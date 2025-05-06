@@ -335,3 +335,90 @@ python cleanup.py --help
 ## Troubleshooting
 
 For troubleshooting installation issues, please see the [Troubleshooting Guide](troubleshooting.md).
+
+## Common Setup Issues
+
+### Virtual Environment Activation/Deactivation Problems
+
+The setup scripts use a more reliable method to activate virtual environments in non-interactive shells. If you encounter issues with scripts getting stuck at the "Deactivating current virtual environment..." step:
+
+- Use the `quick_reset.sh` script instead of `setup.sh` for a reliable reset and setup
+- Or use the `cleanup.py` script with the `--quick-setup` option:
+
+```bash
+python cleanup.py --quick-setup
+```
+
+### Running Processes Preventing Clean Setup
+
+Always ensure no previous instances of the application are running before attempting setup:
+
+```bash
+# Stop all running services
+python cleanup.py
+```
+
+### Missing Dependencies
+
+Make sure all required packages are installed. Some key dependencies might not be explicitly listed in `requirements.txt`:
+
+```bash
+# After activating your virtual environment
+pip install markdown  # Required for documentation
+```
+
+### Redis Connection Issues
+
+If you encounter errors related to Redis connectivity:
+
+1. Verify Redis is running:
+   ```bash
+   redis-cli ping
+   ```
+   
+2. If not running, start Redis:
+   - macOS: `brew services start redis`
+   - Linux: `sudo service redis-server start`
+   - Windows: Start the Redis service
+   
+3. Check the Redis URL in your `.env` file:
+   - For local development: `CELERY_BROKER_URL=redis://localhost:6379/0`
+   - For Docker: `CELERY_BROKER_URL=redis://redis:6379/0`
+
+### Multiple Processes and Resources Cleanup
+
+If you've been developing for a while, you might have several Django and Celery processes running in the background. To fully clean up:
+
+```bash
+# Comprehensive cleanup
+python cleanup.py
+
+# Quick reset and setup
+./quick_reset.sh
+```
+
+## Startup Sequence for Development
+
+For the most reliable development experience, follow this sequence:
+
+1. Stop any running processes:
+   ```bash
+   python cleanup.py
+   ```
+
+2. Reset the environment:
+   ```bash
+   ./quick_reset.sh
+   ```
+   
+3. Start the Django server:
+   ```bash
+   ./start_dev.sh
+   ```
+   
+4. Start the Celery worker (in a separate terminal):
+   ```bash
+   ./start_celery.sh
+   ```
+
+The application should now be available at http://localhost:8000
