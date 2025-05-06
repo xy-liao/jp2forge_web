@@ -1,6 +1,18 @@
 # JP2Forge Web Application Documentation
 
-This directory contains comprehensive documentation for the **JP2Forge Web** application, which provides a web-based interface for the JP2Forge JPEG2000 conversion tool.
+Welcome to the documentation for JP2Forge Web, a Django-based web interface for the JP2Forge JPEG2000 conversion library.
+
+## What's New in v0.1.3
+
+The v0.1.3 release includes significant improvements to the Docker setup with a more reliable and robust configuration:
+
+- **Complete Docker overhaul** with enhanced error handling and dependency management
+- **Fixed critical issues** with Git-based dependency installation in Docker
+- **Improved health checks** for services to prevent startup failures
+- **Enhanced Docker setup script** with better error reporting and environment configuration
+- **Comprehensive documentation updates** for Docker deployment
+
+See the [CHANGELOG.md](../CHANGELOG.md) file for complete details about this release.
 
 ## Documentation Contents
 
