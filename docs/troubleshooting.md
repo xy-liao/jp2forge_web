@@ -6,8 +6,9 @@ This guide provides solutions for common issues you might encounter when using t
 1. [Managing Multiple Service Instances](#managing-multiple-service-instances)
 2. [Redis and Task Processing Issues](#redis-and-task-processing-issues)
 3. [Docker Setup Issues](#docker-setup-issues)
-4. [Conversion Errors](#conversion-errors)
-5. [Debugging Conversion Issues](#debugging-conversion-issues)
+4. [System Information Page Issues](#system-information-page-issues)
+5. [Conversion Errors](#conversion-errors)
+6. [Debugging Conversion Issues](#debugging-conversion-issues)
 
 ## Managing Multiple Service Instances
 
@@ -266,6 +267,58 @@ The v0.1.3 release includes significant improvements to Docker setup reliability
    - Ensure no local processes are using the same ports (8000, 6379, etc.)
    - Stop any local Celery workers that might be running
    - Run `pkill -f "celery -A jp2forge_web"` to stop any running Celery processes
+
+## System Information Page Issues
+
+The System Information page provides details about your installed packages and database drivers. Here are solutions for common display issues:
+
+### PostgreSQL Driver Shows as "Not Installed" in Docker
+
+If you're running in Docker and the System Information page shows "PostgreSQL Driver: not installed" despite the application working correctly:
+
+1. **This is normal and fixed in v0.1.3**: The system was updated to correctly detect both `psycopg2` and `psycopg2-binary` packages.
+
+2. **Verify database connection actually works**:
+   ```bash
+   # In Docker environment
+   docker compose exec web python manage.py check
+   ```
+   If the check passes without database errors, your PostgreSQL connection is working correctly regardless of what the System Information page displays.
+
+3. **Check which driver is installed**:
+   ```bash
+   # In Docker environment
+   docker compose exec web pip list | grep psycopg2
+   ```
+   This will show whether you have `psycopg2` or `psycopg2-binary` installed.
+
+4. **Manually verify database connection**:
+   ```bash
+   # In Docker environment
+   docker compose exec web python -c "from django.db import connection; cursor = connection.cursor(); print('Database connection working')"
+   ```
+   If this prints "Database connection working", your database is properly configured.
+
+### Other Package Version Issues
+
+If the System Information page shows unexpected versions or missing packages:
+
+1. **Check actually installed packages**:
+   ```bash
+   pip list  # In virtual environment
+   # Or in Docker
+   docker compose exec web pip list
+   ```
+
+2. **Refresh package information**:
+   ```bash
+   # Restart the web server
+   ./reset_environment.sh restart --services=django
+   # Or in Docker
+   docker compose restart web
+   ```
+
+3. **Check for package name variations**: Some packages use different PyPI names than their import names.
 
 ## Conversion Errors
 

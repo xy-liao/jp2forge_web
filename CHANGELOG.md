@@ -85,6 +85,7 @@ This release significantly improves the Docker setup with a more reliable and ro
 - Improved startup sequence with proper service dependency handling
 - Enhanced logging for easier troubleshooting
 - Added timeout management with multiple retry attempts
+- Fixed PostgreSQL driver detection in system information page to correctly identify psycopg2-binary package
 
 ## v0.1.2 (May 5, 2025) - JSON Serialization Fix & Documentation Improvements
 
