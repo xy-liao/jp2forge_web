@@ -69,9 +69,18 @@ def stop_running_processes():
                 
             pid = parts[1]
             try:
-                os.kill(int(pid), signal.SIGTERM)
-                killed_count += 1
-                print(f"  Terminated process with PID {pid}")
+                # Validate that this is our own process before sending a signal
+                pid_int = int(pid)
+                cmd_check = f"ps -p {pid_int} -o command="
+                proc_cmd = subprocess.run(cmd_check, shell=True, capture_output=True, text=True).stdout.strip()
+                
+                # Only kill processes that are related to our application
+                if 'python' in proc_cmd and ('runserver' in proc_cmd or 'jp2forge_web' in proc_cmd):
+                    os.kill(pid_int, signal.SIGTERM)
+                    killed_count += 1
+                    print(f"  Terminated process with PID {pid}")
+                else:
+                    print(f"  Skipped process {pid} (not related to our application)")
             except ProcessLookupError:
                 print(f"  Process {pid} not found")
             except PermissionError:
@@ -136,7 +145,8 @@ def run_quick_setup():
     # Make sure quick_reset.sh is executable
     try:
         quick_reset_path = Path(__file__).resolve().parent / 'quick_reset.sh'
-        os.chmod(quick_reset_path, 0o755)  # Make executable
+        # Use more restrictive permissions (owner execute only instead of 0o755)
+        os.chmod(quick_reset_path, 0o700)  # Owner read/write/execute only
         
         # Execute the script
         print("\n" + "="*60)

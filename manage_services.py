@@ -203,7 +203,8 @@ def start_services(services=None):
                 try:
                     # Make script executable in a more secure way
                     current_mode = os.stat(script_path).st_mode
-                    executable_mode = current_mode | 0o111  # Add execute permission
+                    # Only add execute for owner, not everyone (0o100 instead of 0o111)
+                    executable_mode = current_mode | 0o100  # Add execute permission only for owner
                     os.chmod(script_path, executable_mode)
                     
                     # Start the script detached from our process with proper security

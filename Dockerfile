@@ -37,11 +37,25 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY . .
+# Create a non-root user to run the app
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Copy project files selectively rather than recursively copying everything
+# Copy Python application code
+COPY *.py ./
+COPY jp2forge_web/ ./jp2forge_web/
+COPY converter/ ./converter/
+COPY accounts/ ./accounts/
+COPY docs/ ./docs/
+COPY templates/ ./templates/
+COPY static/ ./static/
+
+# Copy scripts and config files
+COPY *.sh ./
+COPY docker-compose.yml ./
 
 # Create necessary directories
-RUN mkdir -p /app/media/jobs /app/media/reports /app/staticfiles /app/logs
+RUN mkdir -p /app/media/jobs /app/media/reports /app/media/reports /app/staticfiles /app/logs
 
 # Ensure script permissions
 RUN chmod +x /app/*.sh
@@ -49,6 +63,13 @@ RUN chmod +x /app/*.sh
 # Set up entrypoint
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
+
+# Set proper ownership for application files
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # Run server
