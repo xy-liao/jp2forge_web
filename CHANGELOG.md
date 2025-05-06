@@ -1,5 +1,22 @@
 # Release Notes
 
+## v0.1.4 (May 6, 2025) - Security Updates
+
+This release addresses critical security vulnerabilities in several dependencies.
+
+### Security Updates
+
+- Updated Django from 4.2.10 to 4.2.14 to address:
+  - CVE-2024-53908 (High severity)
+  - CVE-2024-27351 (Moderate severity)
+  - CVE-2024-53907 (Moderate severity)
+- Updated Pillow from 10.1.0 to 10.3.0 to address:
+  - CVE-2023-50447 (Critical severity)
+  - CVE-2024-28219 (High severity)
+- Updated Gunicorn from 21.2.0 to 22.0.0 to address:
+  - CVE-2024-1135 (High severity)
+  - CVE-2024-6827 (High severity)
+
 ## v0.1.3 (May 6, 2025) - Docker Improvements & Build Reliability
 
 This release significantly improves the Docker setup with a more reliable and robust configuration that addresses previous deployment issues.
