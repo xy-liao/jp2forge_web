@@ -1,14 +1,29 @@
 import os
 import markdown
+import re
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 
+# Define a list of allowed documentation files
+ALLOWED_DOCS = [
+    'installation',
+    'user_guide',
+    'troubleshooting',
+    'docker_setup',
+    'bnf_compliance_improvements',
+    'README'
+]
+
 def get_markdown_content(filename):
     """
     Read and convert a Markdown file to HTML
     """
+    # Security: Validate the filename is in our allowed list to prevent path traversal
+    if filename not in ALLOWED_DOCS:
+        return None
+        
     docs_dir = os.path.join(settings.BASE_DIR, 'docs')
     filepath = os.path.join(docs_dir, f"{filename}.md")
     
@@ -48,12 +63,13 @@ def docs_index(request):
     docs_dir = os.path.join(settings.BASE_DIR, 'docs')
     docs_files = []
     
-    for file in os.listdir(docs_dir):
-        if file.endswith('.md') and not file.startswith('.'):
-            name = file[:-3]
-            title = name.replace('_', ' ').title()
+    # Only list allowed documentation files that actually exist
+    for allowed_doc in ALLOWED_DOCS:
+        file_path = os.path.join(docs_dir, f"{allowed_doc}.md")
+        if os.path.isfile(file_path):
+            title = allowed_doc.replace('_', ' ').title()
             docs_files.append({
-                'name': name,
+                'name': allowed_doc,
                 'title': title
             })
     
