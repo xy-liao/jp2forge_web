@@ -4,8 +4,8 @@
 # This docker-compose file defines the services needed to run JP2Forge Web in Docker.
 # V0.1.4 improvements:
 # - Enhanced HTTP method handling with proper GET/POST restrictions
-# - Fixed potential CSRF vulnerabilities with explicit method validation
-# - Improved logout functionality with CSRF protection while maintaining convenience
+# - Fixed potential CSRF vulnerabilities by requiring POST method for state-changing actions
+# - Improved logout security by enforcing POST method requirement
 # - Aligned documentation templates with their Markdown counterparts
 #
 # V0.1.3 improvements:

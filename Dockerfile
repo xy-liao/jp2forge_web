@@ -4,14 +4,14 @@
 # This Dockerfile builds an environment for running the JP2Forge Web application.
 # V0.1.4 improvements and fixes:
 # - Enhanced HTTP method handling with proper GET/POST restrictions
-# - Fixed potential CSRF vulnerabilities with explicit method validation
+# - Fixed potential CSRF vulnerabilities by requiring POST method for state-changing actions
 # - Aligned documentation templates with their Markdown counterparts
 # - Unified documentation navigation between systems
-# - Restored logout functionality compatibility with direct links and GET requests
+# - Improved logout security by enforcing POST method requirement
 #
 # V0.1.3 improvements and fixes:
 # - Fixed context processor import issue with stats_processor
-# - Improved logout functionality with custom view handler for both GET and POST methods
+# - Improved logout functionality with custom view handler
 # - Added Git dependency for properly installing requirements from Git repositories
 # - Improved entrypoint handling and error recovery
 # - Added necessary system dependencies for proper functionality
