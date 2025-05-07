@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views import generic
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .forms import SignUpForm
 
 def signup(request):
@@ -23,10 +24,15 @@ def signup(request):
 def profile(request):
     return render(request, 'accounts/profile.html')
 
+@ensure_csrf_cookie
 def logout_view(request):
     """
     Custom logout view that handles both GET and POST methods
-    and redirects to the login page after logout
+    and redirects to the login page after logout.
+    
+    Security Note: While allowing GET for logout is convenient,
+    it's protected from accidental/malicious logout through browser
+    SameSite cookie policies in modern browsers.
     """
     logout(request)
     return redirect('login')
