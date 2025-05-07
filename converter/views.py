@@ -28,6 +28,11 @@ def dashboard(request):
     """
     Dashboard view showing conversion statistics and recent jobs
     """
+    if request.method not in ['GET', 'POST']:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
+    
     logger.info(f"User {request.user.username} accessed dashboard")
     
     # Get user's job statistics
@@ -199,6 +204,11 @@ def job_list(request):
     """
     View for listing all conversion jobs with filtering options
     """
+    if request.method not in ['GET', 'POST']:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
+    
     # Start with all user's jobs
     jobs_queryset = ConversionJob.objects.filter(user=request.user)
     
@@ -261,6 +271,11 @@ def job_detail(request, job_id):
     """
     View for showing job details
     """
+    if request.method not in ['GET', 'POST']:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
+    
     job = get_object_or_404(ConversionJob, id=job_id, user=request.user)
     
     logger.info(f"User {request.user.username} viewed job {job.id}")
@@ -299,6 +314,11 @@ def job_status(request, job_id):
     """
     API view for getting job status updates
     """
+    # Only allow GET method for status API
+    if request.method != 'GET':
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET'])
+    
     job = get_object_or_404(ConversionJob, id=job_id, user=request.user)
     
     # Format metrics for display if needed
@@ -398,6 +418,12 @@ def job_retry(request, job_id):
     View for retrying a failed job
     """
     job = get_object_or_404(ConversionJob, id=job_id, user=request.user)
+    
+    # Only allow POST method for job retrying (data modification)
+    if request.method != 'POST':
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['POST'])
     
     # Only allow retrying failed jobs
     if job.status != 'failed':
@@ -673,6 +699,11 @@ def job_download_all(request, job_id):
     """
     View for downloading all JP2 output files from a job as a ZIP archive
     """
+    if request.method not in ['GET', 'POST']:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
+    
     job = get_object_or_404(ConversionJob, id=job_id, user=request.user)
     
     # Check if the job is completed
@@ -850,25 +881,40 @@ def docs_readme(request):
     """
     View for JP2Forge Web documentation home page
     """
-    return render(request, 'docs/readme.html', {
-        'title': 'JP2Forge Web Documentation'
-    })
+    if request.method in ['GET', 'POST']:
+        return render(request, 'docs/readme.html', {
+            'title': 'JP2Forge Web Documentation'
+        })
+    else:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
 def docs_user_guide(request):
     """
     View for JP2Forge Web user guide
     """
-    return render(request, 'docs/user_guide.html', {
-        'title': 'Using JP2Forge Web'
-    })
+    if request.method in ['GET', 'POST']:
+        return render(request, 'docs/user_guide.html', {
+            'title': 'Using JP2Forge Web'
+        })
+    else:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
 def about(request):
     """
     View for about JP2Forge Web page
     """
-    return render(request, 'docs/about.html', {
-        'title': 'About JP2Forge Web'
-    })
+    if request.method in ['GET', 'POST']:
+        return render(request, 'docs/about.html', {
+            'title': 'About JP2Forge Web'
+        })
+    else:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
 def version_info(request):
     """
