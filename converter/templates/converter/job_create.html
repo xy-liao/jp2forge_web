@@ -362,6 +362,40 @@
     [data-bs-theme="dark"] .quality-indicator {
         background: linear-gradient(to right, #dc3545, #ffc107, #198754);
     }
+
+    /* Document type card styling for consistency with compression mode cards */
+    .document-type-card {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+    }
+    
+    .document-type-card h6 {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #0d6efd;
+    }
+    
+    [data-bs-theme="dark"] .document-type-card {
+        background-color: #343a40;
+        border-color: #0d6efd;
+    }
+    
+    [data-bs-theme="dark"] .document-type-card h6 {
+        color: #6ea8fe;
+    }
+    
+    .document-type-card .text-muted {
+        display: block;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0,0,0,.1);
+    }
+    
+    [data-bs-theme="dark"] .document-type-card .text-muted {
+        border-top-color: rgba(255,255,255,.1);
+    }
 </style>
 {% endblock %}
 

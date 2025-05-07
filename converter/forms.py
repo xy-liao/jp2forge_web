@@ -205,16 +205,26 @@ class ConversionJobForm(forms.ModelForm):
         doc_type_help = "<strong>Document Types:</strong><br>"
         for doc_type, ratio in BnFStandards.COMPRESSION_RATIOS.items():
             doc_type_label = doc_type.replace('_', ' ').title()
-            doc_type_help += f"<strong>{doc_type_label}</strong>: "
+            doc_type_help += f"""
+                <div class="document-type-card mt-2 mb-2 p-2 border-start border-primary ps-3">
+                    <h6 class="mb-1">{doc_type_label}</h6>
+                    <div class="mb-1">
+            """
             
             if doc_type in ['photograph', 'heritage_document']:
-                doc_type_help += "For detailed photographic or heritage content. "
+                doc_type_help += "For detailed photographic or heritage content."
             elif doc_type == 'color':
-                doc_type_help += "For general color documents. "
+                doc_type_help += "For general color documents."
             elif doc_type == 'grayscale':
-                doc_type_help += "For black & white or grayscale content. "
+                doc_type_help += "For black & white or grayscale content."
                 
-            doc_type_help += f"<span class='text-muted'>(BnF ratio: {ratio:.1f}:1)</span><br>"
+            doc_type_help += f"""
+                    </div>
+                    <div class="text-muted small">
+                        <strong>BnF compression ratio:</strong> {ratio:.1f}:1
+                    </div>
+                </div>
+            """
         
         self.fields['document_type'].help_text = doc_type_help
         
