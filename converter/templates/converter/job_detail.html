@@ -102,6 +102,107 @@
         font-size: 0.85rem;
     }
 
+    /* Badge styling for consistent categories */
+    .badge-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 4px;
+    }
+    
+    /* Simplified badge colors - just two types */
+    .badge-primary {
+        background-color: #0d6efd !important;
+        color: #fff;
+    }
+    
+    .badge-detail {
+        background-color: #6c757d !important;
+        color: #fff;
+        opacity: 0.85;
+    }
+    
+    /* Special states that need to retain their meaning */
+    .badge-success {
+        background-color: #198754 !important;
+        color: #fff;
+    }
+    
+    .badge-warning {
+        background-color: #ffc107 !important;
+        color: #212529;
+    }
+    
+    .badge-danger {
+        background-color: #dc3545 !important;
+        color: #fff;
+    }
+    
+    /* Info icon styling */
+    .info-icon {
+        opacity: 0.7;
+        cursor: help;
+        margin-left: 5px;
+        font-size: 0.8rem;
+    }
+
+    /* Styling for conversion settings */
+    .conversion-settings th {
+        width: 30%;
+        vertical-align: middle;
+        padding: 12px 15px;
+        background-color: rgba(0,0,0,0.03);
+        border-right: 1px solid #dee2e6;
+    }
+    
+    .conversion-settings td {
+        vertical-align: middle;
+        padding: 12px 15px;
+    }
+
+    /* Badge theming */
+    .badge.bg-primary {
+        background-color: #0d6efd !important;
+    }
+    
+    .badge.bg-info {
+        background-color: #5bc0de !important;
+        color: #fff;
+    }
+    
+    .badge.bg-success {
+        background-color: #198754 !important;
+    }
+    
+    .badge.bg-warning {
+        background-color: #ffc107 !important;
+        color: #212529;
+    }
+    
+    .badge.bg-secondary {
+        background-color: #6c757d !important;
+        opacity: 0.85;
+    }
+
+    /* Info icon styling */
+    .info-icon {
+        opacity: 0.6;
+        cursor: help;
+        margin-left: 6px;
+        transition: opacity 0.2s;
+    }
+    
+    .info-icon:hover {
+        opacity: 1;
+    }
+
     /* New styles for optimized file display */
     .files-pagination {
         display: flex;
@@ -308,15 +409,138 @@
                         <table class="table">
                             <tr>
                                 <th>Compression Mode</th>
-                                <td>{{ job.get_compression_mode_display }}</td>
+                                <td>
+                                    <div class="badge-container">
+                                        {% if job.compression_mode == 'lossless' %}
+                                            <span class="badge badge-primary">Lossless</span>
+                                            <span class="badge badge-detail">No quality loss</span>
+                                        {% elif job.compression_mode == 'lossy' %}
+                                            <span class="badge badge-primary">Lossy</span>
+                                            <span class="badge badge-detail">Quality {{ job.quality }}</span>
+                                        {% elif job.compression_mode == 'supervised' %}
+                                            <span class="badge badge-primary">Supervised</span>
+                                            <span class="badge badge-detail">Quality {{ job.quality }}</span>
+                                        {% elif job.compression_mode == 'bnf_compliant' %}
+                                            <span class="badge badge-primary">BnF Compliant</span>
+                                            <span class="badge badge-detail">Specialized preset</span>
+                                        {% else %}
+                                            {{ job.compression_mode|default:"Unknown" }}
+                                        {% endif %}
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Document Type</th>
-                                <td>{{ job.get_document_type_display }}</td>
+                                <td>
+                                    <div class="badge-container">
+                                        {% if job.document_type == 'photograph' %}
+                                            <span class="badge badge-primary">Photograph</span>
+                                        {% elif job.document_type == 'heritage_document' %}
+                                            <span class="badge badge-primary">Heritage Document</span>
+                                        {% elif job.document_type == 'color' %}
+                                            <span class="badge badge-primary">Color</span>
+                                        {% elif job.document_type == 'grayscale' %}
+                                            <span class="badge badge-primary">Grayscale</span>
+                                        {% else %}
+                                            {{ job.document_type|default:"Not specified" }}
+                                        {% endif %}
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
-                                <th>BnF Compliant</th>
-                                <td>{{ job.bnf_compliant|yesno:"Yes,No" }}</td>
+                                <th>
+                                    BnF Mode
+                                    <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Indicates how BnF compliance was applied to this job"></i>
+                                </th>
+                                <td>
+                                    <div class="badge-container">
+                                        {% if job.metrics.bnf_validation.is_compliant == "true" or job.metrics.bnf_compliance.is_compliant == "true" or job.metrics.bnf_compression_compliant == "true" %}
+                                            {% if job.compression_mode == 'bnf_compliant' %}
+                                                <span class="badge badge-primary">Auto</span>
+                                            {% else %}
+                                                <span class="badge badge-primary">Manual</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge badge-detail">No</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    BnF Compliance
+                                    <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Shows whether the final output meets BnF standards (including fallback strategy)"></i>
+                                </th>
+                                <td>
+                                    <div class="badge-container">
+                                        {% if job.status == 'completed' %}
+                                            {% if job.metrics.bnf_validation.checks.compression_ratio.passed == "true" %}
+                                                <span class="badge badge-success">Passed</span>
+                                                {% if job.metrics.bnf_validation.checks.compression_ratio.actual < job.metrics.bnf_validation.checks.compression_ratio.expected %}
+                                                    <span class="badge badge-detail">Lossless Fallback</span>
+                                                {% endif %}
+                                            {% elif job.metrics.bnf_validation.is_compliant == "true" %}
+                                                <span class="badge badge-success">Passed</span>
+                                                {% if job.metrics.bnf_validation.checks.compression_ratio.actual < job.metrics.bnf_validation.checks.compression_ratio.expected %}
+                                                    <span class="badge badge-detail">Lossless Fallback</span>
+                                                {% endif %}
+                                            {% elif job.metrics.bnf_compression_compliant or job.metrics.bnf_compliance.is_compliant == "true" %}
+                                                <span class="badge badge-success">Passed</span>
+                                                {% if job.document_type == 'heritage_document' or job.document_type == 'photograph' %}
+                                                    {% if job.compression_ratio < 3.8 %}
+                                                        <span class="badge badge-detail">Lossless Fallback</span>
+                                                    {% endif %}
+                                                {% elif job.document_type == 'color' %}
+                                                    {% if job.compression_ratio < 5.7 %}
+                                                        <span class="badge badge-detail">Lossless Fallback</span>
+                                                    {% endif %}
+                                                {% elif job.document_type == 'grayscale' %}
+                                                    {% if job.compression_ratio < 15.2 %}
+                                                        <span class="badge badge-detail">Lossless Fallback</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge badge-danger">Failed</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge badge-detail">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Target Ratio
+                                    <i class="bi bi-info-circle info-icon" data-bs-toggle="tooltip" title="Indicates whether the specific target compression ratio was achieved directly"></i>
+                                </th>
+                                <td>
+                                    <div class="badge-container">
+                                        {% if job.status == 'completed' %}
+                                            {% if job.metrics.bnf_validation.is_compliant == "true" or job.metrics.bnf_compliance.is_compliant == "true" or job.metrics.bnf_compression_compliant == "true" or job.bnf_compliant %}
+                                                {% if job.metrics.bnf_compliance.is_compliant == "true" %}
+                                                    <span class="badge badge-success">Yes</span>
+                                                    <span class="badge badge-detail">{{ job.compression_ratio }}:1 ≥ {{ job.metrics.bnf_compliance.target_ratio }}:1</span>
+                                                {% elif job.compression_mode == 'bnf_compliant' and job.metrics.bnf_validation.checks.compression_ratio %}
+                                                    <span class="badge badge-danger">No</span>
+                                                    <span class="badge badge-detail">{{ job.compression_ratio }}:1 < {{ job.metrics.bnf_validation.checks.compression_ratio.expected }}:1</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">No</span>
+                                                    {% if job.document_type == 'photograph' or job.document_type == 'heritage_document' %}
+                                                        <span class="badge badge-detail">{{ job.compression_ratio }}:1 < 4:1</span>
+                                                    {% elif job.document_type == 'color' %}
+                                                        <span class="badge badge-detail">{{ job.compression_ratio }}:1 < 6:1</span>
+                                                    {% elif job.document_type == 'grayscale' %}
+                                                        <span class="badge badge-detail">{{ job.compression_ratio }}:1 < 16:1</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="badge badge-detail">N/A</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge badge-detail">N/A</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Quality Setting</th>
@@ -580,6 +804,72 @@
                             metricsTableBody.appendChild(row);
                         }
                     }
+                    
+                    // Update BnF compliance badge if job is completed and was BnF compliant request
+                    if (data.status === 'completed') {
+                        const bnfComplianceBadgeContainer = document.querySelector('th:contains("BnF Compliant Compression")').nextElementSibling.querySelector('.badge-container');
+                        
+                        if (bnfComplianceBadgeContainer) {
+                            // Clear existing badges
+                            bnfComplianceBadgeContainer.innerHTML = '';
+                            
+                            let isCompliant = false;
+                            let useFallback = false;
+                            let targetRatio = 0;
+                            let actualRatio = 0;
+                            
+                            // Check all possible sources of compliance data
+                            if (data.formatted_metrics && data.formatted_metrics.bnf_validation) {
+                                // Primary source: bnf_validation
+                                isCompliant = data.formatted_metrics.bnf_validation.is_compliant === "true";
+                                
+                                // Check if using fallback strategy
+                                if (data.formatted_metrics.bnf_validation.checks && 
+                                    data.formatted_metrics.bnf_validation.checks.compression_ratio) {
+                                    targetRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.expected;
+                                    actualRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.actual;
+                                    useFallback = actualRatio < targetRatio;
+                                }
+                            } else if (data.formatted_metrics && data.formatted_metrics.bnf_compliance) {
+                                // Secondary source: bnf_compliance
+                                isCompliant = data.formatted_metrics.bnf_compliance.is_compliant === "true";
+                                
+                                // Check compression ratio for fallback
+                                targetRatio = data.formatted_metrics.bnf_compliance.target_ratio || 0;
+                                actualRatio = data.formatted_metrics.bnf_compliance.actual_ratio || 0;
+                                useFallback = actualRatio < targetRatio;
+                            } else if (data.formatted_metrics && data.formatted_metrics.bnf_compression_compliant !== undefined) {
+                                // Fallback to legacy field
+                                isCompliant = data.formatted_metrics.bnf_compression_compliant === true ||
+                                              data.formatted_metrics.bnf_compression_compliant === "true";
+                                              
+                                // Use compression ratio from data if available
+                                useFallback = data.compression_ratio && 
+                                             (data.document_type === 'heritage_document' && data.compression_ratio < 3.8) ||
+                                             (data.document_type === 'color' && data.compression_ratio < 5.7) ||
+                                             (data.document_type === 'grayscale' && data.compression_ratio < 15.2);
+                            }
+                            
+                            // Create compliance badge
+                            const badge = document.createElement('span');
+                            badge.className = `badge ${isCompliant ? 'bg-success' : 'bg-danger'}`;
+                            badge.textContent = isCompliant ? 'Passed' : 'Failed';
+                            bnfComplianceBadgeContainer.appendChild(badge);
+                            
+                            // Add fallback badge if needed
+                            if (isCompliant && useFallback) {
+                                const fallbackBadge = document.createElement('span');
+                                fallbackBadge.className = 'badge bg-info';
+                                fallbackBadge.setAttribute('data-bs-toggle', 'tooltip');
+                                fallbackBadge.setAttribute('title', 'This file uses lossless fallback strategy when target compression cannot be achieved without quality loss. This is BnF compliant.');
+                                fallbackBadge.textContent = 'Lossless Fallback';
+                                bnfComplianceBadgeContainer.appendChild(fallbackBadge);
+                                
+                                // Initialize tooltip for the new badge
+                                new bootstrap.Tooltip(fallbackBadge);
+                            }
+                        }
+                    }
                 }
                 
                 // Update compression metrics if available
@@ -773,11 +1063,9 @@
                 if (selectedFiles.length === checkboxes.length) {
                     selectAllCheckbox.checked = true;
                     selectAllCheckbox.indeterminate = false;
-                } else if (selectedFiles.length === 0) {
+                } else {
                     selectAllCheckbox.checked = false;
                     selectAllCheckbox.indeterminate = false;
-                } else {
-                    selectAllCheckbox.indeterminate = true;
                 }
             });
         });
@@ -903,6 +1191,12 @@
         
         // Set up file selection
         setupFileSelection();
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
         
         // Make file items clickable for downloading
         document.querySelectorAll('.file-item').forEach(item => {

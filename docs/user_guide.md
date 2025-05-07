@@ -101,16 +101,20 @@ When you enable BnF compliance (either through the dedicated compression mode or
 
 ### Understanding BnF Compliance Reports
 
-BnF compliance reports contain two main sections that may appear to provide contradictory information:
+When viewing job details for BnF-compliant conversions, you'll see three important indicators:
 
-- **bnf_validation**: Evaluates if the file meets overall BnF format specifications (wavelet transform, resolution levels, etc.)
-- **bnf_compliance**: Specifically checks if the target compression ratio was achieved
+1. **BnF Mode**: Indicates whether BnF compliance was requested when creating the job. This is simply a record of your selection during job creation.
 
-If your report shows `"is_compliant": true` in the bnf_validation section but `"is_compliant": false` in the bnf_compliance section, this is normal and expected behavior for certain types of images. According to BnF standards:
+2. **BnF Compliance**: Shows whether the final output meets BnF standards overall. This can show "Passed" even when the target compression ratio wasn't achieved directly, because BnF standards allow for a lossless fallback strategy.
 
-1. The system first attempts to achieve the target compression ratio using lossy compression
-2. If the target ratio cannot be achieved (which happens with certain image types), the system automatically falls back to lossless compression
-3. This fallback is considered fully compliant with BnF standards, which is why the overall validation passes
+3. **Target Ratio**: Indicates whether the specific compression ratio target was achieved directly. This shows the relationship between your actual compression ratio and the target ratio for your document type.
+
+For complete compliance information, the job detail page may show a "Lossless Fallback" indicator. This means:
+
+- The system first attempted to achieve the target compression ratio using lossy compression
+- The target ratio couldn't be achieved without compromising quality
+- The system automatically fell back to lossless compression to preserve image quality
+- This fallback is fully compliant with BnF standards, which is why the overall compliance shows "Passed"
 
 This automatic fallback mechanism is specifically mentioned in the BnF documentation to prevent excessive information loss for images that don't compress well with lossy methods.
 

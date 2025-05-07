@@ -23,7 +23,7 @@ def get_version_info():
         'django': django.get_version(),
         'python': platform.python_version(),
         'system': f"{platform.system()} {platform.release()}",
-        'jp2forge_web': getattr(settings, 'VERSION', '0.1.3'),  # Get version from settings
+        'jp2forge_web': getattr(settings, 'VERSION', '0.1.4'),  # Get version from settings
     }
     
     # Try to get versions of other key dependencies

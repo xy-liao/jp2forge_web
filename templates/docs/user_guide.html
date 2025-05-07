@@ -204,19 +204,55 @@
                         <h3 class="h5 mt-4">Understanding BnF Compliance Reports</h3>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <p>BnF compliance reports contain two main sections that may appear to provide contradictory information:</p>
-                                <ul>
-                                    <li><strong>bnf_validation</strong>: Evaluates if the file meets overall BnF format specifications (wavelet transform, resolution levels, etc.)</li>
-                                    <li><strong>bnf_compliance</strong>: Specifically checks if the target compression ratio was achieved</li>
-                                </ul>
-                                
-                                <p>If your report shows <code>"is_compliant": true</code> in the bnf_validation section but <code>"is_compliant": false</code> in the bnf_compliance section, this is normal and expected behavior for certain types of images. According to BnF standards:</p>
+                                <p>When viewing job details for BnF-compliant conversions, you'll see three important indicators:</p>
                                 
                                 <ol>
-                                    <li>The system first attempts to achieve the target compression ratio using lossy compression</li>
-                                    <li>If the target ratio cannot be achieved (which happens with certain image types), the system automatically falls back to lossless compression</li>
-                                    <li>This fallback is considered fully compliant with BnF standards, which is why the overall validation passes</li>
+                                    <li>
+                                        <strong>BnF Mode</strong>: Indicates whether BnF compliance was requested when creating the job. This is simply a record of your selection during job creation.
+                                        <div class="mt-2 mb-3">
+                                            <span class="badge" style="background-color: #0d6efd; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">Auto</span> 
+                                            <span class="text-muted small ms-2">When the BnF Compliant compression mode was selected</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="badge" style="background-color: #0d6efd; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">Manual</span> 
+                                            <span class="text-muted small ms-2">When BnF compliance was added to another compression mode</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <strong>BnF Compliance</strong>: Shows whether the final output meets BnF standards overall. This can show "Passed" even when the target compression ratio wasn't achieved directly, because BnF standards allow for a lossless fallback strategy.
+                                        <div class="mt-2 mb-3">
+                                            <span class="badge" style="background-color: #198754; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">Passed</span> 
+                                            <span class="badge ms-2" style="background-color: #6c757d; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem; opacity: 0.85;">Lossless Fallback</span> 
+                                            <span class="text-muted small ms-2">Indicates compliance was achieved, possibly using fallback</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="badge" style="background-color: #dc3545; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">Failed</span> 
+                                            <span class="text-muted small ms-2">When the output does not meet BnF standards</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <strong>Target Ratio</strong>: Indicates whether the specific compression ratio target was achieved directly. This shows the relationship between your actual compression ratio and the target ratio for your document type.
+                                        <div class="mt-2 mb-3">
+                                            <span class="badge" style="background-color: #198754; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">Yes</span> 
+                                            <span class="badge ms-2" style="background-color: #6c757d; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem; opacity: 0.85;">10.5:1 ≥ 6:1</span>
+                                            <span class="text-muted small ms-2">When target ratio was achieved</span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="badge" style="background-color: #dc3545; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem;">No</span> 
+                                            <span class="badge ms-2" style="background-color: #6c757d; color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.875rem; opacity: 0.85;">3.2:1 < 6:1</span>
+                                            <span class="text-muted small ms-2">When target ratio was not achieved</span>
+                                        </div>
+                                    </li>
                                 </ol>
+                                
+                                <p>For complete compliance information, the job detail page may show a "Lossless Fallback" indicator. This means:</p>
+                                
+                                <ul>
+                                    <li>The system first attempted to achieve the target compression ratio using lossy compression</li>
+                                    <li>The target ratio couldn't be achieved without compromising quality</li>
+                                    <li>The system automatically fell back to lossless compression to preserve image quality</li>
+                                    <li>This fallback is fully compliant with BnF standards, which is why the overall compliance shows "Passed"</li>
+                                </ul>
                                 
                                 <div class="alert alert-info mb-0">
                                     <p class="mb-0">This automatic fallback mechanism is specifically mentioned in the BnF documentation to prevent excessive information loss for images that don't compress well with lossy methods.</p>

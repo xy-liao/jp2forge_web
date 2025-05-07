@@ -1,0 +1,146 @@
+{
+  "job_id": "mock-job-123",
+  "original_file": "mock_image.png",
+  "compression_mode": "bnf_compliant",
+  "document_type": "photograph",
+  "bnf_compliant": "true",
+  "completed_at": "2025-05-07T17:30:00Z",
+  "output_file": [
+    "mock_photograph_bnf_compliant_page_1.jp2",
+    "mock_photograph_bnf_compliant_page_2.jp2",
+    "mock_photograph_bnf_compliant_page_3.jp2"
+  ],
+  "original_size": 1024000,
+  "converted_size": 204800,
+  "compression_ratio": "4.00:1",
+  "psnr": 42.5,
+  "ssim": 0.95,
+  "mse": 0.0012,
+  "bnf_compliance": {
+    "is_compliant": "true",
+    "target_ratio": 4.0,
+    "actual_ratio": 4.0,
+    "document_type": "photograph",
+    "tolerance": 0.05
+  },
+  "bnf_validation": {
+    "is_compliant": "true",
+    "checks": {
+      "resolution_levels": {
+        "passed": "true",
+        "expected": 10,
+        "actual": 10,
+        "message": "Resolution levels meet BnF requirements"
+      },
+      "wavelet_transform": {
+        "passed": "true",
+        "expected": "9-7",
+        "actual": "9-7",
+        "message": "Wavelet transform type meets BnF requirements"
+      },
+      "compression_ratio": {
+        "passed": "true",
+        "expected": 4.0,
+        "actual": 4.0,
+        "message": "Compression ratio 4.00:1 meets requirements"
+      }
+    }
+  },
+  "pages": 3,
+  "page_files": [
+    "page_1.jp2",
+    "page_2.jp2",
+    "page_3.jp2"
+  ],
+  "per_page_metrics": [
+    {
+      "page_number": 1,
+      "page_filename": "page_1.jp2",
+      "psnr": 42.7,
+      "ssim": 0.9811,
+      "mse": 0.001689,
+      "file_sizes": {
+        "original_size": 341333,
+        "converted_size": 68267,
+        "compression_ratio": "4.00:1"
+      }
+    },
+    {
+      "page_number": 2,
+      "page_filename": "page_2.jp2",
+      "psnr": 40.72,
+      "ssim": 0.9666,
+      "mse": 0.001258,
+      "file_sizes": {
+        "original_size": 341333,
+        "converted_size": 68267,
+        "compression_ratio": "4.00:1"
+      }
+    },
+    {
+      "page_number": 3,
+      "page_filename": "page_3.jp2",
+      "psnr": 42.11,
+      "ssim": 0.9616,
+      "mse": 0.000978,
+      "file_sizes": {
+        "original_size": 341333,
+        "converted_size": 68267,
+        "compression_ratio": "4.00:1"
+      }
+    }
+  ],
+  "multipage_results": [
+    {
+      "page": 1,
+      "status": "SUCCESS",
+      "output_file": "page_1.jp2",
+      "metrics": {
+        "page_number": 1,
+        "page_filename": "page_1.jp2",
+        "psnr": 42.7,
+        "ssim": 0.9811,
+        "mse": 0.001689,
+        "file_sizes": {
+          "original_size": 341333,
+          "converted_size": 68267,
+          "compression_ratio": "4.00:1"
+        }
+      }
+    },
+    {
+      "page": 2,
+      "status": "SUCCESS",
+      "output_file": "page_2.jp2",
+      "metrics": {
+        "page_number": 2,
+        "page_filename": "page_2.jp2",
+        "psnr": 40.72,
+        "ssim": 0.9666,
+        "mse": 0.001258,
+        "file_sizes": {
+          "original_size": 341333,
+          "converted_size": 68267,
+          "compression_ratio": "4.00:1"
+        }
+      }
+    },
+    {
+      "page": 3,
+      "status": "SUCCESS",
+      "output_file": "page_3.jp2",
+      "metrics": {
+        "page_number": 3,
+        "page_filename": "page_3.jp2",
+        "psnr": 42.11,
+        "ssim": 0.9616,
+        "mse": 0.000978,
+        "file_sizes": {
+          "original_size": 341333,
+          "converted_size": 68267,
+          "compression_ratio": "4.00:1"
+        }
+      }
+    }
+  ]
+}

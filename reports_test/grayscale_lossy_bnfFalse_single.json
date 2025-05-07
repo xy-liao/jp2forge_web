@@ -1,0 +1,15 @@
+{
+  "job_id": "mock-job-123",
+  "original_file": "mock_image.png",
+  "compression_mode": "lossy",
+  "document_type": "grayscale",
+  "bnf_compliant": "false",
+  "completed_at": "2025-05-07T17:30:00Z",
+  "output_file": "mock_grayscale_lossy.jp2",
+  "original_size": 1024000,
+  "converted_size": 204800,
+  "compression_ratio": "12.00:1",
+  "psnr": 42.5,
+  "ssim": 0.95,
+  "mse": 0.0012
+}

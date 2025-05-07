@@ -31,7 +31,7 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="#whats-new" class="list-group-item list-group-item-action">What's New in v0.1.3</a>
+                        <a href="#whats-new" class="list-group-item list-group-item-action">What's New in v0.1.4</a>
                         <a href="#about" class="list-group-item list-group-item-action">About JP2Forge Web</a>
                         <a href="#documentation" class="list-group-item list-group-item-action">Documentation Contents</a>
                         <a href="#relationship" class="list-group-item list-group-item-action">Relationship to JP2Forge Core</a>
@@ -44,15 +44,15 @@
             <div class="card">
                 <div class="card-body">
                     <section id="whats-new" class="mb-5">
-                        <h2>What's New in v0.1.3</h2>
-                        <p>The v0.1.3 release includes significant improvements to the Docker setup with a more reliable and robust configuration:</p>
+                        <h2>What's New in v0.1.4</h2>
+                        <p>The v0.1.4 release focuses on improving HTTP method handling for increased security and aligning documentation across the system:</p>
                         
                         <ul>
-                            <li><strong>Complete Docker overhaul</strong> with enhanced error handling and dependency management</li>
-                            <li><strong>Fixed critical issues</strong> with Git-based dependency installation in Docker</li>
-                            <li><strong>Improved health checks</strong> for services to prevent startup failures</li>
-                            <li><strong>Enhanced Docker setup script</strong> with better error reporting and environment configuration</li>
-                            <li><strong>Comprehensive documentation updates</strong> for Docker deployment</li>
+                            <li><strong>Enhanced HTTP method security</strong> with proper GET/POST restrictions on all view functions</li>
+                            <li><strong>Fixed potential CSRF vulnerabilities</strong> by adding explicit method validation</li>
+                            <li><strong>Aligned documentation templates</strong> with their corresponding Markdown files for consistency</li>
+                            <li><strong>Unified documentation navigation</strong> between static HTML templates and Markdown-based pages</li>
+                            <li><strong>Added missing documentation sections</strong> like Mock Mode Information and BnF compliance details</li>
                         </ul>
                         
                         <p>See the <a href="{% url 'version_info' %}">Version Information</a> page for more details about this release.</p>
