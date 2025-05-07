@@ -875,4 +875,9 @@ def version_info(request):
     View that displays the version information for the application
     and its dependencies.
     """
-    return render(request, 'converter/version_info.html')
+    if request.method in ['GET', 'POST']:
+        return render(request, 'converter/version_info.html')
+    else:
+        # Return 405 Method Not Allowed for other HTTP methods
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['GET', 'POST'])
