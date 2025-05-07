@@ -99,6 +99,21 @@ The application provides a checkbox option to enable BnF (Bibliothèque national
 
 When you enable BnF compliance (either through the dedicated compression mode or via the checkbox), the application passes this parameter to the underlying JP2Forge library. The library then applies the appropriate technical parameters required by BnF standards.
 
+### Understanding BnF Compliance Reports
+
+BnF compliance reports contain two main sections that may appear to provide contradictory information:
+
+- **bnf_validation**: Evaluates if the file meets overall BnF format specifications (wavelet transform, resolution levels, etc.)
+- **bnf_compliance**: Specifically checks if the target compression ratio was achieved
+
+If your report shows `"is_compliant": true` in the bnf_validation section but `"is_compliant": false` in the bnf_compliance section, this is normal and expected behavior for certain types of images. According to BnF standards:
+
+1. The system first attempts to achieve the target compression ratio using lossy compression
+2. If the target ratio cannot be achieved (which happens with certain image types), the system automatically falls back to lossless compression
+3. This fallback is considered fully compliant with BnF standards, which is why the overall validation passes
+
+This automatic fallback mechanism is specifically mentioned in the BnF documentation to prevent excessive information loss for images that don't compress well with lossy methods.
+
 ### BnF Reference Documentation
 
 For reference, the implementation follows standards defined in these official BnF documents:
