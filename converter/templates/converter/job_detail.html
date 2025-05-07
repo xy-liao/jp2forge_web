@@ -865,8 +865,8 @@
                                 fallbackBadge.textContent = 'Lossless Fallback';
                                 bnfComplianceBadgeContainer.appendChild(fallbackBadge);
                                 
-                                // Initialize tooltip for the new badge
-                                new bootstrap.Tooltip(fallbackBadge);
+                                // The tooltip will be initialized by the global tooltip initialization
+                                // in the DOMContentLoaded event handler
                             }
                         }
                     }
