@@ -28,10 +28,5 @@ def logout_view(request):
     Custom logout view that handles both GET and POST methods
     and redirects to the login page after logout
     """
-    if request.method in ['GET', 'POST']:
-        logout(request)
-        return redirect('login')
-    else:
-        # Return 405 Method Not Allowed for other HTTP methods
-        from django.http import HttpResponseNotAllowed
-        return HttpResponseNotAllowed(['GET', 'POST'])
+    logout(request)
+    return redirect('login')

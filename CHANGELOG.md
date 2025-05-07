@@ -10,6 +10,7 @@ This release focuses on improving HTTP method handling for increased security an
 - Implemented explicit method validation for all view functions in converter app
 - Fixed potential CSRF vulnerabilities by adding @require_POST decorator to all form submission endpoints
 - Added @require_GET decorator to read-only views for better security
+- Restored logout functionality compatibility with direct links while maintaining security
 
 ### Documentation Improvements
 

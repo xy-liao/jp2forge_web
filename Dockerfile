@@ -7,6 +7,7 @@
 # - Fixed potential CSRF vulnerabilities with explicit method validation
 # - Aligned documentation templates with their Markdown counterparts
 # - Unified documentation navigation between systems
+# - Restored logout functionality compatibility with direct links and GET requests
 #
 # V0.1.3 improvements and fixes:
 # - Fixed context processor import issue with stats_processor
