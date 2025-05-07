@@ -12,4 +12,6 @@ urlpatterns = [
     path('troubleshooting/', views.docs_troubleshooting, name='troubleshooting'),
     path('docker_setup/', views.docs_docker_setup, name='docker_setup'),
     path('README/', views.docs_readme, name='readme'),
+    # General document viewer for compatibility with both systems
+    path('view/<str:doc_key>/', views.view_documentation, name='view'),
 ]

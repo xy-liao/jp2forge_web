@@ -1,7 +1,13 @@
 # JP2Forge Web Dockerfile
-# Version: 0.1.3 (May 6, 2025)
+# Version: 0.1.4 (May 7, 2025)
 # 
 # This Dockerfile builds an environment for running the JP2Forge Web application.
+# V0.1.4 improvements and fixes:
+# - Enhanced HTTP method handling with proper GET/POST restrictions
+# - Fixed potential CSRF vulnerabilities with explicit method validation
+# - Aligned documentation templates with their Markdown counterparts
+# - Unified documentation navigation between systems
+#
 # V0.1.3 improvements and fixes:
 # - Fixed context processor import issue with stats_processor
 # - Improved logout functionality with custom view handler for both GET and POST methods

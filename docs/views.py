@@ -71,6 +71,18 @@ def docs_docker_setup(request):
 def docs_readme(request):
     return render_doc_page(request, 'README', 'Documentation Home')
 
+# Generic view function for viewing any documentation by its key
+@require_GET
+def view_documentation(request, doc_key):
+    """
+    Generic view function to render any documentation page by its key
+    This provides compatibility between the static HTML templates
+    and the dynamic Markdown-based documentation system.
+    """
+    # Format the title nicely by replacing underscores with spaces and capitalizing
+    title = doc_key.replace('_', ' ').title()
+    return render_doc_page(request, doc_key, title)
+
 @require_GET
 def docs_index(request):
     """

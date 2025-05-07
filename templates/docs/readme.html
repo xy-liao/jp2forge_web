@@ -24,40 +24,95 @@
                 <a href="{% url 'docs_user_guide' %}" class="list-group-item list-group-item-action">User Guide</a>
                 <a href="{% url 'about' %}" class="list-group-item list-group-item-action">About JP2Forge Web</a>
             </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>On This Page</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#whats-new" class="list-group-item list-group-item-action">What's New in v0.1.3</a>
+                        <a href="#about" class="list-group-item list-group-item-action">About JP2Forge Web</a>
+                        <a href="#documentation" class="list-group-item list-group-item-action">Documentation Contents</a>
+                        <a href="#relationship" class="list-group-item list-group-item-action">Relationship to JP2Forge Core</a>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <h2>About JP2Forge Web</h2>
-                    <p>JP2Forge Web is a Django-based web application that provides a user-friendly interface for converting various image formats to JPEG2000. It serves as a front-end to the core JP2Forge conversion scripts, offering features like:</p>
-                    
-                    <ul>
-                        <li>User authentication and job management</li>
-                        <li>Batch image conversion</li>
-                        <li>Different compression modes including BnF compliance</li>
-                        <li>Job status tracking and notifications</li>
-                        <li>Downloadable converted files</li>
-                    </ul>
+                    <section id="whats-new" class="mb-5">
+                        <h2>What's New in v0.1.3</h2>
+                        <p>The v0.1.3 release includes significant improvements to the Docker setup with a more reliable and robust configuration:</p>
+                        
+                        <ul>
+                            <li><strong>Complete Docker overhaul</strong> with enhanced error handling and dependency management</li>
+                            <li><strong>Fixed critical issues</strong> with Git-based dependency installation in Docker</li>
+                            <li><strong>Improved health checks</strong> for services to prevent startup failures</li>
+                            <li><strong>Enhanced Docker setup script</strong> with better error reporting and environment configuration</li>
+                            <li><strong>Comprehensive documentation updates</strong> for Docker deployment</li>
+                        </ul>
+                        
+                        <p>See the <a href="{% url 'version_info' %}">Version Information</a> page for more details about this release.</p>
+                    </section>
 
-                    <h2>Documentation Contents</h2>
+                    <section id="about" class="mb-5">
+                        <h2>About JP2Forge Web</h2>
+                        <p>JP2Forge Web is a Django-based web application that provides a user-friendly interface for converting various image formats to JPEG2000. It serves as a front-end to the core JP2Forge conversion scripts, offering features like:</p>
+                        
+                        <ul>
+                            <li>User authentication and job management</li>
+                            <li>Batch image conversion</li>
+                            <li>Different compression modes including BnF compliance</li>
+                            <li>Job status tracking and notifications</li>
+                            <li>Downloadable converted files</li>
+                        </ul>
 
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h3 class="h5"><i class="bi bi-book"></i> <a href="{% url 'docs_user_guide' %}">User Guide</a></h3>
-                            <p>How to use the JP2Forge Web application for image conversion.</p>
+                        <div class="alert alert-info">
+                            <p>JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script and its BnF (Bibliothèque nationale de France) compliance capabilities. This web interface implements a curated subset of JP2Forge's full functionality, focusing on showcasing key features in an accessible way.</p>
+                            <p class="mb-0">For access to all JP2Forge capabilities, users are encouraged to work directly with the <a href="https://github.com/xy-liao/jp2forge" target="_blank">JP2Forge script</a>.</p>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h3 class="h5"><i class="bi bi-info-circle"></i> <a href="{% url 'about' %}">About JP2Forge Web</a></h3>
-                            <p>Information about the JP2Forge Web application and its features.</p>
+                    <section id="documentation" class="mb-5">
+                        <h2>Documentation Contents</h2>
+
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="h5"><i class="bi bi-book"></i> <a href="{% url 'docs_user_guide' %}">User Guide</a></h3>
+                                <p>How to use the JP2Forge Web application for image conversion.</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <h2>Relationship to JP2Forge Core</h2>
-                    <p>This documentation covers only the web application interface. The JP2Forge Web application is built on top of the JP2Forge core conversion scripts, providing a user-friendly web interface for the functionality.</p>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="h5"><i class="bi bi-docker"></i> <a href="{% url 'docs:view' 'docker_setup' %}">Docker Setup</a></h3>
+                                <p>Docker installation and configuration instructions.</p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="h5"><i class="bi bi-question-circle"></i> <a href="{% url 'docs:view' 'troubleshooting' %}">Troubleshooting</a></h3>
+                                <p>Solutions for common issues with Redis, Docker, and conversions.</p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h3 class="h5"><i class="bi bi-info-circle"></i> <a href="{% url 'about' %}">About JP2Forge Web</a></h3>
+                                <p>Information about the JP2Forge Web application and its features.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="relationship" class="mb-5">
+                        <h2>Relationship to JP2Forge Core</h2>
+                        <p>This documentation covers only the web application interface. The JP2Forge Web application is built on top of the JP2Forge core conversion scripts, providing a user-friendly web interface for the functionality.</p>
+                        <p>For documentation on the underlying JP2Forge core conversion scripts and their parameters, please refer to the separate <a href="https://github.com/xy-liao/jp2forge" target="_blank">JP2Forge repository</a>.</p>
+                    </section>
                 </div>
             </div>
         </div>

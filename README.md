@@ -1,8 +1,8 @@
-# JP2Forge Web Application v0.1.3
+# JP2Forge Web Application v0.1.4
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
-[![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.3)
+[![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.4)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
@@ -28,6 +28,8 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 - Multi-page TIFF support
 - Real-time progress tracking
 - Service management tools to prevent multiple running instances during testing
+- Enhanced HTTP method handling with proper security protections
+- Comprehensive documentation with aligned templates and markdown content
 
 ## Supported File Formats
 

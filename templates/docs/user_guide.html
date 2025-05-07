@@ -31,10 +31,12 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
+                        <a href="#important-note" class="list-group-item list-group-item-action">Important Note</a>
                         <a href="#creating-jobs" class="list-group-item list-group-item-action">Creating a New Conversion Job</a>
                         <a href="#compression-options" class="list-group-item list-group-item-action">Understanding Compression Options</a>
                         <a href="#document-types" class="list-group-item list-group-item-action">Document Types</a>
                         <a href="#bnf-compliance" class="list-group-item list-group-item-action">BnF Compliance Options</a>
+                        <a href="#mock-mode" class="list-group-item list-group-item-action">Mock Mode Information</a>
                         <a href="#managing-jobs" class="list-group-item list-group-item-action">Viewing and Managing Jobs</a>
                         <a href="#downloading" class="list-group-item list-group-item-action">Downloading Converted Files</a>
                     </div>
@@ -45,6 +47,14 @@
         <div class="col-md-9">
             <div class="card">
                 <div class="card-body">
+                    <section id="important-note" class="mb-5">
+                        <h2>Important Note</h2>
+                        <div class="alert alert-info">
+                            <p>JP2Forge Web serves primarily as a promotional demonstration for the JP2Forge script and its BnF (Bibliothèque nationale de France) compliance capabilities. This web interface implements a curated subset of JP2Forge's full functionality, focusing on showcasing key features in an accessible way.</p>
+                            <p class="mb-0">For access to all JP2Forge capabilities, users are encouraged to work directly with the <a href="https://github.com/xy-liao/jp2forge" target="_blank">JP2Forge script</a>.</p>
+                        </div>
+                    </section>
+
                     <section id="creating-jobs" class="mb-5">
                         <h2>Creating a New Conversion Job</h2>
                         <p>To create a new conversion job:</p>
@@ -56,6 +66,9 @@
                             <li>Click "Upload and Convert" to start the conversion process</li>
                         </ol>
                         <p>The system supports batch conversion of multiple files in one job.</p>
+                        <div class="alert alert-secondary">
+                            <strong>File Size Limit:</strong> The maximum allowed file size for uploads is 100MB per file. Larger files will need to be reduced before uploading.
+                        </div>
                     </section>
 
                     <section id="compression-options" class="mb-5">
@@ -186,6 +199,118 @@
                                 <li>The BnF Compliant mode applies a comprehensive set of BnF specifications</li>
                                 <li>The checkbox option allows you to apply BnF standards while using your preferred compression mode</li>
                             </ul>
+                        </div>
+
+                        <h3 class="h5 mt-4">BnF Reference Documentation</h3>
+                        <p>The implementation follows standards defined in these official BnF documents:</p>
+                        <ul>
+                            <li><strong>BnF Referential (2015)</strong>: <a href="https://www.bnf.fr/sites/default/files/2018-11/ref_num_fichier_image_v2.pdf" target="_blank">Référentiel de format de fichier image v2</a></li>
+                            <li><strong>BnF Documentation (2021)</strong>: <a href="https://www.bnf.fr/sites/default/files/2021-04/politiqueFormatsDePreservationBNF_20210408.pdf" target="_blank">Formats de données pour la préservation à long terme</a></li>
+                        </ul>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Document Type</th>
+                                        <th>BnF Notation</th>
+                                        <th>Standard Notation</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Photograph</td>
+                                        <td>1:4</td>
+                                        <td>4:1</td>
+                                        <td><code>document_type=photograph</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Heritage Document</td>
+                                        <td>1:4</td>
+                                        <td>4:1</td>
+                                        <td><code>document_type=heritage_document</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Color</td>
+                                        <td>1:6</td>
+                                        <td>6:1</td>
+                                        <td><code>document_type=color</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Grayscale</td>
+                                        <td>1:16</td>
+                                        <td>16:1</td>
+                                        <td><code>document_type=grayscale</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="mock-mode" class="mb-5">
+                        <h2>Mock Mode Information</h2>
+                        <p>JP2Forge Web includes a testing/development feature called "Mock Mode" which can be enabled by setting <code>JP2FORGE_MOCK_MODE=True</code> in your <code>.env</code> file.</p>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">What Mock Mode Does</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>When mock mode is enabled, JP2Forge Web simulates the conversion process without requiring the actual JP2Forge library:</p>
+                                <ol>
+                                    <li>Files are <strong>not</strong> truly converted to JPEG2000 format - they are merely copied or small placeholder files are created</li>
+                                    <li>The resulting files with <code>.jp2</code> extension are <strong>not valid JPEG2000 files</strong> and lack the expected compression benefits</li>
+                                    <li>The system generates fictitious quality metrics (PSNR, SSIM) and compression ratios for display purposes</li>
+                                    <li>All the web interface functionality can be tested without the actual conversion engine</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">When to Use Mock Mode</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Mock mode is appropriate for:</p>
+                                <ul>
+                                    <li>UI development work on JP2Forge Web</li>
+                                    <li>Testing the application flow without installing the JP2Forge library</li>
+                                    <li>Demonstration purposes when actual conversion functionality is not needed</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Limitations of Mock Mode</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>Important limitations to be aware of:</p>
+                                <ul>
+                                    <li>Files are not actually compressed - they remain their original size or become small placeholders</li>
+                                    <li>Image information is not preserved in any meaningful way</li>
+                                    <li>The output files cannot be viewed as JPEG2000 images by other software</li>
+                                    <li>Reported statistics are simulated, not real measurements</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h3 class="h5 mb-0">Identifying Mock Mode</h3>
+                            </div>
+                            <div class="card-body">
+                                <p>When mock mode is active, the following indicators appear:</p>
+                                <ul>
+                                    <li>A notice appears on the status page indicating mock mode</li>
+                                    <li>Job history shows mock conversions labeled as such</li>
+                                    <li>Log files record that mock mode is being used</li>
+                                </ul>
+                                <div class="alert alert-warning">
+                                    <p class="mb-0">For actual JPEG2000 conversion, you must disable mock mode and ensure the JP2Forge library is properly installed and configured.</p>
+                                </div>
+                            </div>
                         </div>
                     </section>
 

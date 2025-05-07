@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum, Case, When, IntegerField, Q
 from django.contrib import messages
+from django.views.decorators.http import require_GET, require_POST
 import os
 import logging
 import json
@@ -877,6 +878,7 @@ def download_selected_files(request):
     
     return response
 
+@require_GET
 def docs_readme(request):
     """
     View for JP2Forge Web documentation home page
@@ -890,6 +892,7 @@ def docs_readme(request):
         from django.http import HttpResponseNotAllowed
         return HttpResponseNotAllowed(['GET', 'POST'])
 
+@require_GET
 def docs_user_guide(request):
     """
     View for JP2Forge Web user guide
@@ -903,6 +906,7 @@ def docs_user_guide(request):
         from django.http import HttpResponseNotAllowed
         return HttpResponseNotAllowed(['GET', 'POST'])
 
+@require_GET
 def about(request):
     """
     View for about JP2Forge Web page
@@ -916,14 +920,10 @@ def about(request):
         from django.http import HttpResponseNotAllowed
         return HttpResponseNotAllowed(['GET', 'POST'])
 
+@require_GET
 def version_info(request):
     """
     View that displays the version information for the application
     and its dependencies.
     """
-    if request.method in ['GET', 'POST']:
-        return render(request, 'converter/version_info.html')
-    else:
-        # Return 405 Method Not Allowed for other HTTP methods
-        from django.http import HttpResponseNotAllowed
-        return HttpResponseNotAllowed(['GET', 'POST'])
+    return render(request, 'converter/version_info.html')

@@ -1,5 +1,33 @@
 # Release Notes
 
+## v0.1.4 (May 7, 2025) - HTTP Method Handling & Documentation Improvements
+
+This release focuses on improving HTTP method handling for increased security and aligning documentation across the system for a better user experience.
+
+### Security Improvements
+
+- Enhanced HTTP method handling with proper method decorators to enforce GET/POST restrictions
+- Implemented explicit method validation for all view functions in converter app
+- Fixed potential CSRF vulnerabilities by adding @require_POST decorator to all form submission endpoints
+- Added @require_GET decorator to read-only views for better security
+
+### Documentation Improvements
+
+- Aligned HTML templates in templates/docs/ with their corresponding Markdown files in docs/
+- Added missing "Mock Mode Information" section to user guide template
+- Added "Important Note" about JP2Forge Web being a demonstration tool to documentation
+- Added detailed BnF compliance information with reference documentation
+- Added "What's New in v0.1.3" section to documentation home page
+- Created unified documentation navigation system between static HTML and Markdown-based pages
+- Fixed inconsistencies between documentation systems with a generic view function
+
+### Technical Improvements
+
+- Added view_documentation function to docs/views.py for improved navigation
+- Updated URL patterns in docs/urls.py to support direct viewing of any documentation page by key
+- Fixed navigation links between documentation pages for consistency
+- Improved dark mode support in documentation templates
+
 ## v0.1.3 (May 6, 2025) - Docker Improvements & Security Updates
 
 This release significantly improves the Docker setup with a more reliable and robust configuration, fixes the PostgreSQL driver detection, and includes critical security updates to multiple dependencies.
