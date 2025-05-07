@@ -1,7 +1,13 @@
 # JP2Forge Web Docker Compose Configuration
-# Version: 0.1.3 (May 6, 2025)
+# Version: 0.1.4 (May 7, 2025)
 #
 # This docker-compose file defines the services needed to run JP2Forge Web in Docker.
+# V0.1.4 improvements:
+# - Enhanced HTTP method handling with proper GET/POST restrictions
+# - Fixed potential CSRF vulnerabilities with explicit method validation
+# - Improved logout functionality with CSRF protection while maintaining convenience
+# - Aligned documentation templates with their Markdown counterparts
+#
 # V0.1.3 improvements:
 # - Fixed context processor import issue with stats_processor
 # - Improved logout functionality with custom view handler
@@ -37,7 +43,7 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=PostgreSQL Database for JP2Forge Web"
-      - "com.jp2forge.version=0.1.3"
+      - "com.jp2forge.version=0.1.4"
 
   # Redis for Celery
   redis:
@@ -56,14 +62,14 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=Redis for JP2Forge Web Celery"
-      - "com.jp2forge.version=0.1.3"
+      - "com.jp2forge.version=0.1.4"
 
   # Django Web Application
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jp2forge_web:0.1.3
+    image: jp2forge_web:0.1.4
     container_name: jp2forge_web
     volumes:
       - static_volume:/app/staticfiles
@@ -88,14 +94,14 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=JP2Forge Web Application"
-      - "com.jp2forge.version=0.1.3"
+      - "com.jp2forge.version=0.1.4"
 
   # Celery Worker for Background Tasks
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jp2forge_celery:0.1.3
+    image: jp2forge_celery:0.1.4
     container_name: jp2forge_worker
     command: celery -A jp2forge_web worker -l INFO --concurrency=2
     volumes:
@@ -118,7 +124,7 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=Celery Worker for JP2Forge Web"
-      - "com.jp2forge.version=0.1.3"
+      - "com.jp2forge.version=0.1.4"
 
 volumes:
   postgres_data:
