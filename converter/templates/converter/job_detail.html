@@ -937,7 +937,7 @@
                                     bnfComplianceBadgeContainer.appendChild(fallbackBadge);
                                     
                                     // Initialize the tooltip for this new element
-                                    new bootstrap.Tooltip(fallbackBadge);
+                                    initTooltip(fallbackBadge);
                                 }
                             }
                         }
@@ -1253,6 +1253,13 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
     
+    // Function to initialize Bootstrap tooltips
+    function initTooltip(element) {
+        if (element) {
+            return new bootstrap.Tooltip(element);
+        }
+    }
+    
     // Initialize functions when the page is fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // Start polling job status
@@ -1267,7 +1274,7 @@
         // Initialize tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
+            return initTooltip(tooltipTriggerEl);
         });
         
         // Make file items clickable for downloading
