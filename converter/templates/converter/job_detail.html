@@ -807,66 +807,73 @@
                     
                     // Update BnF compliance badge if job is completed and was BnF compliant request
                     if (data.status === 'completed') {
-                        const bnfComplianceBadgeContainer = document.querySelector('th:contains("BnF Compliant Compression")').nextElementSibling.querySelector('.badge-container');
+                        // Find the BnF Compliance row by looking for the header text
+                        const bnfComplianceHeaders = Array.from(document.querySelectorAll('th')).filter(
+                            th => th.textContent.trim().startsWith('BnF Compliance')
+                        );
                         
-                        if (bnfComplianceBadgeContainer) {
-                            // Clear existing badges
-                            bnfComplianceBadgeContainer.innerHTML = '';
+                        if (bnfComplianceHeaders.length > 0) {
+                            const bnfComplianceBadgeContainer = bnfComplianceHeaders[0].nextElementSibling.querySelector('.badge-container');
                             
-                            let isCompliant = false;
-                            let useFallback = false;
-                            let targetRatio = 0;
-                            let actualRatio = 0;
-                            
-                            // Check all possible sources of compliance data
-                            if (data.formatted_metrics && data.formatted_metrics.bnf_validation) {
-                                // Primary source: bnf_validation
-                                isCompliant = data.formatted_metrics.bnf_validation.is_compliant === "true";
+                            if (bnfComplianceBadgeContainer) {
+                                // Clear existing badges
+                                bnfComplianceBadgeContainer.innerHTML = '';
                                 
-                                // Check if using fallback strategy
-                                if (data.formatted_metrics.bnf_validation.checks && 
-                                    data.formatted_metrics.bnf_validation.checks.compression_ratio) {
-                                    targetRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.expected;
-                                    actualRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.actual;
+                                let isCompliant = false;
+                                let useFallback = false;
+                                let targetRatio = 0;
+                                let actualRatio = 0;
+                                
+                                // Check all possible sources of compliance data
+                                if (data.formatted_metrics && data.formatted_metrics.bnf_validation) {
+                                    // Primary source: bnf_validation
+                                    isCompliant = data.formatted_metrics.bnf_validation.is_compliant === "true";
+                                    
+                                    // Check if using fallback strategy
+                                    if (data.formatted_metrics.bnf_validation.checks && 
+                                        data.formatted_metrics.bnf_validation.checks.compression_ratio) {
+                                        targetRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.expected;
+                                        actualRatio = data.formatted_metrics.bnf_validation.checks.compression_ratio.actual;
+                                        useFallback = actualRatio < targetRatio;
+                                    }
+                                } else if (data.formatted_metrics && data.formatted_metrics.bnf_compliance) {
+                                    // Secondary source: bnf_compliance
+                                    isCompliant = data.formatted_metrics.bnf_compliance.is_compliant === "true";
+                                    
+                                    // Check compression ratio for fallback
+                                    targetRatio = data.formatted_metrics.bnf_compliance.target_ratio || 0;
+                                    actualRatio = data.formatted_metrics.bnf_compliance.actual_ratio || 0;
                                     useFallback = actualRatio < targetRatio;
+                                } else if (data.formatted_metrics && data.formatted_metrics.bnf_compression_compliant !== undefined) {
+                                    // Fallback to legacy field
+                                    isCompliant = data.formatted_metrics.bnf_compression_compliant === true ||
+                                                  data.formatted_metrics.bnf_compression_compliant === "true";
+                                                  
+                                    // Use compression ratio from data if available
+                                    useFallback = data.compression_ratio && 
+                                                 (data.document_type === 'heritage_document' && data.compression_ratio < 3.8) ||
+                                                 (data.document_type === 'color' && data.compression_ratio < 5.7) ||
+                                                 (data.document_type === 'grayscale' && data.compression_ratio < 15.2);
                                 }
-                            } else if (data.formatted_metrics && data.formatted_metrics.bnf_compliance) {
-                                // Secondary source: bnf_compliance
-                                isCompliant = data.formatted_metrics.bnf_compliance.is_compliant === "true";
                                 
-                                // Check compression ratio for fallback
-                                targetRatio = data.formatted_metrics.bnf_compliance.target_ratio || 0;
-                                actualRatio = data.formatted_metrics.bnf_compliance.actual_ratio || 0;
-                                useFallback = actualRatio < targetRatio;
-                            } else if (data.formatted_metrics && data.formatted_metrics.bnf_compression_compliant !== undefined) {
-                                // Fallback to legacy field
-                                isCompliant = data.formatted_metrics.bnf_compression_compliant === true ||
-                                              data.formatted_metrics.bnf_compression_compliant === "true";
-                                              
-                                // Use compression ratio from data if available
-                                useFallback = data.compression_ratio && 
-                                             (data.document_type === 'heritage_document' && data.compression_ratio < 3.8) ||
-                                             (data.document_type === 'color' && data.compression_ratio < 5.7) ||
-                                             (data.document_type === 'grayscale' && data.compression_ratio < 15.2);
-                            }
-                            
-                            // Create compliance badge
-                            const badge = document.createElement('span');
-                            badge.className = `badge ${isCompliant ? 'bg-success' : 'bg-danger'}`;
-                            badge.textContent = isCompliant ? 'Passed' : 'Failed';
-                            bnfComplianceBadgeContainer.appendChild(badge);
-                            
-                            // Add fallback badge if needed
-                            if (isCompliant && useFallback) {
-                                const fallbackBadge = document.createElement('span');
-                                fallbackBadge.className = 'badge bg-info';
-                                fallbackBadge.setAttribute('data-bs-toggle', 'tooltip');
-                                fallbackBadge.setAttribute('title', 'This file uses lossless fallback strategy when target compression cannot be achieved without quality loss. This is BnF compliant.');
-                                fallbackBadge.textContent = 'Lossless Fallback';
-                                bnfComplianceBadgeContainer.appendChild(fallbackBadge);
+                                // Create compliance badge
+                                const badge = document.createElement('span');
+                                badge.className = `badge ${isCompliant ? 'bg-success' : 'bg-danger'}`;
+                                badge.textContent = isCompliant ? 'Passed' : 'Failed';
+                                bnfComplianceBadgeContainer.appendChild(badge);
                                 
-                                // The tooltip will be initialized by the global tooltip initialization
-                                // in the DOMContentLoaded event handler
+                                // Add fallback badge if needed
+                                if (isCompliant && useFallback) {
+                                    const fallbackBadge = document.createElement('span');
+                                    fallbackBadge.className = 'badge bg-info';
+                                    fallbackBadge.setAttribute('data-bs-toggle', 'tooltip');
+                                    fallbackBadge.setAttribute('title', 'This file uses lossless fallback strategy when target compression cannot be achieved without quality loss. This is BnF compliant.');
+                                    fallbackBadge.textContent = 'Lossless Fallback';
+                                    bnfComplianceBadgeContainer.appendChild(fallbackBadge);
+                                    
+                                    // Initialize the tooltip for this new element
+                                    new bootstrap.Tooltip(fallbackBadge);
+                                }
                             }
                         }
                     }
