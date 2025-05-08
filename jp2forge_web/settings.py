@@ -148,7 +148,20 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Celery settings
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', '')
+if os.environ.get('DOCKER_ENVIRONMENT') == 'true' or os.environ.get('SECURE_DOCKER_ENVIRONMENT') == 'true':
+    # Use authenticated Redis URL in Docker environment
+    if REDIS_PASSWORD:
+        CELERY_BROKER_URL = f'redis://:{REDIS_PASSWORD}@redis:6379/0'
+    else:
+        CELERY_BROKER_URL = 'redis://redis:6379/0'
+else:
+    # Use local Redis for development
+    if REDIS_PASSWORD:
+        CELERY_BROKER_URL = f'redis://:{REDIS_PASSWORD}@localhost:6379/0'
+    else:
+        CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'

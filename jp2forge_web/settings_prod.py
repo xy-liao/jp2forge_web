@@ -22,7 +22,7 @@ if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set in environment. This is required for production.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Configure allowed hosts properly for Docker
 allowed_from_env = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')

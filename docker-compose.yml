@@ -1,5 +1,5 @@
 # JP2Forge Web Docker Compose Configuration
-# Version: 0.1.4 (May 7, 2025)
+# Version: 0.1.4 (May 8, 2025)
 #
 # This docker-compose file defines the services needed to run JP2Forge Web in Docker.
 # V0.1.4 improvements:

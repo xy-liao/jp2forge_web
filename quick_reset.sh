@@ -19,7 +19,9 @@ rm -rf __pycache__ */__pycache__ */*/__pycache__
 rm -rf .venv venv env
 rm -rf staticfiles
 rm -rf media
-rm -f db.sqlite3
+# Remove all database files
+echo "Removing database files..."
+rm -f *.sqlite3
 rm -f *.log logs/*.log
 
 # Create fresh virtual environment

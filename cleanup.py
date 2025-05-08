@@ -34,6 +34,7 @@ import time
 import sys
 from pathlib import Path
 import psutil
+import glob
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Clean up JP2Forge Web environment.")
@@ -240,9 +241,9 @@ def main():
 
     # 5. Reset the database (if not --keep-db)
     if not args.keep_db:
-        print("\nRemoving database...")
-        db_file = base_dir / 'db.sqlite3'
-        if db_file.exists():
+        print("\nRemoving database files...")
+        # Remove all database files using glob pattern
+        for db_file in glob.glob(str(base_dir / "*.sqlite3")):
             try:
                 os.remove(db_file)
                 print(f"  Removed {db_file}")
