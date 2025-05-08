@@ -81,6 +81,7 @@ COMPLETED_TASKS.md
 test_output/
 test_jp2forge.py
 analyze_logs.py
+test_kit/
 
 # Database files
 *.sqlite3
