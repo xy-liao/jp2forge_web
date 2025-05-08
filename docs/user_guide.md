@@ -99,6 +99,14 @@ The application provides a checkbox option to enable BnF (Bibliothèque national
 
 When you enable BnF compliance (either through the dedicated compression mode or via the checkbox), the application passes this parameter to the underlying JP2Forge library. The library then applies the appropriate technical parameters required by BnF standards.
 
+BnF compliance is fundamentally based on meeting specific technical specifications rather than achieving particular quality metrics values:
+
+- **Technical Parameters**: BnF requires specific parameters like 10 resolution levels, 1024x1024 tile size, RPCL progression order, and other technical settings.
+- **Compression Ratio**: Target compression ratios are set based on document type (with a 5% tolerance).
+- **Quality Preservation**: While traditional quality metrics (like PSNR or SSIM) are not used to determine BnF compliance, quality is preserved through the enforcement of technical parameters and fallback strategy.
+
+This is why quality metrics might not be displayed for BnF-compliant jobs - compliance is determined by the configuration parameters being correctly applied, not by specific metric thresholds.
+
 ### Understanding BnF Compliance Reports
 
 When viewing job details for BnF-compliant conversions, you'll see three important indicators:
@@ -112,7 +120,7 @@ When viewing job details for BnF-compliant conversions, you'll see three importa
 For complete compliance information, the job detail page may show a "Lossless Fallback" indicator. This means:
 
 - The system first attempted to achieve the target compression ratio using lossy compression
-- The target ratio couldn't be achieved without compromising quality
+- The target ratio couldn't be achieved without compromising quality (exceeding the 5% quality loss tolerance)
 - The system automatically fell back to lossless compression to preserve image quality
 - This fallback is fully compliant with BnF standards, which is why the overall compliance shows "Passed"
 
