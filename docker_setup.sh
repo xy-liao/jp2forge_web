@@ -252,7 +252,19 @@ echo -e "\n${YELLOW}Performing security verification...${NC}"
 $COMPOSE_COMMAND exec -T web pip list | grep -v -e "^Package" -e "^-" > /tmp/jp2forge_pip_list.txt
 echo -e "${GREEN}✓ Security verification complete${NC}"
 
-# Step 11: Show success message and helpful tips
+# Step 11: Clean up unnecessary base images to save space
+echo -e "\n${YELLOW}Cleaning up unnecessary base images...${NC}"
+# Check if our containers are running successfully before removing the base image
+if docker ps | grep -q "jp2forge_web" && docker ps | grep -q "jp2forge_worker"; then
+    echo -e "Removing base Python image to save disk space..."
+    # Remove the base Python image only if our containers are running
+    docker image rm python:3.12-slim &>/dev/null || true
+    echo -e "${GREEN}✓ Cleaned up unnecessary images${NC}"
+else
+    echo -e "${YELLOW}⚠ Skipping base image cleanup as containers are not fully running${NC}"
+fi
+
+# Step 12: Show success message and helpful tips
 echo -e "\n${GREEN}==============================================${NC}"
 echo -e "${GREEN}       JP2FORGE WEB SETUP COMPLETE!            ${NC}"
 echo -e "${GREEN}==============================================${NC}"
