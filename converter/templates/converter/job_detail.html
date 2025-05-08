@@ -312,6 +312,71 @@
     .tab-content {
         padding-top: 15px;
     }
+
+    /* Visual quality indicator */
+    .quality-indicator {
+        height: 6px;
+        margin: 10px 0 15px 0;
+        background: linear-gradient(to right, #dc3545, #ffc107, #198754);
+        border-radius: 3px;
+        position: relative;
+        width: 100%;
+    }
+    
+    /* Quality marker/indicator */
+    .quality-marker {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: #212529;
+        border-radius: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        z-index: 2;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+    }
+    
+    [data-bs-theme="dark"] .quality-marker {
+        background-color: #f8f9fa;
+    }
+    
+    .quality-marker:hover {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    
+    .quality-marker:active {
+        transform: translate(-50%, -50%) scale(0.9);
+        cursor: grabbing;
+    }
+    
+    /* Style for quality range indicator texts */
+    .quality-label-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+    
+    .quality-label-container span {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    [data-bs-theme="dark"] .quality-label-container span {
+        color: #adb5bd;
+    }
+    
+    .quality-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 5px;
+        transition: all 0.2s ease;
+    }
+    
+    .quality-display {
+        padding-right: 15px;
+    }
 </style>
 {% endblock %}
 
@@ -544,7 +609,7 @@
                             </tr>
                             <tr>
                                 <th>Quality Setting</th>
-                                <td>{{ job.quality }}</td>
+                                <td>{{ job.quality|default:"40" }}</td>
                             </tr>
                         </table>
                     </div>

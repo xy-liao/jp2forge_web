@@ -778,8 +778,119 @@
                 // Add new marker at current position
                 const marker = document.createElement('div');
                 marker.className = 'quality-marker';
+                marker.id = 'quality-marker';
                 marker.style.left = `${position}%`;
                 qualityIndicator.appendChild(marker);
+            }
+        }
+        
+        // Make the quality slider interactive
+        function initInteractiveSlider() {
+            if (!qualityInput || !qualityIndicator) return;
+            
+            let isDragging = false;
+            
+            // Update quality value based on slider position
+            function updateQualityFromPosition(e) {
+                const rect = qualityIndicator.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const width = rect.width;
+                
+                // Calculate percentage (1-100)
+                let percent = Math.round((offsetX / width) * 100);
+                percent = Math.min(Math.max(percent, 1), 100);
+                
+                // Update the input field value
+                qualityInput.value = percent;
+                
+                // Trigger input event to ensure form validation works
+                const inputEvent = new Event('input', { bubbles: true });
+                qualityInput.dispatchEvent(inputEvent);
+                
+                // Update the visual indicator
+                updateQualityIndicator();
+            }
+            
+            // Click anywhere on the slider to set quality
+            qualityIndicator.addEventListener('click', function(e) {
+                // Don't handle if clicking on the marker itself
+                if (e.target.classList.contains('quality-marker')) return;
+                updateQualityFromPosition(e);
+            });
+            
+            // Allow dragging the marker
+            qualityIndicator.addEventListener('mousedown', function(e) {
+                if (!e.target.classList.contains('quality-marker')) return;
+                
+                e.preventDefault();
+                isDragging = true;
+                
+                // Add dragging class for visual feedback
+                e.target.classList.add('dragging');
+                
+                // Add global mouse move and up handlers
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+            });
+            
+            // Handle touch events for mobile
+            qualityIndicator.addEventListener('touchstart', function(e) {
+                if (!e.target.classList.contains('quality-marker')) return;
+                
+                e.preventDefault();
+                isDragging = true;
+                
+                // Add dragging class for visual feedback
+                e.target.classList.add('dragging');
+                
+                // Add global touch move and end handlers
+                document.addEventListener('touchmove', handleTouchMove);
+                document.addEventListener('touchend', handleTouchEnd);
+            });
+            
+            function handleMouseMove(e) {
+                if (!isDragging) return;
+                updateQualityFromPosition(e);
+            }
+            
+            function handleTouchMove(e) {
+                if (!isDragging) return;
+                
+                const touch = e.touches[0];
+                const touchEvent = {
+                    clientX: touch.clientX,
+                    preventDefault: function() {}
+                };
+                
+                updateQualityFromPosition(touchEvent);
+            }
+            
+            function handleMouseUp() {
+                if (!isDragging) return;
+                
+                // Remove dragging class
+                const marker = qualityIndicator.querySelector('.quality-marker');
+                if (marker) marker.classList.remove('dragging');
+                
+                isDragging = false;
+                
+                // Clean up event listeners
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            }
+            
+            function handleTouchEnd() {
+                if (!isDragging) return;
+                
+                // Remove dragging class
+                const marker = qualityIndicator.querySelector('.quality-marker');
+                if (marker) marker.classList.remove('dragging');
+                
+                isDragging = false;
+                
+                // Clean up event listeners
+                document.removeEventListener('touchmove', handleTouchMove);
+                document.removeEventListener('touchend', handleTouchEnd);
             }
         }
         
@@ -790,6 +901,9 @@
             // Update indicator when quality changes
             qualityInput.addEventListener('input', updateQualityIndicator);
             qualityInput.addEventListener('change', updateQualityIndicator);
+            
+            // Make slider interactive
+            initInteractiveSlider();
         }
         
         // Initialize on page load
