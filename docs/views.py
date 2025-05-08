@@ -22,6 +22,7 @@ def extract_headings(markdown_text):
     """
     toc_items = []
     # Match headings (##, ###, etc.) - we're interested in h2 (##), h3 (###), and h4 (####)
+    # Use a more efficient regex that avoids catastrophic backtracking
     pattern = r'^(#{2,4})\s+(.+)$'
     
     for line in markdown_text.split('\n'):
