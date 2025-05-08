@@ -2,379 +2,109 @@
 
 This guide provides solutions for common issues you might encounter when using the JP2Forge Web application.
 
-## Table of Contents
-1. [Managing Multiple Service Instances](#managing-multiple-service-instances)
-2. [Redis and Task Processing Issues](#redis-and-task-processing-issues)
-3. [Docker Setup Issues](#docker-setup-issues)
-4. [System Information Page Issues](#system-information-page-issues)
-5. [Conversion Errors](#conversion-errors)
-6. [Debugging Conversion Issues](#debugging-conversion-issues)
+## Conversion Issues
 
-## Managing Multiple Service Instances
+### File Upload Problems
 
-One of the most common issues during development and testing is having multiple instances of services (Django, Celery, Redis) running simultaneously, which can cause port conflicts, resource contention, and unexpected behavior.
+| Issue | Solution |
+|-------|----------|
+| "File too large" error | Your file exceeds the 100MB limit. Try splitting large files or resizing images before uploading. |
+| "Unsupported file format" error | JP2Forge Web only accepts JPG/JPEG, TIFF/TIF, PNG, and BMP formats. Convert your file to a supported format. |
+| Upload appears to freeze | Check your internet connection. For very large files, uploads may take time - be patient. |
 
-### Using Service Management Tools
+### Conversion Failures
 
-JP2Forge Web now includes dedicated tools to manage services and prevent these issues:
+| Issue | Solution |
+|-------|----------|
+| Job shows "Failed" status | Check the job details page for specific error messages. Most common causes are file corruption or memory limitations. |
+| Job stuck in "Pending" | The task queue might be experiencing delays. Try refreshing the page or checking back later. |
+| "JP2Forge command failed" | Your file might have special characteristics that the converter can't process. Try using different conversion settings. |
 
-```bash
-# Check what services are currently running
-./reset_environment.sh status
+### Quality Issues
 
-# Stop all services and clean up the environment
-./reset_environment.sh clean
+| Issue | Solution |
+|-------|----------|
+| Output file has visual artifacts | Try using lossless mode instead of lossy to preserve all image data. |
+| Poor compression ratio | For better compression, use lossy mode with appropriate quality settings for your content type. |
+| Output file is larger than expected | This can happen with lossless compression of already optimized files. Try supervised mode for better control. |
 
-# Start fresh instances of all required services
-./reset_environment.sh start
+### BnF Compliance Issues
 
-# Restart all services (combines clean and start)
-./reset_environment.sh restart
-```
+| Issue | Solution |
+|-------|----------|
+| "BnF Compliance: Failed" | Check if you selected the correct document type for your content. Heritage documents have different requirements than photographs. |
+| "Target Ratio: No" with fallback | This is normal for some files that don't compress well. JP2Forge automatically falls back to lossless compression to maintain quality. |
+| "No metrics shown" for BnF-compliant jobs | This is expected - BnF compliance is determined by parameters rather than visual metrics. |
 
-### Common Service Management Issues
+## Account and Access Problems
 
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| Multiple Celery workers | Jobs processed multiple times or inconsistent results | `./reset_environment.sh clean` to stop all workers |
-| Django port conflicts | "Address already in use" errors when starting the server | `./reset_environment.sh status` to find the conflicting process, then `clean` |
-| Multiple Redis instances | Celery tasks not processed, inconsistent caching | `./reset_environment.sh clean` to stop all Redis instances |
-| Resource contention | System running slow, high CPU/memory usage | `./reset_environment.sh status` to identify the processes, then `clean` |
+### Login Issues
 
-### When Starting a New Testing Session
+| Issue | Solution |
+|-------|----------|
+| Can't log in | Verify your username and password. Use the password reset function if needed. |
+| Session expires too quickly | Your browser might be clearing cookies. Adjust your browser privacy settings. |
+| "Access denied" errors | You may not have the necessary permissions for that action. Contact your administrator. |
 
-Before starting a new testing session, always clean up the environment to ensure you're starting fresh:
+### Job Management Problems
 
-```bash
-# Stop services and clean environment
-./reset_environment.sh clean
+| Issue | Solution |
+|-------|----------|
+| Can't see your jobs | Make sure you're logged in with the same account that created the jobs. |
+| Can't delete a job | Only completed or failed jobs can be deleted. Running jobs must finish first. |
+| Jobs disappear automatically | Completed jobs are kept for 30 days by default, then automatically removed. |
 
-# Start fresh services
-./reset_environment.sh start
-```
+## Technical Issues
 
-### Advanced Service Management
+### Browser Problems
 
-For more control over specific services:
+| Issue | Solution |
+|-------|----------|
+| Interface displays incorrectly | Try clearing your browser cache or try a different browser (Chrome and Firefox are recommended). |
+| Can't download files | Check your browser's download settings and ensure pop-ups are allowed for the application URL. |
+| Page errors or blank screens | Try refreshing the page or clearing your browser cache. |
 
-```bash
-# Stop only specific services
-python manage_services.py stop --services=celery,redis
+### Docker Environment Issues
 
-# Force kill services that won't stop gracefully
-python manage_services.py stop --force
+For users running their own Docker installation:
 
-# Start only the Django server
-python manage_services.py start --services=django
-```
+#### Application isn't starting
 
-## Redis and Task Processing Issues
-
-### Preventing Stuck Jobs
-
-The JP2Forge Web application uses Redis as a message broker for Celery tasks. Sometimes jobs may get stuck in the "pending" state due to Redis configuration issues. We've implemented several solutions to help prevent this:
-
-1. **Automatic Redis Configuration**: The startup script now automatically configures Redis to prevent the most common cause of stuck jobs - the `stop-writes-on-bgsave-error` setting.
-
-2. **Redis Health Monitoring**: A dedicated monitoring script checks and fixes Redis issues:
-
+1. Check container status:
    ```bash
-   # Run the Redis monitor to check for issues and fix them
-   python monitor_redis.py
+   docker compose ps
    ```
 
-3. **Recovery Management Command**: A Django management command to recover stuck jobs:
-
+2. Check container logs:
    ```bash
-   # Find and recover jobs stuck in pending state for more than 15 minutes
-   python manage.py recover_stuck_jobs
-
-   # Dry run to see what would be done without making changes
-   python manage.py recover_stuck_jobs --dry-run
-
-   # Fix Redis configuration to prevent future issues
-   python manage.py recover_stuck_jobs --fix-redis-config
-
-   # Reset Redis task queues if they appear corrupted
-   python manage.py recover_stuck_jobs --reset-redis
+   docker compose logs web
+   docker compose logs worker
    ```
 
-### Common Redis Issues
-
-#### Jobs Stuck in "Pending" State
-
-If your jobs are stuck in the "pending" state, it's often due to one of these Redis issues:
-
-1. **Redis Persistence Error**: Redis is configured to stop accepting writes when it can't save snapshots to disk. This can be fixed with:
-
+3. Restart all services:
    ```bash
-   # Via Redis CLI
-   redis-cli config set stop-writes-on-bgsave-error no
-
-   # Or use our management command
-   python manage.py recover_stuck_jobs --fix-redis-config
+   docker compose restart
    ```
 
-2. **Queue Corruption**: Sometimes the Celery task queue in Redis can become corrupted. Reset it with:
+#### Redis and Celery Issues
 
+If jobs stay in "Pending" state:
+
+1. Restart the worker:
    ```bash
-   # Reset the queue and recover jobs
-   python manage.py recover_stuck_jobs --reset-redis
+   docker compose restart worker
    ```
 
-3. **Redis Memory Issues**: If Redis runs out of memory, it can't store new tasks. Check memory usage:
-
+2. Check Redis status:
    ```bash
-   # Check Redis memory usage
-   redis-cli info memory | grep used_memory_human
+   docker compose exec redis redis-cli ping
    ```
+   Should return "PONG".
 
-#### Redis Connection Issues
+## Getting More Help
 
-If the application can't connect to Redis:
+If you continue to experience issues:
 
-1. **Check if Redis is running**:
-   ```bash
-   redis-cli ping
-   ```
-   
-   If this doesn't return "PONG", Redis isn't running.
-
-2. **Start Redis**:
-   ```bash
-   # On macOS
-   brew services start redis
-   
-   # On Ubuntu/Debian
-   sudo service redis-server start
-   ```
-
-3. **Check Redis log files** for errors:
-   ```bash
-   # Typical locations (may vary by system)
-   cat /var/log/redis/redis-server.log  # Linux
-   ```
-
-### Monitoring Redis Health
-
-To ensure Redis operates correctly and prevent issues:
-
-1. **Run the Redis Monitor Periodically**:
-   ```bash
-   python monitor_redis.py
-   ```
-
-2. **Set up a Cron Job** for automatic monitoring:
-   ```bash
-   # Edit crontab
-   crontab -e
-   
-   # Add this line to run every 15 minutes
-   */15 * * * * cd /path/to/jp2forge_web && /path/to/python monitor_redis.py >> logs/redis_monitor_cron.log 2>&1
-   ```
-
-3. **Check Web App Logs** for Redis-related errors:
-   ```bash
-   # Look for Redis errors in the django log
-   grep "Redis" logs/django.log
-   ```
-
-### If All Else Fails: Full Reset
-
-If you're still experiencing issues, a complete reset of the Redis system can help:
-
-```bash
-# Stop Redis
-brew services stop redis  # macOS
-sudo service redis-server stop  # Ubuntu/Debian
-
-# Delete Redis data file (⚠️ Warning: This removes all Redis data)
-rm /usr/local/var/db/redis/dump.rdb  # macOS (location may vary)
-rm /var/lib/redis/dump.rdb  # Ubuntu/Debian (location may vary)
-
-# Start Redis fresh
-brew services start redis  # macOS
-sudo service redis-server start  # Ubuntu/Debian
-
-# Recover any stuck jobs
-python manage.py recover_stuck_jobs
-```
-
-## Docker Setup Issues
-
-The v0.1.3 release includes significant improvements to Docker setup reliability. However, if you still encounter issues:
-
-1. **General Docker setup troubleshooting**:
-   ```bash
-   # Get a comprehensive setup with improved error handling
-   ./docker_setup.sh
-   ```
-
-2. **Container logs for specific services**:
-   ```bash
-   docker-compose logs web
-   docker-compose logs worker
-   docker-compose logs db
-   docker-compose logs redis
-   ```
-
-3. **Git-based dependency issues** (fixed in v0.1.3):
-   - If you see errors about 'git not found' or errors fetching GitHub repositories, ensure your Dockerfile has Git installed:
-   ```
-   RUN apt-get update && apt-get install -y git
-   ```
-
-4. **Database connection errors**:
-   ```bash
-   # Check if the PostgreSQL service is running
-   docker-compose ps db
-   
-   # Check if the database is ready to accept connections
-   docker-compose exec db pg_isready
-   
-   # Rebuild from scratch in case of persistent issues
-   docker-compose down -v  # Remove volumes to start fresh
-   docker-compose up -d    # Restart containers
-   docker-compose exec web python manage.py migrate  # Apply migrations
-   ```
-
-5. **Redis connection issues**:
-   ```bash
-   # Verify Redis is responding
-   docker-compose exec redis redis-cli ping
-   # Should return "PONG"
-   
-   # Check connectivity from the web container
-   docker-compose exec web nc -zv redis 6379
-   ```
-
-6. **Container restart loops** (improved handling in v0.1.3):
-   - Check container logs to determine why a service keeps restarting
-   - Use the enhanced docker-entrypoint.sh script from v0.1.3 that includes better error handling
-   - Look for connection failures to dependent services (DB or Redis)
-
-7. **Environment variable issues**:
-   - Ensure your .env file is properly located in the project root
-   - Verify that environment variables are being passed correctly to containers
-   - The improved docker_setup.sh script in v0.1.3 creates a default .env file if needed
-
-8. **Volume mounting issues**:
-   - Check if Docker has permissions to mount volumes on your host system
-   - Inspect volume status: `docker volume ls` and `docker volume inspect [volume_name]`
-   - The v0.1.3 Docker setup uses properly defined named volumes for better persistence
-
-9. **If you're switching from a local development environment to Docker**:
-   - Ensure no local processes are using the same ports (8000, 6379, etc.)
-   - Stop any local Celery workers that might be running
-   - Run `pkill -f "celery -A jp2forge_web"` to stop any running Celery processes
-
-## System Information Page Issues
-
-The System Information page provides details about your installed packages and database drivers. Here are solutions for common display issues:
-
-### PostgreSQL Driver Shows as "Not Installed" in Docker
-
-If you're running in Docker and the System Information page shows "PostgreSQL Driver: not installed" despite the application working correctly:
-
-1. **This is normal and fixed in v0.1.3**: The system was updated to correctly detect both `psycopg2` and `psycopg2-binary` packages.
-
-2. **Verify database connection actually works**:
-   ```bash
-   # In Docker environment
-   docker compose exec web python manage.py check
-   ```
-   If the check passes without database errors, your PostgreSQL connection is working correctly regardless of what the System Information page displays.
-
-3. **Check which driver is installed**:
-   ```bash
-   # In Docker environment
-   docker compose exec web pip list | grep psycopg2
-   ```
-   This will show whether you have `psycopg2` or `psycopg2-binary` installed.
-
-4. **Manually verify database connection**:
-   ```bash
-   # In Docker environment
-   docker compose exec web python -c "from django.db import connection; cursor = connection.cursor(); print('Database connection working')"
-   ```
-   If this prints "Database connection working", your database is properly configured.
-
-### Other Package Version Issues
-
-If the System Information page shows unexpected versions or missing packages:
-
-1. **Check actually installed packages**:
-   ```bash
-   pip list  # In virtual environment
-   # Or in Docker
-   docker compose exec web pip list
-   ```
-
-2. **Refresh package information**:
-   ```bash
-   # Restart the web server
-   ./reset_environment.sh restart --services=django
-   # Or in Docker
-   docker compose restart web
-   ```
-
-3. **Check for package name variations**: Some packages use different PyPI names than their import names.
-
-## Conversion Errors
-
-Below are common errors you may encounter during the conversion process and how to resolve them:
-
-### File Upload Errors
-
-| Error | Possible Cause | Solution |
-|-------|---------------|----------|
-| "File too large" | File exceeds the `MAX_UPLOAD_SIZE` setting | Resize the image or increase the `MAX_UPLOAD_SIZE` in your `.env` file |
-| "Unsupported file format" | File extension not recognized | Ensure your file has one of these extensions: .jpg, .jpeg, .tif, .tiff, .png, .bmp |
-| "Invalid file content" | File is corrupted or not the format its extension suggests | Check the file integrity with another application or convert to a supported format |
-
-### Conversion Process Errors
-
-| Error | Possible Cause | Solution |
-|-------|---------------|----------|
-| "Memory error during conversion" | Server lacks sufficient memory for large file processing | Use a smaller file or increase the server memory allocation |
-| "JP2Forge command failed" | Issue with the underlying JP2Forge library | Check logs/converter.log for detailed error messages |
-| "Metadata extraction failed" | ExifTool not properly installed or accessible | Verify ExifTool is installed and in your PATH |
-| "Timeout during conversion" | Conversion taking longer than allowed time | Adjust the Celery task timeout setting in `settings.py` |
-
-### Task Queue Errors
-
-| Error | Possible Cause | Solution |
-|-------|---------------|----------|
-| "Task stuck in pending state" | Redis connection issues | See [Redis Troubleshooting](#redis-and-task-processing-issues) section |
-| "Task failed with unknown error" | Unhandled exception in the worker process | Check logs/celery.log for the full traceback |
-
-## Debugging Conversion Issues
-
-For detailed debugging of conversion issues:
-
-1. **Check Application Logs**:
-   ```bash
-   tail -n 100 logs/converter.log  # For conversion-specific issues
-   tail -n 100 logs/celery.log     # For task queue issues
-   tail -n 100 logs/django.log     # For web application issues
-   tail -n 100 logs/error.log      # For general error messages
-   ```
-
-2. **Run a Test Conversion Manually**:
-   ```bash
-   # From project directory
-   python test_jp2forge.py --input path/to/image.tif --mode lossless
-   ```
-
-3. **Verify JP2Forge Library Installation**:
-   ```bash
-   python check_jp2forge.py
-   ```
-
-4. **Enable Debug Mode**:
-   In your `.env` file, set:
-   ```
-   DEBUG=True
-   CONVERSION_DEBUG=True
-   ```
-   This will provide more detailed logs during the conversion process.
+1. Check the [GitHub repository](https://github.com/xy-liao/jp2forge_web) for known issues or to report new ones.
+2. Contact your system administrator if you're using a managed instance.
+3. Try converting a simple test file (small JPG) to verify basic functionality.

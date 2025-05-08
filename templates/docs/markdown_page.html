@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}{{ title }} - JP2Forge Documentation{% endblock %}
+{% block title %}{{ title }} | JP2Forge Web{% endblock %}
 
 {% block extra_css %}
 <style>
     .markdown-content {
         line-height: 1.6;
-        padding: 1rem;
     }
     
     .markdown-content h1,
@@ -126,30 +126,55 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container">
     <div class="row mb-4">
         <div class="col-md-8">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'docs:index' %}">Documentation</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
-                </ol>
-            </nav>
             <h1>{{ title }}</h1>
+            <p class="lead">{{ description|default:"" }}</p>
         </div>
         <div class="col-md-4 text-end">
-            <a href="{% url 'docs:index' %}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Documentation
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
             </a>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-lg-12">
-            <div class="card shadow-sm">
+        <div class="col-md-3">
+            <div class="list-group mb-4">
+                <a href="{% url 'docs_readme' %}" class="list-group-item list-group-item-action {% if page_name == 'readme' %}active{% endif %}">Documentation Home</a>
+                <a href="{% url 'docs_user_guide' %}" class="list-group-item list-group-item-action {% if page_name == 'user_guide' %}active{% endif %}">User Guide</a>
+                <a href="{% url 'docs:view' 'docker_setup' %}" class="list-group-item list-group-item-action {% if page_name == 'docker_setup' %}active{% endif %}">Docker Setup</a>
+                <a href="{% url 'docs:view' 'troubleshooting' %}" class="list-group-item list-group-item-action {% if page_name == 'troubleshooting' %}active{% endif %}">Troubleshooting</a>
+                <a href="{% url 'about' %}" class="list-group-item list-group-item-action {% if page_name == 'about' %}active{% endif %}">About JP2Forge Web</a>
+            </div>
+            
+            {% if toc_items %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>On This Page</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for item in toc_items %}
+                            {% if item.level == 2 %}
+                                <a href="#{{ item.id }}" class="list-group-item list-group-item-action">{{ item.title }}</a>
+                            {% elif item.level == 3 %}
+                                <a href="#{{ item.id }}" class="list-group-item list-group-item-action ps-4">• {{ item.title }}</a>
+                            {% elif item.level == 4 %}
+                                <a href="#{{ item.id }}" class="list-group-item list-group-item-action ps-5">◦ {{ item.title }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
                 <div class="card-body markdown-content">
-                    {{ content }}
+                    {{ content|safe }}
                 </div>
             </div>
         </div>
