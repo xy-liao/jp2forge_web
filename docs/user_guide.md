@@ -19,6 +19,9 @@ To start converting your images:
 4. Configure your conversion settings (details below)
 5. Click "Upload and Convert" to start the process
 
+![Conversion Interface](../static/images/docs/jp2forge_conversion.png)
+*The conversion interface allows you to select files and configure conversion settings*
+
 **Supported File Types:** JPG/JPEG, TIFF/TIF, PNG, and BMP
 
 **Maximum File Size:** 100MB per file
@@ -81,12 +84,15 @@ A "Lossless Fallback" indicator means the system automatically switched to lossl
 
 ## Managing Your Jobs
 
+![Dashboard Interface](../static/images/docs/jp2forge_dashboard.png)
+*The dashboard provides an overview of your conversion jobs and system statistics*
+
 ### Viewing Job Status
 
 After submitting a job:
 
 - You'll see the job detail page with current status
-- Status progresses from "Pending" → "Processing" → "Completed" (or "Failed")
+- Status progresses from "Pending" → "Processing" → "Completed" (or "Failed") 
 - Completed jobs show download links for your converted files
 
 ### Jobs List Page
@@ -110,6 +116,9 @@ To download your converted JPEG2000 files:
 1. Go to the job detail page by clicking on a job in your jobs list
 2. For each successfully converted file, click the "Download" button
 3. For multi-page documents, individual pages appear as separate files
+
+![Results View](../static/images/docs/jp2forge_results.png)
+*The results view shows conversion details and allows you to download your converted files*
 
 ## Troubleshooting
 

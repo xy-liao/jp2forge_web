@@ -46,4 +46,14 @@ This documentation covers only the web application interface. For documentation 
 
 ## Screenshots
 
-![JP2Forge Web Dashboard](../static/images/dashboard-screenshot.png)
+### Dashboard
+![JP2Forge Dashboard](../static/images/docs/jp2forge_dashboard.png)
+*Interactive dashboard showing conversion statistics and job monitoring*
+
+### Conversion Interface
+![JP2Forge Conversion Interface](../static/images/docs/jp2forge_conversion.png)
+*Easy-to-use conversion interface with various compression options*
+
+### Results View
+![JP2Forge Results View](../static/images/docs/jp2forge_results.png)
+*Detailed conversion results with quality metrics and file information*

@@ -10,6 +10,12 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 **Documentation**: All documentation is located in the [docs folder](docs/). For an overview of available documentation, see the [docs/README.md](docs/README.md) file.
 
+## Screenshots
+
+| Upload Interface | Conversion Options | Job Details |
+|:---:|:---:|:---:|
+| ![Upload Interface](static/images/docs/jp2forge_upload_interface.png) | ![Conversion Options](static/images/docs/jp2forge_conversion_options.png) | ![Job Details](static/images/docs/jp2forge_job_details.png) |
+
 ## Quick Links
 
 - [User Guide](docs/user_guide.md) - How to use the application
