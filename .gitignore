@@ -78,10 +78,16 @@ logs/
 # Additional project files to exclude
 jp2forge_web.log
 COMPLETED_TASKS.md
-test_output/
-test_jp2forge.py
+# Test kit outputs and temporary files
+test_kit/test_output/
+test_kit/**/*.jp2
+test_kit/**/*.xmp
+test_kit/**/*.png
+test_kit/**/*.jpg
+test_kit/**/*.tif
+test_kit/**/*.tiff
+test_kit/**/__pycache__/
 analyze_logs.py
-test_kit/
 
 # Database files
 *.sqlite3
