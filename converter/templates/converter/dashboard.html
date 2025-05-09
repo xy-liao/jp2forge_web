@@ -162,7 +162,7 @@
                             </div>
                             <div class="d-flex w-100 justify-content-between">
                                 <small class="text-muted">{{ job.get_compression_mode_display }} | {{ job.get_document_type_display }}</small>
-                                <small class="text-muted">{{ job.created_at|timesince }} ago</small>
+                                <small class="text-muted" title="{{ job.created_at|date:'c' }}">{{ job.created_at|timesince }} ago</small>
                             </div>
                             
                             {% if job.status == 'processing' %}

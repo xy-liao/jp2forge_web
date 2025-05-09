@@ -457,15 +457,15 @@
                             </tr>
                             <tr>
                                 <th>Created</th>
-                                <td>{{ job.created_at }}</td>
+                                <td data-utc-date="{{ job.created_at|date:'c' }}">{{ job.created_at }}</td>
                             </tr>
                             <tr>
                                 <th>Updated</th>
-                                <td>{{ job.updated_at }}</td>
+                                <td data-utc-date="{{ job.updated_at|date:'c' }}">{{ job.updated_at }}</td>
                             </tr>
                             <tr>
                                 <th>Completed</th>
-                                <td id="completed-at">{{ job.completed_at|default:"Not completed yet" }}</td>
+                                <td id="completed-at" data-utc-date="{{ job.completed_at|date:'c' }}">{{ job.completed_at|default:"Not completed yet" }}</td>
                             </tr>
                         </table>
                     </div>
@@ -839,8 +839,7 @@
                 // Update completion time if available
                 const completedAt = document.getElementById('completed-at');
                 if (completedAt && data.completed_at) {
-                    const date = new Date(data.completed_at);
-                    completedAt.textContent = date.toLocaleString();
+                    completedAt.textContent = formatToLocalTimezone(data.completed_at);
                 }
                 
                 // Update metrics if available

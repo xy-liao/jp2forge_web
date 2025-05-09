@@ -212,7 +212,7 @@
                         </td>
                         <td>{{ job.get_compression_mode_display }}</td>
                         <td>{{ job.get_document_type_display }}</td>
-                        <td>{{ job.created_at|naturaltime }}</td>
+                        <td><span data-utc-date="{{ job.created_at|date:'c' }}" data-include-time="false">{{ job.created_at|naturaltime }}</span></td>
                         <td class="text-end job-actions">
                             <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-outline-info btn-action-sm">
                                 <i class="bi bi-eye"></i> View

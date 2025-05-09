@@ -31,7 +31,7 @@
                         <strong>Member Since:</strong>
                     </div>
                     <div class="col-md-9">
-                        {{ user.date_joined|date:"F j, Y" }}
+                        <span data-utc-date="{{ user.date_joined|date:'c' }}" data-include-time="false">{{ user.date_joined|date:"F j, Y" }}</span>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -39,7 +39,7 @@
                         <strong>Last Login:</strong>
                     </div>
                     <div class="col-md-9">
-                        {{ user.last_login|date:"F j, Y" }}
+                        <span data-utc-date="{{ user.last_login|date:'c' }}" data-include-time="false">{{ user.last_login|date:"F j, Y" }}</span>
                     </div>
                 </div>
                 
