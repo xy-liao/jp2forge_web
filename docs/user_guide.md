@@ -84,15 +84,12 @@ A "Lossless Fallback" indicator means the system automatically switched to lossl
 
 ## Managing Your Jobs
 
-![Dashboard Interface](../static/images/docs/jp2forge_dashboard.png)
-*The dashboard provides an overview of your conversion jobs and system statistics*
-
 ### Viewing Job Status
 
 After submitting a job:
 
 - You'll see the job detail page with current status
-- Status progresses from "Pending" → "Processing" → "Completed" (or "Failed") 
+- Status progresses from "Pending" → "Processing" → "Completed" (or "Failed")
 - Completed jobs show download links for your converted files
 
 ### Jobs List Page

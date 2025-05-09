@@ -101,7 +101,7 @@ JP2Forge Web provides a service management script that makes it easy to start al
 chmod +x reset_environment.sh
 
 # Start all services (Django, Celery, Redis)
-./reset_environment.sh start
+python manage_services.py start
 ```
 
 Alternatively, you can start services manually:
@@ -127,27 +127,27 @@ JP2Forge Web includes tools to manage all related services (Django server, Celer
 
 ### Using the Service Management Scripts
 
-#### For Daily Development and Testing
+#### Primary Service Management Tool
 
-The `reset_environment.sh` script provides a simple interface for common service management tasks:
+The `manage_services.py` script is the primary way to manage JP2Forge Web services:
 
 ```bash
 # Check status of all services
-./reset_environment.sh status
+python manage_services.py status
 
 # Stop all services and clean up the environment
-./reset_environment.sh clean
+python manage_services.py clean
 
 # Start all services in the correct order
-./reset_environment.sh start
+python manage_services.py start
 
-# Restart all services (stop, clean, and restart)
-./reset_environment.sh restart
+# Restart all services
+python manage_services.py restart
 ```
 
 #### Advanced Service Management
 
-For more control, you can use the `manage_services.py` script directly:
+For more specific control, you can use additional options with the `manage_services.py` script:
 
 ```bash
 # Stop only specific services (e.g., just Celery)
@@ -170,7 +170,7 @@ The JP2Forge Web application requires a running Celery worker to process convers
 
 ```bash
 # Start all services including Celery
-./reset_environment.sh start
+python manage_services.py start
 
 # Or start just the Celery worker
 python manage_services.py start --services=celery
@@ -202,7 +202,7 @@ When you make changes to the code that affects task processing, you need to rest
 
 ```bash
 # Recommended approach
-./reset_environment.sh restart --services=celery
+python manage_services.py restart --services=celery
 
 # Alternative approach
 ./restart_celery.sh
@@ -212,7 +212,7 @@ When you make changes to the code that affects task processing, you need to rest
 
 ```bash
 # Check service status
-./reset_environment.sh status
+python manage_services.py status
 
 # Alternative: check processes directly
 ps aux | grep celery
@@ -322,13 +322,13 @@ For quick maintenance operations:
 
 ```bash
 # Stop all services and clean the environment
-./reset_environment.sh clean
+python manage_services.py clean
 
 # Check what services are currently running
-./reset_environment.sh status
+python manage_services.py status
 
 # Restart all services
-./reset_environment.sh restart
+python manage_services.py restart
 ```
 
 ### Using the Cleanup Script

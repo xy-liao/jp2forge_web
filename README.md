@@ -88,8 +88,10 @@ chmod +x setup.sh
 python init.py
 
 # Start the application services
-chmod +x reset_environment.sh
-./reset_environment.sh start
+chmod +x start_dev.sh start_celery.sh
+./start_dev.sh  # Starts the Django development server
+# In a separate terminal:
+./start_celery.sh  # Starts the Celery worker
 ```
 
 For complete installation instructions and configuration options, see the [Installation Guide](docs/installation.md).
@@ -100,19 +102,22 @@ JP2Forge Web includes tools to manage all related services (Django, Celery, Redi
 
 ```bash
 # Check status of all services
-./reset_environment.sh status
+python manage_services.py status
 
 # Stop all services and clean up the environment
-./reset_environment.sh clean
+python manage_services.py clean
 
 # Start all services in the correct order
-./reset_environment.sh start
+python manage_services.py start
 
 # Restart all services
-./reset_environment.sh restart
+python manage_services.py restart
+
+# Manage specific services only (django, celery, redis, postgres)
+python manage_services.py start --services=django,celery
 ```
 
-These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances.
+These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances. The `manage_services.py` script is the recommended way to manage JP2Forge Web services during development and testing.
 
 ## License
 
