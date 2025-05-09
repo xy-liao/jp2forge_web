@@ -14,7 +14,7 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 | Dashboard | Configuration | Result Details | Results View |
 |:---:|:---:|:---:|:---:|
-| ![Dashboard](static/images/docs/jp2forge_dashboard.png) | ![Configuration](static/images/docs/jp2forge_web_configuration.png) | ![Result Details](static/images/docs/jp2forge_web_result_details.png) | ![Results View](static/images/docs/jp2forge_web_results.png) |
+| ![Dashboard](static/images/docs/jp2forge_web_dashboard.png) | ![Configuration](static/images/docs/jp2forge_web_configuration.png) | ![Result Details](static/images/docs/jp2forge_web_result_details.png) | ![Results View](static/images/docs/jp2forge_web_results.png) |
 
 ## Quick Links
 

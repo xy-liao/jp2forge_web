@@ -32,7 +32,7 @@ To start converting your images:
 
 JP2Forge Web offers four compression modes to meet different needs:
 
-![Dashboard with Statistics](../static/images/docs/jp2forge_dashboard.png)
+![Dashboard with Statistics](../static/images/docs/jp2forge_web_dashboard.png)
 *The dashboard shows conversion statistics and allows you to monitor active jobs*
 
 | Mode | Best For | Quality Setting | Description |

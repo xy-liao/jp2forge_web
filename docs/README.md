@@ -46,4 +46,4 @@ This documentation covers only the web application interface. For documentation 
 
 ## Screenshots
 
-![JP2Forge Web Dashboard](../static/images/docs/jp2forge_dashboard.png)
+![JP2Forge Web Dashboard](../static/images/docs/jp2forge_web_dashboard.png)
