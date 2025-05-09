@@ -19,8 +19,8 @@ To start converting your images:
 4. Configure your conversion settings (details below)
 5. Click "Upload and Convert" to start the process
 
-![Conversion Interface](../static/images/docs/jp2forge_conversion.png)
-*The conversion interface allows you to select files and configure conversion settings*
+![Configuration Interface](../static/images/docs/jp2forge_web_configuration.png)
+*The configuration interface allows you to select files and configure conversion settings*
 
 **Supported File Types:** JPG/JPEG, TIFF/TIF, PNG, and BMP
 
@@ -32,7 +32,8 @@ To start converting your images:
 
 JP2Forge Web offers four compression modes to meet different needs:
 
-![Compression Options Diagram](/static/images/docs/compression-options.jpg)
+![Dashboard with Statistics](../static/images/docs/jp2forge_dashboard.png)
+*The dashboard shows conversion statistics and allows you to monitor active jobs*
 
 | Mode | Best For | Quality Setting | Description |
 |------|----------|----------------|-------------|
@@ -114,8 +115,11 @@ To download your converted JPEG2000 files:
 2. For each successfully converted file, click the "Download" button
 3. For multi-page documents, individual pages appear as separate files
 
-![Results View](../static/images/docs/jp2forge_results.png)
+![Results View](../static/images/docs/jp2forge_web_results.png)
 *The results view shows conversion details and allows you to download your converted files*
+
+![Result Details](../static/images/docs/jp2forge_web_result_details.png)
+*The detailed view provides comprehensive metrics and information about each converted file*
 
 ## Troubleshooting
 

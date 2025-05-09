@@ -12,9 +12,9 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 ## Screenshots
 
-| Upload Interface | Conversion Options | Job Details |
-|:---:|:---:|:---:|
-| ![Upload Interface](static/images/docs/jp2forge_upload_interface.png) | ![Conversion Options](static/images/docs/jp2forge_conversion_options.png) | ![Job Details](static/images/docs/jp2forge_job_details.png) |
+| Dashboard | Configuration | Result Details | Results View |
+|:---:|:---:|:---:|:---:|
+| ![Dashboard](static/images/docs/jp2forge_dashboard.png) | ![Configuration](static/images/docs/jp2forge_web_configuration.png) | ![Result Details](static/images/docs/jp2forge_web_result_details.png) | ![Results View](static/images/docs/jp2forge_web_results.png) |
 
 ## Quick Links
 
