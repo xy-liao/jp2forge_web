@@ -2,6 +2,106 @@
 
 This guide provides solutions for common issues you might encounter when using the JP2Forge Web application.
 
+## Installation and Setup Issues
+
+### JP2Forge Dependency Problems
+
+The most common installation issue is related to the JP2Forge core library dependency.
+
+#### Error: JP2Forge Installation Failed
+```bash
+ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.6
+```
+
+**Root Cause:** The JP2Forge installation from PyPI may fail due to:
+- Network connectivity issues with PyPI
+- Python version incompatibility (requires Python >=3.8)
+- Package index synchronization delays
+
+**Solutions:**
+
+1. **Use Mock Mode (Recommended for Testing)**
+   ```bash
+   echo "JP2FORGE_MOCK_MODE=True" >> .env
+   ./setup.sh
+   ```
+   This allows full UI testing without actual JPEG2000 conversion.
+
+2. **Retry JP2Forge 0.9.6 Installation**
+   ```bash
+   # Ensure you're installing the exact required version
+   pip install jp2forge==0.9.6
+   
+   # Check Python version compatibility
+   python --version  # Should be 3.8 or higher
+   
+   # Check PyPI connectivity
+   pip index versions jp2forge
+   ```
+
+3. **Temporarily Skip JP2Forge (Development Only)**
+   ```bash
+   # Comment out JP2Forge in requirements.txt for testing
+   sed -i 's/^jp2forge/#jp2forge/' requirements.txt
+   ./setup.sh
+   ```
+   ⚠️ **Warning:** This is only for development/testing. Production requires JP2Forge 0.9.6.
+
+#### Verification Commands
+
+Check if JP2Forge 0.9.6 is working:
+```bash
+python -c "
+try:
+    import core.types
+    # Additional check to verify it's the right version
+    import core
+    print('✅ JP2Forge 0.9.6 installed and working')
+    print('Full JPEG2000 conversion functionality available')
+except ImportError as e:
+    print('❌ JP2Forge 0.9.6 not available:', e)
+    print('⚠️  Application will run in mock mode')
+"
+```
+
+### Docker Setup Issues
+
+#### Missing Docker Entrypoint Files
+```bash
+ERROR: failed to calculate checksum of ref: "/docker-entrypoint.sh": not found
+```
+
+**Solution:** Ensure these files exist in your project root:
+- `docker-entrypoint.sh`
+- `healthcheck.sh`
+
+If missing, they should be created automatically by the setup script.
+
+#### Build Fails Due to JP2Forge
+```bash
+ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.6
+```
+
+**Solution:** Temporarily comment out JP2Forge in requirements.txt:
+```bash
+sed -i 's/^jp2forge/#jp2forge/' requirements.txt
+./docker_setup.sh
+```
+
+### Environment Configuration Issues
+
+#### Secret Key Not Set
+```bash
+django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty
+```
+
+**Solution:** Create or update your `.env` file:
+```bash
+echo "SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe(50))')" > .env
+echo "DEBUG=True" >> .env
+echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
+```
+
 ## Conversion Issues
 
 ### File Upload Problems

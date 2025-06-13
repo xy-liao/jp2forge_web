@@ -97,7 +97,20 @@ pip install --upgrade pip
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
+echo "Note: Installing JP2Forge 0.9.6 from PyPI. If installation fails, the application will run in mock mode."
+pip install -r requirements.txt || {
+    echo "Warning: Some dependencies failed to install (likely JP2Forge 0.9.6 from PyPI)."
+    echo "Attempting to install remaining dependencies individually..."
+    
+    # Install core dependencies that should work
+    pip install django>=4.2.20 celery>=5.3.6 redis>=5.0.1 django-crispy-forms>=2.1 \
+                crispy-bootstrap4>=2023.1 django-celery-results>=2.5.1 Pillow>=10.3.0 \
+                python-dotenv>=1.0.0 gunicorn>=23.0.0 psycopg2-binary>=2.9.9 markdown>=3.8
+    
+    echo "Core dependencies installed."
+    echo "WARNING: JP2Forge 0.9.6 installation failed - application will run in mock mode."
+    echo "For production use, JP2Forge 0.9.6 is required for full functionality."
+}
 
 # Install markdown package (needed for documentation) 
 echo "Installing markdown package for documentation..."
@@ -148,10 +161,20 @@ fi
 
 # Check for JP2Forge if it's supposed to be available
 # Note: JP2Forge might not be pip-installable, so we'll just warn if it's not found
-if ! python -c "import core.types" &> /dev/null; then
-    echo "Warning: JP2Forge core modules are not found."
+JP2FORGE_AVAILABLE=0
+if python -c "import core.types" &> /dev/null; then
+    echo "✓ JP2Forge core modules found - full functionality available."
+    JP2FORGE_AVAILABLE=1
+else
+    echo "⚠ JP2Forge core modules are not found."
     echo "The application will run in mock mode without real JPEG2000 conversion capabilities."
     echo "This is acceptable for testing the UI, but not for production use."
+    echo ""
+    echo "To install JP2Forge manually, try:"
+    echo "  pip install jp2forge==0.9.6"
+    echo ""
+    echo "IMPORTANT: Only version 0.9.6 is supported by JP2Forge Web."
+    echo "Other versions may cause compatibility issues."
 fi
 
 if [ $MISSING_DEPS -eq 1 ]; then
@@ -165,6 +188,17 @@ if [ $MISSING_DEPS -eq 1 ]; then
     fi
 else
     echo "All critical dependencies verified!"
+fi
+
+# Update .env with JP2Forge status
+if [ -f .env ]; then
+    if [ $JP2FORGE_AVAILABLE -eq 0 ]; then
+        echo "JP2FORGE_MOCK_MODE=True" >> .env
+        echo "Added JP2FORGE_MOCK_MODE=True to .env file"
+    else
+        echo "JP2FORGE_MOCK_MODE=False" >> .env
+        echo "Added JP2FORGE_MOCK_MODE=False to .env file"
+    fi
 fi
 
 # Create .env file from example

@@ -117,6 +117,63 @@ python manage_services.py start --services=django,celery
 
 These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances. The `manage_services.py` script is the recommended way to manage JP2Forge Web services during development and testing.
 
+## 🚨 Common Issues
+
+### JP2Forge Dependency Issues
+```bash
+# If JP2Forge installation fails from PyPI
+ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.6
+
+# Solutions:
+1. Check PyPI connectivity and retry: pip install jp2forge==0.9.6
+2. Check Python version (requires Python >=3.8): python --version
+3. Run in mock mode for UI testing: set JP2FORGE_MOCK_MODE=True in .env
+4. For production: Ensure PyPI access to install JP2Forge 0.9.6
+
+Note: JP2Forge Web requires EXACTLY version 0.9.6 - other versions are not supported
+```
+
+### Mock Mode Operation
+When JP2Forge is unavailable, the application runs in **mock mode**:
+- ✅ Web interface fully functional
+- ✅ User authentication and job management
+- ✅ File upload and validation
+- ❌ No actual JPEG2000 conversion
+- ❌ Mock outputs for testing only
+
+### Redis Connection Error
+```bash
+# Start Redis server
+redis-server
+
+# Check Redis status
+redis-cli ping
+```
+
+### Celery Worker Not Starting
+```bash
+# Check if another Celery instance is running
+python manage_services.py status
+
+# Clean and restart
+python manage_services.py clean
+./start_celery.sh
+```
+
+### Docker Build Failures
+```bash
+# If Docker entrypoint files are missing
+ERROR: "/docker-entrypoint.sh": not found
+
+# Ensure these files exist:
+docker-entrypoint.sh
+healthcheck.sh
+
+# They should be created automatically by setup scripts
+```
+
+For detailed troubleshooting, see the [Troubleshooting Guide](docs/troubleshooting.md).
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

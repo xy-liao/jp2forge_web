@@ -1,7 +1,7 @@
 django>=4.2.20
-# Install JP2Forge from GitHub for the latest version (0.9.6)
-# Note: The PyPI version may be older, so we use GitHub directly
-git+https://github.com/xy-liao/jp2forge.git@v0.9.6
+# JP2Forge Web requires EXACTLY version 0.9.6 for compatibility
+jp2forge==0.9.6
+# DO NOT use other versions - jp2forge_web is specifically designed for 0.9.6
 celery>=5.3.6
 redis>=5.0.1
 django-crispy-forms>=2.1
