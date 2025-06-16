@@ -190,7 +190,13 @@ else
     echo -e "${YELLOW}Note: No Git-based dependencies detected in requirements.txt${NC}"
 fi
 
-# Step 7: Build and start containers
+# Step 7: Clear any existing environment variables that might interfere
+echo -e "\n${YELLOW}Clearing any conflicting environment variables...${NC}"
+unset POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB REDIS_PASSWORD
+unset DB_NAME DB_USER DB_PASSWORD DB_HOST DB_PORT
+echo -e "${GREEN}✓ Environment cleaned${NC}"
+
+# Step 8: Build and start containers
 echo -e "\n${YELLOW}Building and starting containers...${NC}"
 echo -e "${YELLOW}This may take several minutes on first run...${NC}"
 
@@ -211,7 +217,7 @@ if [ $? -ne 0 ]; then
 fi
 echo -e "${GREEN}✓ Containers started successfully${NC}"
 
-# Step 8: Wait for services to be ready
+# Step 9: Wait for services to be ready
 echo -e "\n${YELLOW}Waiting for services to be ready...${NC}"
 echo -e "This may take up to 60 seconds for the first run..."
 
@@ -258,7 +264,7 @@ while [ $attempt -le $max_attempts ]; do
     sleep 3
 done
 
-# Step 9: Verify admin user exists
+# Step 10: Verify admin user exists
 echo -e "\n${YELLOW}Verifying admin user account...${NC}"
 $COMPOSE_COMMAND exec -T web python -c "
 import django
@@ -273,13 +279,13 @@ else:
     print('Superuser already exists')
 " || echo -e "${YELLOW}⚠ Could not verify admin user${NC}"
 
-# Step 10: Security verification
+# Step 11: Security verification
 echo -e "\n${YELLOW}Performing security verification...${NC}"
 # Run some basic security checks
 $COMPOSE_COMMAND exec -T web pip list | grep -v -e "^Package" -e "^-" > /tmp/jp2forge_pip_list.txt
 echo -e "${GREEN}✓ Security verification complete${NC}"
 
-# Step 11: Clean up unnecessary base images to save space
+# Step 12: Clean up unnecessary base images to save space
 echo -e "\n${YELLOW}Cleaning up unnecessary base images...${NC}"
 # Check if our containers are running successfully before removing the base image
 if docker ps | grep -q "jp2forge_web" && docker ps | grep -q "jp2forge_worker"; then
@@ -291,7 +297,7 @@ else
     echo -e "${YELLOW}⚠ Skipping base image cleanup as containers are not fully running${NC}"
 fi
 
-# Step 12: Show success message and helpful tips
+# Step 13: Show success message and helpful tips
 echo -e "\n${GREEN}==============================================${NC}"
 echo -e "${GREEN}       JP2FORGE WEB SETUP COMPLETE!            ${NC}"
 echo -e "${GREEN}==============================================${NC}"
