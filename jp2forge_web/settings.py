@@ -86,7 +86,7 @@ if os.environ.get('DOCKER_ENVIRONMENT') == 'true' or os.environ.get('SECURE_DOCK
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('POSTGRES_DB', 'jp2forge'),
             'USER': os.environ.get('POSTGRES_USER', 'jp2forge'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'jp2forge_password'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
             'HOST': os.environ.get('DB_HOST', 'db'),
             'PORT': os.environ.get('DB_PORT', '5432'),
         }
@@ -148,7 +148,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Celery settings
-REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', '')
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 if os.environ.get('DOCKER_ENVIRONMENT') == 'true' or os.environ.get('SECURE_DOCKER_ENVIRONMENT') == 'true':
     # Use authenticated Redis URL in Docker environment
     if REDIS_PASSWORD:

@@ -26,12 +26,13 @@ chmod +x docker_setup.sh
 ```
 
 The script handles everything automatically, including:
-- Configuring environment variables with correct password defaults
+- Generating secure passwords for database and Redis
+- Configuring environment variables with secure defaults
 - Building and starting Docker containers
 - Setting up the database with authentication
 - Creating a default administrator account
 
-**Note:** The script uses fixed default passwords that match docker-compose.yml. For production deployments, change these passwords after setup.
+**Security:** The script automatically generates secure random passwords for all services. These are cryptographically secure and unique for each installation.
 
 ## Accessing the Application
 
@@ -91,11 +92,11 @@ docker compose up -d
 
 If you see PostgreSQL authentication failures in the logs:
 
-1. Check that your `.env` file has the correct password format:
+1. Check that your `.env` file has properly configured passwords:
    ```bash
-   DATABASE_URL=postgres://jp2forge:jp2forge_password@db:5432/jp2forge
-   POSTGRES_PASSWORD=jp2forge_password
-   REDIS_PASSWORD=redis_password
+   DATABASE_URL=postgres://jp2forge:YOUR_SECURE_PASSWORD@db:5432/jp2forge
+   POSTGRES_PASSWORD=YOUR_SECURE_PASSWORD
+   REDIS_PASSWORD=YOUR_SECURE_REDIS_PASSWORD
    ```
 
 2. The passwords must match the defaults in `docker-compose.yml`.
@@ -150,12 +151,15 @@ If you prefer to configure the environment manually:
 
 2. Edit `.env` and update:
    - `SECRET_KEY`: Generate a random secret key
-   - Database passwords (must match docker-compose.yml defaults)
+   - `POSTGRES_PASSWORD`: Generate a secure password
+   - `REDIS_PASSWORD`: Generate a secure password
    - Other settings as needed
 
-3. Ensure passwords match docker-compose.yml:
-   - PostgreSQL: `jp2forge_password`
-   - Redis: `redis_password`
+3. Generate secure passwords:
+   ```bash
+   python -c "import secrets; print('POSTGRES_PASSWORD=' + secrets.token_urlsafe(32))"
+   python -c "import secrets; print('REDIS_PASSWORD=' + secrets.token_urlsafe(32))"
+   ```
 
 4. Start the containers:
    ```bash

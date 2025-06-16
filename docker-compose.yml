@@ -29,7 +29,7 @@ services:
       - .env
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-jp2forge}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-jp2forge_password}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env file}
       - POSTGRES_DB=${POSTGRES_DB:-jp2forge}
     ports:
       - "5433:5432"  # Map to port 5433 on host to avoid conflicts
@@ -51,9 +51,9 @@ services:
     container_name: jp2forge_redis
     volumes:
       - redis_data:/data
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_password}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env file}
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_password}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -84,7 +84,7 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-redis_password}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
       - CREATE_SUPERUSER=true
       - SECURE_DOCKER_ENVIRONMENT=true
     ports:
@@ -118,7 +118,7 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-redis_password}@redis:6379/0
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

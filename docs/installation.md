@@ -264,7 +264,7 @@ DATABASE_URL=sqlite:///db.sqlite3      # Database URL (SQLite by default)
 # For PostgreSQL, use: postgres://user:password@host:port/database
 
 # Redis & Celery Settings
-REDIS_PASSWORD=your-redis-password     # Password for Redis authentication (highly recommended)
+REDIS_PASSWORD=GENERATE_SECURE_PASSWORD  # Password for Redis authentication (highly recommended)
 CELERY_BROKER_URL=redis://:password@localhost:6379/0  # Redis URL for Celery broker
 CELERY_RESULT_BACKEND=django-db        # Recommended backend (more reliable than Redis)
 

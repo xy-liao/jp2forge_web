@@ -20,7 +20,7 @@ time.sleep(3)
 try:
     dbname = os.environ.get("POSTGRES_DB", "jp2forge")
     user = os.environ.get("POSTGRES_USER", "jp2forge")
-    password = os.environ.get("POSTGRES_PASSWORD", "jp2forge_password")
+    password = os.environ.get("POSTGRES_PASSWORD")
     host = os.environ.get("DB_HOST", "db")
     port = os.environ.get("DB_PORT", "5432")
     
@@ -62,7 +62,7 @@ time.sleep(2)
 try:
     host = "redis"
     port = 6379
-    password = os.environ.get("REDIS_PASSWORD", "redis_password")
+    password = os.environ.get("REDIS_PASSWORD")
     
     # Check if Redis is reachable
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

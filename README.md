@@ -94,6 +94,43 @@ chmod +x start_dev.sh start_celery.sh
 
 For complete installation instructions and configuration options, see the [Installation Guide](docs/installation.md).
 
+## Security Configuration
+
+⚠️ **IMPORTANT**: Before deploying JP2Forge Web, you must update the default passwords in your environment configuration.
+
+### Required Security Steps
+
+1. **Generate secure passwords**:
+   ```bash
+   # Generate secure database password
+   python -c "import secrets; print('POSTGRES_PASSWORD=' + secrets.token_urlsafe(32))"
+   
+   # Generate secure Redis password  
+   python -c "import secrets; print('REDIS_PASSWORD=' + secrets.token_urlsafe(32))"
+   ```
+
+2. **Update your `.env` file** with the generated passwords:
+   ```bash
+   # Copy the example file
+   cp .env.example .env
+   
+   # Edit .env and replace CHANGE_ME_SECURE_PASSWORD_HERE with your generated passwords
+   nano .env
+   ```
+
+3. **Verify configuration**:
+   - The `.env.example` file contains placeholder values that will cause Docker Compose to fail if not updated
+   - The `docker-compose.yml` file requires these environment variables to be set
+   - Never commit real passwords to version control
+
+### Security Features
+
+- Environment variable validation in docker-compose.yml
+- No hardcoded default passwords in production configurations
+- Secure password generation examples provided
+- Redis authentication enabled by default
+- PostgreSQL password protection
+
 ## Managing Services
 
 JP2Forge Web includes tools to manage all related services (Django, Celery, Redis) and prevent issues with multiple instances running during development and testing:

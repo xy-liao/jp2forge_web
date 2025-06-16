@@ -84,9 +84,13 @@ echo -e "\n${YELLOW}Setting up environment file...${NC}"
 if [ ! -f ".env" ]; then
     echo -e "Creating new .env file..."
     
-    # Generate random secret key but use fixed passwords to match docker-compose.yml defaults
-    # Note: For production, change these passwords after setup
+    # Generate random secret key and secure passwords
     SECRET_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*()_+{}[]|;:,.<>?=' | fold -w 60 | head -n 1)
+    
+    # Generate secure passwords using Python
+    echo -e "${YELLOW}Generating secure passwords...${NC}"
+    POSTGRES_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))" 2>/dev/null || openssl rand -base64 32 | tr -d '=' | tr '/' '_' | tr '+' '-')
+    REDIS_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))" 2>/dev/null || openssl rand -base64 32 | tr -d '=' | tr '/' '_' | tr '+' '-')
     
     cat > .env << EOF
 # JP2Forge Web Docker Environment Configuration
@@ -99,25 +103,25 @@ DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 0.0.0.0 [::1]
 DJANGO_SETTINGS_MODULE=jp2forge_web.settings
 ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,[::1]
 
-# Database Settings (matches docker-compose.yml defaults)
-DATABASE_URL=postgres://jp2forge:jp2forge_password@db:5432/jp2forge
+# Database Settings (secure passwords auto-generated)
+DATABASE_URL=postgres://jp2forge:${POSTGRES_PASSWORD}@db:5432/jp2forge
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=jp2forge
 DB_USER=jp2forge
-DB_PASSWORD=jp2forge_password
+DB_PASSWORD=${POSTGRES_PASSWORD}
 DB_HOST=db
 DB_PORT=5432
 
-# PostgreSQL Settings (matches docker-compose.yml defaults)
+# PostgreSQL Settings (secure password auto-generated)
 POSTGRES_USER=jp2forge
-POSTGRES_PASSWORD=jp2forge_password
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 POSTGRES_DB=jp2forge
 
-# Redis Settings (matches docker-compose.yml defaults)
-REDIS_PASSWORD=redis_password
+# Redis Settings (secure password auto-generated)
+REDIS_PASSWORD=${REDIS_PASSWORD}
 
 # Celery Settings
-CELERY_BROKER_URL=redis://:redis_password@redis:6379/0
+CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
 CELERY_RESULT_BACKEND=django-db
 
 # File Upload Settings
@@ -148,31 +152,26 @@ else
     echo -e "${YELLOW}Using existing .env file${NC}"
     echo -e "${YELLOW}⚠ If you experience issues, you may need to update your .env file manually${NC}"
     
-    # Validate password consistency between .env and docker-compose.yml
-    echo -e "\n${YELLOW}Validating password consistency...${NC}"
+    # Validate environment variables are set
+    echo -e "\n${YELLOW}Validating environment configuration...${NC}"
     if [ -f ".env" ]; then
-        # Check if DATABASE_URL uses correct password
-        if grep -q "DATABASE_URL=postgres://jp2forge:jp2forge_password@db:5432/jp2forge" .env; then
-            echo -e "${GREEN}✓ DATABASE_URL password matches docker-compose.yml${NC}"
+        # Check if required variables are present
+        if grep -q "POSTGRES_PASSWORD=" .env && [ "$(grep "POSTGRES_PASSWORD=" .env | cut -d'=' -f2 | wc -c)" -gt 10 ]; then
+            echo -e "${GREEN}✓ PostgreSQL password is set${NC}"
         else
-            echo -e "${YELLOW}⚠ DATABASE_URL password may not match docker-compose.yml defaults${NC}"
-            echo -e "${YELLOW}  Expected: postgres://jp2forge:jp2forge_password@db:5432/jp2forge${NC}"
+            echo -e "${YELLOW}⚠ PostgreSQL password may not be properly configured${NC}"
         fi
         
-        # Check Redis password
-        if grep -q "REDIS_PASSWORD=redis_password" .env; then
-            echo -e "${GREEN}✓ Redis password matches docker-compose.yml${NC}"
+        if grep -q "REDIS_PASSWORD=" .env && [ "$(grep "REDIS_PASSWORD=" .env | cut -d'=' -f2 | wc -c)" -gt 10 ]; then
+            echo -e "${GREEN}✓ Redis password is set${NC}"
         else
-            echo -e "${YELLOW}⚠ REDIS_PASSWORD may not match docker-compose.yml defaults${NC}"
-            echo -e "${YELLOW}  Expected: redis_password${NC}"
+            echo -e "${YELLOW}⚠ Redis password may not be properly configured${NC}"
         fi
         
-        # Check PostgreSQL password
-        if grep -q "POSTGRES_PASSWORD=jp2forge_password" .env; then
-            echo -e "${GREEN}✓ PostgreSQL password matches docker-compose.yml${NC}"
+        if grep -q "DATABASE_URL=" .env; then
+            echo -e "${GREEN}✓ Database URL is configured${NC}"
         else
-            echo -e "${YELLOW}⚠ POSTGRES_PASSWORD may not match docker-compose.yml defaults${NC}"
-            echo -e "${YELLOW}  Expected: jp2forge_password${NC}"
+            echo -e "${YELLOW}⚠ DATABASE_URL may not be properly configured${NC}"
         fi
     fi
 fi
