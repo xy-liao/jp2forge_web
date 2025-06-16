@@ -3,6 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
 [![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.4)
+[![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarqube.org/)
+[![Installation: Tested](https://img.shields.io/badge/Installation-Verified%20Working-success.svg)](#quick-start-installation)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
@@ -69,6 +71,8 @@ chmod +x docker_setup.sh
 ./docker_setup.sh
 ```
 
+**✅ Verified**: This one-click installation has been tested and confirmed working on both GitHub and GitLab repositories.
+
 For detailed Docker instructions, see the [Docker Setup Guide](docs/docker_setup.md).
 
 ### Manual Installation
@@ -91,6 +95,8 @@ chmod +x start_dev.sh start_celery.sh
 # In a separate terminal:
 ./start_celery.sh  # Starts the Celery worker
 ```
+
+**✅ Verified**: This manual installation method has been tested and confirmed working with all dependencies.
 
 For complete installation instructions and configuration options, see the [Installation Guide](docs/installation.md).
 
@@ -125,11 +131,14 @@ For complete installation instructions and configuration options, see the [Insta
 
 ### Security Features
 
-- Environment variable validation in docker-compose.yml
+- **SonarQube Compliant**: All hardcoded password vulnerabilities resolved
+- Environment variable validation in docker-compose.yml  
 - No hardcoded default passwords in production configurations
-- Secure password generation examples provided
+- Automatic secure password generation in Docker setup
+- Secure password generation examples provided for manual installation
 - Redis authentication enabled by default
 - PostgreSQL password protection
+- Environment conflict resolution in setup scripts
 
 ## Managing Services
 
