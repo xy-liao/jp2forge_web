@@ -26,10 +26,12 @@ chmod +x docker_setup.sh
 ```
 
 The script handles everything automatically, including:
-- Configuring environment variables
+- Configuring environment variables with correct password defaults
 - Building and starting Docker containers
-- Setting up the database
+- Setting up the database with authentication
 - Creating a default administrator account
+
+**Note:** The script uses fixed default passwords that match docker-compose.yml. For production deployments, change these passwords after setup.
 
 ## Accessing the Application
 
@@ -85,6 +87,21 @@ docker compose up -d
 
 ## Common Issues
 
+### Database authentication errors
+
+If you see PostgreSQL authentication failures in the logs:
+
+1. Check that your `.env` file has the correct password format:
+   ```bash
+   DATABASE_URL=postgres://jp2forge:jp2forge_password@db:5432/jp2forge
+   POSTGRES_PASSWORD=jp2forge_password
+   REDIS_PASSWORD=redis_password
+   ```
+
+2. The passwords must match the defaults in `docker-compose.yml`.
+
+3. If you have an existing `.env` file, either delete it and re-run `./docker_setup.sh`, or manually update the passwords.
+
 ### Application isn't accessible
 
 If you can't access the application at http://localhost:8000:
@@ -95,6 +112,11 @@ If you can't access the application at http://localhost:8000:
    ```
 
 2. Ensure port 8000 isn't being used by another application.
+
+3. Check web container logs for errors:
+   ```bash
+   docker compose logs web
+   ```
 
 ### Jobs remain in "pending" state
 
@@ -116,6 +138,29 @@ If you're having issues uploading files:
 
 1. Check that you're not exceeding the maximum file size (100MB per file by default).
 2. Ensure the web container has sufficient disk space.
+
+## Manual Configuration
+
+If you prefer to configure the environment manually:
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.docker.example .env
+   ```
+
+2. Edit `.env` and update:
+   - `SECRET_KEY`: Generate a random secret key
+   - Database passwords (must match docker-compose.yml defaults)
+   - Other settings as needed
+
+3. Ensure passwords match docker-compose.yml:
+   - PostgreSQL: `jp2forge_password`
+   - Redis: `redis_password`
+
+4. Start the containers:
+   ```bash
+   docker compose up -d
+   ```
 
 ## For Advanced Users
 
