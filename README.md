@@ -8,6 +8,8 @@
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
+**Repository Information**: This is the **developer-oriented** version hosted on GitHub. For a **user-friendly** version with streamlined documentation, see the [GitLab repository](https://gitlab.huma-num.fr/sliao/jp2forge_web).
+
 **Important Note**: This application serves primarily as a promotional demonstration for the [JP2Forge script](https://github.com/xy-liao/jp2forge) and its BnF (Bibliothèque nationale de France) compliance capabilities. JP2Forge Web doesn't leverage all available arguments and features of the underlying JP2Forge script - it's a case study implementation showcasing selected functionality of the more comprehensive JP2Forge tool.
 
 **Documentation**: All documentation is located in the [docs folder](docs/). For an overview of available documentation, see the [docs/README.md](docs/README.md) file.
