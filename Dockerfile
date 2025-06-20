@@ -15,14 +15,6 @@
 # - Unified documentation navigation between systems
 # - Improved logout security by enforcing POST method requirement
 #
-# V0.1.3 improvements and fixes:
-# - Fixed context processor import issue with stats_processor
-# - Improved logout functionality with custom view handler
-# - Added Git dependency for properly installing requirements from Git repositories
-# - Improved entrypoint handling and error recovery
-# - Added necessary system dependencies for proper functionality
-# - Optimized image layer structure for better caching
-# - Enhanced startup process with proper health checks
 
 FROM python:3.12-slim AS builder
 

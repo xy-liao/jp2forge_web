@@ -8,7 +8,7 @@ def global_stats(request):
     """
     # Initialize the context dictionary with version
     context = {
-        'VERSION': getattr(settings, 'VERSION', '0.1.0')
+        'VERSION': getattr(settings, 'VERSION', '0.1.5')
     }
     
     if not request.user.is_authenticated:
