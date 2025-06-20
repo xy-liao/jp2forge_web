@@ -12,7 +12,6 @@ urlpatterns = [
     path('', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
     path('converter/', include('converter.urls')),
     path('accounts/', include('accounts.urls')),
-    path('docs/', include('docs.urls')),
 ]
 
 # Always serve static and media files through Django when in Docker

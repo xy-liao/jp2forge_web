@@ -4,7 +4,6 @@
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
 [![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.5)
 [![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarqube.org/)
-[![Installation: Tested](https://img.shields.io/badge/Installation-Verified%20Working-success.svg)](#quick-start-installation)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
 
@@ -12,216 +11,242 @@ A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-
 
 **Important Note**: This application serves primarily as a promotional demonstration for the [JP2Forge script](https://github.com/xy-liao/jp2forge) and its BnF (Bibliothèque nationale de France) compliance capabilities. JP2Forge Web doesn't leverage all available arguments and features of the underlying JP2Forge script - it's a case study implementation showcasing selected functionality of the more comprehensive JP2Forge tool.
 
-**Documentation**: All documentation is located in the [docs folder](docs/). For an overview of available documentation, see the [docs/README.md](docs/README.md) file.
-
 ## Dashboard Screenshot
 
 ![Dashboard](static/images/docs/jp2forge_web_dashboard.png)
 
-## Quick Links
-
-- [User Guide](docs/user_guide.md) - How to use the application
-- [Docker Setup](docs/docker_setup.md) - Docker installation instructions
-- [Troubleshooting](docs/troubleshooting.md) - Solutions for common issues
-
 ## Features
 
-- Interactive Dashboard with conversion statistics, storage metrics, and job monitoring
-- Convert images to JPEG2000 format with various options
-- Support for different compression modes: lossless, lossy, supervised, and BnF-compliant
-- Support for multiple document types: photograph, heritage document, color, grayscale
-- Parallel processing of conversion jobs with Celery
-- User authentication and job management
-- Detailed conversion reports with quality metrics
-- Multi-page TIFF support
-- Real-time progress tracking
-- Service management tools to prevent multiple running instances during testing
-- Enhanced HTTP method handling with proper security protections
-- Comprehensive documentation with aligned templates and markdown content
+- **Interactive Dashboard** with conversion statistics, storage metrics, and job monitoring
+- **Convert images to JPEG2000** format with various compression options
+- **Multiple compression modes**: lossless, lossy, supervised, and BnF-compliant
+- **Document type support**: photograph, heritage document, color, grayscale
+- **Parallel processing** of conversion jobs with Celery
+- **User authentication** and job management
+- **Detailed conversion reports** with quality metrics (PSNR, SSIM)
+- **Multi-page TIFF support**
+- **Real-time progress tracking**
+- **Batch file processing**
 
 ## Supported File Formats
 
 ### Input Formats
 - **JPEG/JPG**: Standard photographic format
-- **TIFF/TIF**: Both single-page and multi-page TIFF files are supported
+- **TIFF/TIF**: Both single-page and multi-page TIFF files
 - **PNG**: Lossless raster graphics format
 - **BMP**: Bitmap image format
 
 ### Output Format
-- **JPEG2000/JP2**: Converted files follow the JP2 format specification
-- Compliant with ISO/IEC 15444-1 (when using BnF compliance mode)
+- **JPEG2000 (.jp2)**: ISO standard for image compression
 
-## Quick Start Installation
+**File Size Limits**: 100MB per file
 
-### Prerequisites
+## Installation
 
-Before installing JP2Forge Web, ensure you have the following prerequisites installed:
-
-- Python 3.11 or higher (Python 3.12 recommended for best security)
-- Redis (required for Celery task queue)
-- ExifTool (for metadata functionality)
-
-### Using Docker (Recommended)
+### Quick Setup with Docker (Recommended)
 
 ```bash
 # Clone the repository
 git clone https://github.com/xy-liao/jp2forge_web.git
 cd jp2forge_web
 
-# Run the Docker setup script
+# Run automated setup script
 chmod +x docker_setup.sh
 ./docker_setup.sh
 ```
 
-**✅ Verified**: This one-click installation has been tested and confirmed working on both GitHub and GitLab repositories.
+The script automatically:
+- Generates secure passwords for database and Redis
+- Configures environment variables
+- Builds and starts all containers
+- Creates default admin user (admin/admin123)
 
-For detailed Docker instructions, see the [Docker Setup Guide](docs/docker_setup.md).
+**Access the application**: http://localhost:8000
 
 ### Manual Installation
 
+#### Prerequisites
+- Python 3.11 or higher
+- Redis server
+- ExifTool
+- Git
+
+#### Setup Steps
+
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/xy-liao/jp2forge_web.git
 cd jp2forge_web
 
-# Run the setup script
-chmod +x setup.sh
-./setup.sh
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Initialize the application
+# Install dependencies
+pip install -r requirements.txt
+
+# Initialize application
 python init.py
 
-# Start the application services
-chmod +x start_dev.sh start_celery.sh
-./start_dev.sh  # Starts the Django development server
-# In a separate terminal:
-./start_celery.sh  # Starts the Celery worker
+# Start services
+./start_dev.sh      # Django server
+./start_celery.sh   # Celery worker (in separate terminal)
 ```
 
-**✅ Verified**: This manual installation method has been tested and confirmed working with all dependencies.
+**Access the application**: http://localhost:8000
 
-For complete installation instructions and configuration options, see the [Installation Guide](docs/installation.md).
+## User Guide
 
-## Security Configuration
+### Getting Started
 
-⚠️ **IMPORTANT**: Before deploying JP2Forge Web, you must update the default passwords in your environment configuration.
+1. **Create an account** or log in with existing credentials
+2. **Navigate to "New Conversion"** in the main menu
+3. **Upload files** by clicking "Choose Files" or drag-and-drop
+4. **Configure settings** (compression mode, document type, quality)
+5. **Submit job** and monitor progress in real-time
+6. **Download results** once conversion is complete
 
-### Required Security Steps
+### Compression Options
 
-1. **Generate secure passwords**:
-   ```bash
-   # Generate secure database password
-   python -c "import secrets; print('POSTGRES_PASSWORD=' + secrets.token_urlsafe(32))"
-   
-   # Generate secure Redis password  
-   python -c "import secrets; print('REDIS_PASSWORD=' + secrets.token_urlsafe(32))"
-   ```
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| **Lossless** | No quality loss, larger files | Archival, critical documents |
+| **Lossy** | Higher compression, some quality loss | General use, web images |
+| **Supervised** | Quality-controlled with metrics | Balanced quality/size |
+| **BnF Compliant** | Meets BnF digitization standards | Cultural heritage institutions |
 
-2. **Update your `.env` file** with the generated passwords:
-   ```bash
-   # Copy the example file
-   cp .env.example .env
-   
-   # Edit .env and replace CHANGE_ME_SECURE_PASSWORD_HERE with your generated passwords
-   nano .env
-   ```
+### Document Types
 
-3. **Verify configuration**:
-   - The `.env.example` file contains placeholder values that will cause Docker Compose to fail if not updated
-   - The `docker-compose.yml` file requires these environment variables to be set
-   - Never commit real passwords to version control
+- **Photograph**: Standard photographic images (default)
+- **Heritage Document**: Historical documents with enhanced quality settings
+- **Color**: General color images
+- **Grayscale**: Black and white images
 
-### Security Features
+### Quality Metrics (Supervised Mode)
 
-- **SonarQube Compliant**: All hardcoded password vulnerabilities resolved
-- Environment variable validation in docker-compose.yml  
-- No hardcoded default passwords in production configurations
-- Automatic secure password generation in Docker setup
-- Secure password generation examples provided for manual installation
-- Redis authentication enabled by default
-- PostgreSQL password protection
-- Environment conflict resolution in setup scripts
+- **PSNR**: Peak Signal-to-Noise Ratio (higher = better quality)
+- **SSIM**: Structural Similarity Index (closer to 1.0 = better quality)
+- **Compression Ratio**: Original size vs compressed size
 
-## Managing Services
+## Docker Management
 
-JP2Forge Web includes tools to manage all related services (Django, Celery, Redis) and prevent issues with multiple instances running during development and testing:
+### Useful Commands
 
 ```bash
-# Check status of all services
+# View all logs
+docker-compose logs
+
+# View specific service logs
+docker-compose logs web
+docker-compose logs worker
+
+# Restart services
+docker-compose restart
+
+# Stop all services
+docker-compose down
+
+# Start services
+docker-compose up -d
+
+# Access Django shell
+docker-compose exec web python manage.py shell
+
+# Run migrations
+docker-compose exec web python manage.py migrate
+```
+
+### Service Management
+
+```bash
+# Check service status
 python manage_services.py status
 
-# Stop all services and clean up the environment
+# Stop and cleanup all services
 python manage_services.py clean
 
-# Start all services in the correct order
+# Start all services
 python manage_services.py start
 
 # Restart all services
 python manage_services.py restart
-
-# Manage specific services only (django, celery, redis, postgres)
-python manage_services.py start --services=django,celery
 ```
 
-These tools ensure a clean environment for each test run and prevent port conflicts or resource contention from multiple service instances. The `manage_services.py` script is the recommended way to manage JP2Forge Web services during development and testing.
+## Troubleshooting
 
-## 🚨 Common Issues
+### Common Issues
 
-### JP2Forge Dependency Issues
+**"Redis connection failed"**
+- Ensure Redis is running: `brew services start redis` (macOS) or `sudo service redis-server start` (Linux)
+- Check Redis password in .env file
+
+**"Database connection error"**
+- For Docker: `docker-compose down -v && docker-compose up -d`
+- For manual: Check database settings in .env
+
+**"Import error: No module named 'jp2forge'"**
+- Ensure JP2Forge 0.9.7 is installed: `pip install jp2forge==0.9.7`
+- For Docker: Rebuild containers: `docker-compose build --no-cache`
+
+**"Permission denied" errors**
+- Ensure scripts are executable: `chmod +x *.sh`
+- Check file permissions in media directory
+
+**"Port already in use"**
+- Stop conflicting services: `python manage_services.py clean`
+- Use different ports in .env file
+
+**Conversion jobs stuck in "Processing"**
+- Restart Celery worker: `./start_celery.sh` or `docker-compose restart worker`
+- Check Celery logs: `docker-compose logs worker`
+
+### Development Mode
+
+Enable mock mode for testing without actual conversions:
+
 ```bash
-# If JP2Forge installation fails from PyPI
-ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.7
-
-# Solutions:
-1. Check PyPI connectivity and retry: pip install jp2forge==0.9.7
-2. Check Python version (requires Python >=3.8): python --version
-3. Run in mock mode for UI testing: set JP2FORGE_MOCK_MODE=True in .env
-4. For production: Ensure PyPI access to install JP2Forge 0.9.7
-
-Note: JP2Forge Web is compatible with JP2Forge 0.9.6-0.9.7, with 0.9.7 being recommended
+# In .env file
+JP2FORGE_MOCK_MODE=True
 ```
 
-### Mock Mode Operation
-When JP2Forge is unavailable, the application runs in **mock mode**:
-- ✅ Web interface fully functional
-- ✅ User authentication and job management
-- ✅ File upload and validation
-- ❌ No actual JPEG2000 conversion
-- ❌ Mock outputs for testing only
+### Log Files
 
-### Redis Connection Error
-```bash
-# Start Redis server
-redis-server
+- **Django**: `logs/django.log`
+- **Celery**: `logs/celery.log`
+- **Conversion errors**: `logs/converter.log`
+- **System errors**: `logs/error.log`
 
-# Check Redis status
-redis-cli ping
-```
+## Architecture
 
-### Celery Worker Not Starting
-```bash
-# Check if another Celery instance is running
-python manage_services.py status
+### Core Components
 
-# Clean and restart
-python manage_services.py clean
-./start_celery.sh
-```
+- **Django 5.2+**: Web framework
+- **Celery**: Background task processing
+- **Redis**: Message broker and caching
+- **PostgreSQL**: Database (Docker) / SQLite (development)
+- **JP2Forge 0.9.7**: JPEG2000 conversion engine
 
-### Docker Build Failures
-```bash
-# If Docker entrypoint files are missing
-ERROR: "/docker-entrypoint.sh": not found
+### Security Features
 
-# Ensure these files exist:
-docker-entrypoint.sh
-healthcheck.sh
+- **CSRF protection** on all forms
+- **HTTP method validation** (GET/POST restrictions)
+- **User authentication** required for conversions
+- **File upload validation** and size limits
+- **Secure password hashing** with Django defaults
 
-# They should be created automatically by setup scripts
-```
+## Contributing
 
-For detailed troubleshooting, see the [Troubleshooting Guide](docs/troubleshooting.md).
+This is a single-developer project. For questions or issues, please open a GitHub issue.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and updates.
+
+## Related Projects
+
+- **[JP2Forge](https://github.com/xy-liao/jp2forge)**: The underlying JPEG2000 conversion library
+- **[GitLab Repository](https://gitlab.huma-num.fr/sliao/jp2forge_web)**: User-friendly version with streamlined documentation
