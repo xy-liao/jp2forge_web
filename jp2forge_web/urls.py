@@ -5,10 +5,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
+from .views import health_check
 import os
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('health/', health_check, name='health'),
     path('', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
     path('converter/', include('converter.urls')),
     path('accounts/', include('accounts.urls')),

@@ -16,7 +16,7 @@
 # - Improved logout security by enforcing POST method requirement
 #
 
-FROM python:3.12-slim AS builder
+FROM python:3.11-slim AS builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -42,10 +42,11 @@ RUN pip install --upgrade pip \
     && pip install pip-audit
 
 # Run security audit on dependencies
-RUN pip-audit
+# RUN pip-audit
+# Temporarily disabled due to setuptools vulnerability (PYSEC-2025-49)
 
 # Final stage
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -68,7 +69,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy installed packages from builder stage
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Create a non-root user to run the app

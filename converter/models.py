@@ -56,6 +56,7 @@ class ConversionJob(models.Model):
     
     metrics = models.JSONField(default=dict, blank=True)
     error_message = models.TextField(blank=True, null=True)
+    enable_expert_mode = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.original_filename} - {self.status}"
