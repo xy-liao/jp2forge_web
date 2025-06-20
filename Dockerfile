@@ -80,7 +80,6 @@ COPY *.py ./
 COPY jp2forge_web/ ./jp2forge_web/
 COPY converter/ ./converter/
 COPY accounts/ ./accounts/
-COPY docs/ ./docs/
 COPY templates/ ./templates/
 COPY static/ ./static/
 
