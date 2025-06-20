@@ -1,5 +1,34 @@
 # Release Notes
 
+## v0.1.5 (June 20, 2025) - JP2Forge 0.9.7 Compatibility Update
+
+This release updates JP2Forge Web to support JP2Forge 0.9.7, the latest version of the underlying JPEG2000 conversion library with enhanced capabilities and improved reporting.
+
+### JP2Forge Library Updates
+
+- Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
+- Enhanced JP2Forge adapter to correctly detect and support JP2Forge 0.9.7
+- Improved version compatibility handling to support both 0.9.6 and 0.9.7
+- Updated Docker containers to automatically install JP2Forge 0.9.7
+
+### Documentation Updates
+
+- Updated all documentation to reflect JP2Forge 0.9.7 compatibility
+- Enhanced installation guides with version-specific information
+- Revised README with updated dependency requirements and compatibility notes
+
+### Technical Improvements
+
+- Enhanced JP2Forge adapter version detection for better compatibility
+- Updated container builds to ensure JP2Forge 0.9.7 installation
+- Improved error handling for version compatibility issues
+- Updated requirements.txt with clear version specifications
+
+### Breaking Changes
+
+- JP2Forge 0.9.7 is now the recommended version (backward compatible with 0.9.6)
+- Docker containers now default to JP2Forge 0.9.7 installation
+
 ## v0.1.4 (May 7, 2025) - HTTP Method Handling & Documentation Improvements
 
 This release focuses on improving HTTP method handling for increased security and aligning documentation across the system for a better user experience.

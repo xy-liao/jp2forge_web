@@ -8,7 +8,7 @@ Note that JP2Forge Web serves primarily as a promotional demonstration for the J
 and its BnF compliance capabilities. This adapter implements only a subset of JP2Forge's
 features rather than leveraging all available arguments of the underlying script.
 
-JP2Forge Web is compatible with JP2Forge versions 0.9.1 through 0.9.6, with 0.9.6 being recommended
+JP2Forge Web is compatible with JP2Forge versions 0.9.1 through 0.9.7, with 0.9.7 being recommended
 for its improved reporting capabilities and enhanced support for BnF compliance.
 """
 
@@ -33,12 +33,12 @@ try:
         from core.types import WorkflowConfig, CompressionMode, DocumentType
         from cli.workflow import StandardWorkflow
         JP2FORGE_AVAILABLE = True
-        JP2FORGE_VERSION = "0.9.6"  # Hardcoded since direct import doesn't provide __version__
+        JP2FORGE_VERSION = "0.9.7"  # Hardcoded since direct import doesn't provide __version__
         logger.info(f"Successfully imported JP2Forge modules (direct import, assuming version {JP2FORGE_VERSION})")
         
         # Version warning for clarity
-        if JP2FORGE_VERSION != "0.9.6":
-            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but version 0.9.6 is recommended for optimal compatibility")
+        if JP2FORGE_VERSION not in ["0.9.6", "0.9.7"]:
+            logger.warning(f"Running with JP2Forge version {JP2FORGE_VERSION}, but versions 0.9.6-0.9.7 are recommended for optimal compatibility")
     except ImportError as direct_import_error:
         logger.debug(f"Direct import failed: {direct_import_error}")
         # Fall back to standard package import structure

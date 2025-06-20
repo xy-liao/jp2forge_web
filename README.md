@@ -170,15 +170,15 @@ These tools ensure a clean environment for each test run and prevent port confli
 ### JP2Forge Dependency Issues
 ```bash
 # If JP2Forge installation fails from PyPI
-ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.6
+ERROR: Could not find a version that satisfies the requirement jp2forge==0.9.7
 
 # Solutions:
-1. Check PyPI connectivity and retry: pip install jp2forge==0.9.6
+1. Check PyPI connectivity and retry: pip install jp2forge==0.9.7
 2. Check Python version (requires Python >=3.8): python --version
 3. Run in mock mode for UI testing: set JP2FORGE_MOCK_MODE=True in .env
-4. For production: Ensure PyPI access to install JP2Forge 0.9.6
+4. For production: Ensure PyPI access to install JP2Forge 0.9.7
 
-Note: JP2Forge Web requires EXACTLY version 0.9.6 - other versions are not supported
+Note: JP2Forge Web is compatible with JP2Forge 0.9.6-0.9.7, with 0.9.7 being recommended
 ```
 
 ### Mock Mode Operation

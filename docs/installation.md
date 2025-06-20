@@ -220,7 +220,7 @@ ps aux | grep celery
 
 ## JP2Forge Library Installation
 
-The application depends on the JP2Forge JPEG2000 conversion library version 0.9.6 or higher. There are two ways to use it:
+The application depends on the JP2Forge JPEG2000 conversion library. JP2Forge Web is compatible with JP2Forge versions 0.9.6-0.9.7, with 0.9.7 being recommended for enhanced capabilities. There are two ways to use it:
 
 1. **Install the JP2Forge library** (recommended for production):
    - Visit the [JP2Forge repository](https://github.com/xy-liao/jp2forge)
