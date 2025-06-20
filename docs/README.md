@@ -2,17 +2,25 @@
 
 Welcome to the documentation for JP2Forge Web, a Django-based web interface for the JP2Forge JPEG2000 conversion library.
 
-## What's New in v0.1.4
+## What's New in v0.1.5
 
-The v0.1.4 release focuses on improving HTTP method handling for increased security and aligning documentation across the system:
+The v0.1.5 release updates JP2Forge Web to support JP2Forge 0.9.7, the latest version of the underlying JPEG2000 conversion library:
+
+- **Updated JP2Forge dependency** from 0.9.6 to 0.9.7 for enhanced conversion capabilities
+- **Enhanced adapter compatibility** with improved version detection for JP2Forge 0.9.7
+- **Improved version compatibility handling** to support both 0.9.6 and 0.9.7
+- **Updated Docker containers** to automatically install JP2Forge 0.9.7
+- **Comprehensive documentation updates** reflecting JP2Forge 0.9.7 compatibility
+
+See the [CHANGELOG.md](../CHANGELOG.md) file for complete details about this release.
+
+## Previous Release: v0.1.4
+
+The v0.1.4 release focused on improving HTTP method handling for increased security and aligning documentation across the system:
 
 - **Enhanced HTTP method security** with proper GET/POST restrictions on all view functions
 - **Fixed potential CSRF vulnerabilities** by adding explicit method validation
 - **Aligned documentation templates** with their corresponding Markdown files for consistency
-- **Unified documentation navigation** between static HTML templates and Markdown-based pages
-- **Added missing documentation sections** like Mock Mode Information and BnF compliance details
-
-See the [CHANGELOG.md](../CHANGELOG.md) file for complete details about this release.
 
 ## Previous Release: v0.1.3
 

@@ -1,7 +1,13 @@
 # JP2Forge Web Dockerfile
-# Version: 0.1.4 (May 7, 2025)
+# Version: 0.1.5 (June 20, 2025)
 # 
 # This Dockerfile builds an environment for running the JP2Forge Web application.
+# V0.1.5 improvements and fixes:
+# - Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
+# - Enhanced adapter compatibility with improved version detection for JP2Forge 0.9.7
+# - Improved version compatibility handling to support both 0.9.6 and 0.9.7
+# - Updated Docker containers to automatically install JP2Forge 0.9.7
+#
 # V0.1.4 improvements and fixes:
 # - Enhanced HTTP method handling with proper GET/POST restrictions
 # - Fixed potential CSRF vulnerabilities by requiring POST method for state-changing actions
