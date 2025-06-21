@@ -1,7 +1,7 @@
 #!/bin/bash
 # JP2Forge Web Docker Setup Script
-# Version: 0.1.5 (June 20, 2025)
-# Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
+# Version: 0.1.6 (June 21, 2025)
+# Updated for comprehensive documentation and Docker modernization
 
 # Color definitions for better readability
 GREEN='\033[0;32m'
@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 echo -e "${BLUE}==============================================${NC}"
 echo -e "${BLUE}     JP2FORGE WEB DOCKER SETUP SCRIPT        ${NC}"
-echo -e "${BLUE}     Version 0.1.4                           ${NC}"
+echo -e "${BLUE}     Version 0.1.6                           ${NC}"
 echo -e "${BLUE}==============================================${NC}"
 
 # Step 1: Check prerequisites

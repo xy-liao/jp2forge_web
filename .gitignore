@@ -26,8 +26,8 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media
-staticfiles
+media/
+staticfiles/
 
 # Unit test / coverage reports
 htmlcov/
@@ -77,7 +77,6 @@ logs/
 
 # Additional project files to exclude
 jp2forge_web.log
-COMPLETED_TASKS.md
 # Test kit outputs and temporary files
 test_kit/test_output/
 test_kit/**/*.jp2
@@ -87,7 +86,6 @@ test_kit/**/*.jpg
 test_kit/**/*.tif
 test_kit/**/*.tiff
 test_kit/**/__pycache__/
-analyze_logs.py
 
 # Database files
 *.sqlite3
@@ -130,3 +128,18 @@ yarn-error.log*
 # Docker
 .dockerignore
 docker-compose.override.yml
+
+# Redis data (if running locally)
+dump.rdb
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Local configuration files
+local_config.py
+config_local.py
+
+# Editor temporary files
+*~
+\#*\#
+.\#*

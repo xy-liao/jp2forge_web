@@ -1,14 +1,31 @@
+# Core Django framework
 django>=4.2.20
-# JP2Forge Web updated for version 0.9.7 compatibility
+
+# JP2Forge JPEG2000 conversion library
 jp2forge==0.9.7
+
+# Celery for background task processing
 celery>=5.3.6
+django-celery-results>=2.5.1
+
+# Redis for message broker and caching
 redis>=5.0.1
+
+# Django form handling and styling
 django-crispy-forms>=2.1
 crispy-bootstrap4>=2023.1
-django-celery-results>=2.5.1
+
+# Image processing
 Pillow>=10.3.0
+
+# Environment configuration
 python-dotenv>=1.0.0
+
+# Production web server
 gunicorn>=23.0.0
+
+# PostgreSQL database adapter
 psycopg2-binary>=2.9.9
-# Added for documentation system
+
+# Documentation system
 markdown>=3.8
