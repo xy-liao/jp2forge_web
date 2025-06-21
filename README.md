@@ -61,7 +61,6 @@ The script automatically:
 ### Manual Installation
 
 #### Prerequisites
-- Python 3.9–3.12 (3.9 minimum, 3.12 recommended)
 - Redis server
 - ExifTool
 - Git
@@ -221,7 +220,6 @@ JP2FORGE_MOCK_MODE=True
 - **Redis 6.2+**: Message broker and caching
 - **PostgreSQL 16+**: Database (Docker) / SQLite (development)
 - **JP2Forge 0.9.7**: JPEG2000 conversion engine with BnF compliance
-- **Python 3.9–3.12**: Runtime environment (3.9 minimum, 3.12 recommended)
 
 ### Security Features
 
