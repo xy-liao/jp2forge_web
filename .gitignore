@@ -109,3 +109,24 @@ auth_tokens.txt
 *.bak
 dump/
 backup/
+
+# Type checking and linting
+.mypy_cache/
+.pylint.d/
+.flake8
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Node modules (if any frontend build tools are used)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
