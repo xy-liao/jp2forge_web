@@ -1,13 +1,11 @@
 # JP2Forge Web Application
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
-[![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.6)
-[![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarqube.org/)
+[![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-blue.svg)](https://github.com/xy-liao/jp2forge_web)
+[![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarsource.com/products/sonarqube/)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
-
-**Repository Information**: This is the **developer-oriented** version hosted on GitHub. For a **user-friendly** version with streamlined documentation, see the [GitLab repository](https://gitlab.huma-num.fr/sliao/jp2forge_web).
 
 **Important Note**: This application serves primarily as a promotional demonstration for the [JP2Forge script](https://github.com/xy-liao/jp2forge) and its BnF (Bibliothèque nationale de France) compliance capabilities. JP2Forge Web doesn't leverage all available arguments and features of the underlying JP2Forge script - it's a case study implementation showcasing selected functionality of the more comprehensive JP2Forge tool.
 
@@ -254,7 +252,6 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history and updates.
 ## Related Projects
 
 - **[JP2Forge](https://github.com/xy-liao/jp2forge)**: The underlying JPEG2000 conversion library
-- **[GitLab Repository](https://gitlab.huma-num.fr/sliao/jp2forge_web)**: User-friendly version with streamlined documentation
 
 <!-- Repository cleanup completed -->
 <!-- Contributors list refresh -->

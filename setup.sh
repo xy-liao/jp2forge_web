@@ -121,9 +121,9 @@ pip install --upgrade pip
 
 # Install dependencies
 echo "Installing dependencies..."
-echo "Note: Installing JP2Forge 0.9.6 from PyPI. If installation fails, the application will run in mock mode."
+echo "Note: Installing JP2Forge 0.9.7 from PyPI. If installation fails, the application will run in mock mode."
 pip install -r requirements.txt || {
-    echo "Warning: Some dependencies failed to install (likely JP2Forge 0.9.6 from PyPI)."
+    echo "Warning: Some dependencies failed to install (likely JP2Forge 0.9.7 from PyPI)."
     echo "Attempting to install remaining dependencies individually..."
     
     # Install core dependencies that should work
@@ -132,8 +132,8 @@ pip install -r requirements.txt || {
                 python-dotenv>=1.0.0 gunicorn>=23.0.0 psycopg2-binary>=2.9.9 markdown>=3.8
     
     echo "Core dependencies installed."
-    echo "WARNING: JP2Forge 0.9.6 installation failed - application will run in mock mode."
-    echo "For production use, JP2Forge 0.9.6 is required for full functionality."
+    echo "WARNING: JP2Forge 0.9.7 installation failed - application will run in mock mode."
+    echo "For production use, JP2Forge 0.9.7 is required for full functionality."
 }
 
 # Install markdown package (needed for documentation) 
@@ -195,9 +195,9 @@ else
     echo "This is acceptable for testing the UI, but not for production use."
     echo ""
     echo "To install JP2Forge manually, try:"
-    echo "  pip install jp2forge==0.9.6"
+    echo "  pip install jp2forge==0.9.7"
     echo ""
-    echo "IMPORTANT: Only version 0.9.6 is supported by JP2Forge Web."
+    echo "IMPORTANT: Only version 0.9.7 is supported by JP2Forge Web."
     echo "Other versions may cause compatibility issues."
 fi
 

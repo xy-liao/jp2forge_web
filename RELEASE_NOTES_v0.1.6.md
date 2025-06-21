@@ -115,4 +115,4 @@ For questions or issues:
 
 ---
 
-**Full Changelog**: [v0.1.5...v0.1.6](https://github.com/xy-liao/jp2forge_web/compare/v0.1.5...v0.1.6)
+**Full Changelog**: See [CHANGELOG.md](CHANGELOG.md) for detailed version history

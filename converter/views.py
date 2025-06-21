@@ -53,21 +53,16 @@ Security:
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Count, Sum, Case, When, IntegerField, Q
+from django.db.models import Count, Sum, Case, When, IntegerField
 from django.contrib import messages
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 import os
 import logging
 import json
 import zipfile
-import tempfile
-from django.http import FileResponse, Http404
-import threading
 from io import BytesIO
 
 from .models import ConversionJob
@@ -79,9 +74,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def dashboard(request):
-    """
-    Dashboard view showing conversion statistics and recent jobs
-    """
+    """Dashboard view showing conversion statistics and recent jobs."""
     if request.method not in ['GET', 'POST']:
         # Return 405 Method Not Allowed for other HTTP methods
         from django.http import HttpResponseNotAllowed
@@ -92,10 +85,14 @@ def dashboard(request):
     # Get user's job statistics
     stats = ConversionJob.objects.filter(user=request.user).aggregate(
         total_jobs=Count('id'),
-        completed_jobs=Count(Case(When(status='completed', then=1), output_field=IntegerField())),
-        failed_jobs=Count(Case(When(status='failed', then=1), output_field=IntegerField())),
-        processing_jobs=Count(Case(When(status='processing', then=1), output_field=IntegerField())),
-        pending_jobs=Count(Case(When(status='pending', then=1), output_field=IntegerField()))
+        completed_jobs=Count(Case(When(status='completed', then=1), 
+                                 output_field=IntegerField())),
+        failed_jobs=Count(Case(When(status='failed', then=1), 
+                              output_field=IntegerField())),
+        processing_jobs=Count(Case(When(status='processing', then=1), 
+                                  output_field=IntegerField())),
+        pending_jobs=Count(Case(When(status='pending', then=1), 
+                               output_field=IntegerField()))
     )
     
     # Get recent jobs (limit to 5)
@@ -1013,8 +1010,20 @@ def download_selected_files(request):
 
 @require_GET
 def docs_readme(request):
-    """
-    View for JP2Forge Web documentation home page
+    """View for JP2Forge Web documentation home page.
+    
+    Renders the main documentation page with project overview, features,
+    and installation instructions. This is a public endpoint that doesn't
+    require authentication.
+    
+    Args:
+        request (HttpRequest): GET request for documentation page
+        
+    Returns:
+        HttpResponse: Rendered documentation template
+        
+    Template:
+        docs/readme.html: Main documentation template with project information
     """
     if request.method in ['GET', 'POST']:
         return render(request, 'docs/readme.html', {
@@ -1027,8 +1036,20 @@ def docs_readme(request):
 
 @require_GET
 def docs_user_guide(request):
-    """
-    View for JP2Forge Web user guide
+    """View for JP2Forge Web user guide.
+    
+    Renders the user guide page with detailed instructions on how to use
+    the application, including compression modes, document types, and
+    quality settings. This is a public endpoint that doesn't require authentication.
+    
+    Args:
+        request (HttpRequest): GET request for user guide page
+        
+    Returns:
+        HttpResponse: Rendered user guide template
+        
+    Template:
+        docs/user_guide.html: User guide template with usage instructions
     """
     if request.method in ['GET', 'POST']:
         return render(request, 'docs/user_guide.html', {
@@ -1041,8 +1062,20 @@ def docs_user_guide(request):
 
 @require_GET
 def about(request):
-    """
-    View for about JP2Forge Web page
+    """View for about JP2Forge Web page.
+    
+    Renders the about page with information about the project, its purpose,
+    and relationship to the JP2Forge library. This is a public endpoint
+    that doesn't require authentication.
+    
+    Args:
+        request (HttpRequest): GET request for about page
+        
+    Returns:
+        HttpResponse: Rendered about template
+        
+    Template:
+        docs/about.html: About page template with project information
     """
     if request.method in ['GET', 'POST']:
         return render(request, 'docs/about.html', {
@@ -1055,8 +1088,19 @@ def about(request):
 
 @require_GET
 def version_info(request):
-    """
-    View that displays the version information for the application
-    and its dependencies.
+    """View that displays version information for the application and dependencies.
+    
+    Renders a page showing current version numbers, Python version, and
+    dependency information. This information is useful for troubleshooting
+    and support purposes. This is a public endpoint that doesn't require authentication.
+    
+    Args:
+        request (HttpRequest): GET request for version information
+        
+    Returns:
+        HttpResponse: Rendered version info template
+        
+    Template:
+        converter/version_info.html: Version information template with system details
     """
     return render(request, 'converter/version_info.html')
