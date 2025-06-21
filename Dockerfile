@@ -1,22 +1,37 @@
 # JP2Forge Web Dockerfile
-# Version: 0.1.5 (June 20, 2025)
+# Version: 0.1.6 (June 21, 2025)
 # 
-# This Dockerfile builds an environment for running the JP2Forge Web application.
-# V0.1.5 improvements and fixes:
-# - Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
-# - Enhanced adapter compatibility with improved version detection for JP2Forge 0.9.7
-# - Improved version compatibility handling to support both 0.9.6 and 0.9.7
-# - Updated Docker containers to automatically install JP2Forge 0.9.7
+# This Dockerfile builds a secure, production-ready environment for the JP2Forge Web application
+# using multi-stage builds and security-hardened configuration.
 #
-# V0.1.4 improvements and fixes:
-# - Enhanced HTTP method handling with proper GET/POST restrictions
-# - Fixed potential CSRF vulnerabilities by requiring POST method for state-changing actions
-# - Aligned documentation templates with their Markdown counterparts
-# - Unified documentation navigation between systems
-# - Improved logout security by enforcing POST method requirement
+# Architecture:
+# - Multi-stage build for smaller final image size
+# - Python 3.12 runtime for enhanced performance and security
+# - Non-root user execution for security
+# - Minimal base image (python:3.12-slim) for reduced attack surface
+# - Health checks for container orchestration
+#
+# V0.1.6 improvements:
+# - Updated to Python 3.12 from 3.11 for better performance and security
+# - Enhanced documentation and inline comments
+# - Improved security annotations and explanations
+# - Updated version references throughout
+#
+# V0.1.5 improvements:
+# - Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
+# - Enhanced adapter compatibility with improved version detection
+# - Improved version compatibility handling
+#
+# Security Features:
+# - Non-root user execution
+# - Minimal system dependencies
+# - Security-focused base image
+# - No-new-privileges security option
+# - Comprehensive health checks
 #
 
-FROM python:3.11-slim AS builder
+# Build stage: Install dependencies and compile packages
+FROM python:3.12-slim AS builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -45,8 +60,8 @@ RUN pip install --upgrade pip \
 # RUN pip-audit
 # Temporarily disabled due to setuptools vulnerability (PYSEC-2025-49)
 
-# Final stage
-FROM python:3.11-slim
+# Production stage: Minimal runtime environment
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -69,7 +84,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy installed packages from builder stage
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Create a non-root user to run the app

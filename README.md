@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) 
-[![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.5)
+[![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.6)
 [![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarqube.org/)
 
 A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
@@ -66,7 +66,7 @@ The script automatically:
 ### Manual Installation
 
 #### Prerequisites
-- Python 3.11 or higher
+- Python 3.12 or higher (3.11 minimum)
 - Redis server
 - ExifTool
 - Git
@@ -187,6 +187,7 @@ python manage_services.py restart
 **"Import error: No module named 'jp2forge'"**
 - Ensure JP2Forge 0.9.7 is installed: `pip install jp2forge==0.9.7`
 - For Docker: Rebuild containers: `docker-compose build --no-cache`
+- Check virtual environment activation: `source venv/bin/activate`
 
 **"Permission denied" errors**
 - Ensure scripts are executable: `chmod +x *.sh`
@@ -220,19 +221,23 @@ JP2FORGE_MOCK_MODE=True
 
 ### Core Components
 
-- **Django 5.2+**: Web framework
-- **Celery**: Background task processing
-- **Redis**: Message broker and caching
-- **PostgreSQL**: Database (Docker) / SQLite (development)
-- **JP2Forge 0.9.7**: JPEG2000 conversion engine
+- **Django 5.2+**: Web framework with enhanced security
+- **Celery 5.5+**: Background task processing with improved reliability
+- **Redis 6.2+**: Message broker and caching
+- **PostgreSQL 16+**: Database (Docker) / SQLite (development)
+- **JP2Forge 0.9.7**: JPEG2000 conversion engine with BnF compliance
+- **Python 3.12+**: Runtime environment (3.11 minimum)
 
 ### Security Features
 
-- **CSRF protection** on all forms
-- **HTTP method validation** (GET/POST restrictions)
-- **User authentication** required for conversions
-- **File upload validation** and size limits
-- **Secure password hashing** with Django defaults
+- **CSRF protection** on all forms and state-changing operations
+- **HTTP method validation** with explicit GET/POST restrictions
+- **User authentication** required for all conversion operations
+- **File upload validation** with type checking and size limits (100MB max)
+- **Secure password hashing** using Django's PBKDF2 algorithm
+- **Docker security** with non-root user and restricted privileges
+- **Input sanitization** and XSS protection
+- **Session security** with secure cookie settings
 
 ## Contributing
 

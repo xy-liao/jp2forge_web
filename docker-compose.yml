@@ -1,18 +1,37 @@
 # JP2Forge Web Docker Compose Configuration
-# Version: 0.1.5 (June 20, 2025)
+# Version: 0.1.6 (June 21, 2025)
 #
-# This docker-compose file defines the services needed to run JP2Forge Web in Docker.
+# This docker-compose file defines a complete, production-ready stack for JP2Forge Web
+# with proper service dependencies, health checks, and security configurations.
+#
+# Services:
+# - db: PostgreSQL 16 database with persistent storage
+# - redis: Redis 7.2 message broker for Celery tasks
+# - web: Django application server (JP2Forge Web)
+# - worker: Celery worker for background task processing
+#
+# Features:
+# - Health checks for all services
+# - Persistent data volumes
+# - Security-hardened configuration
+# - Automatic service orchestration
+# - Environment-based configuration
+#
+# V0.1.6 improvements:
+# - Updated to Python 3.12 runtime in containers
+# - Enhanced documentation and service descriptions
+# - Improved security annotations
+# - Updated version labels throughout
+#
 # V0.1.5 improvements:
-# - Updated JP2Forge dependency from 0.9.6 to 0.9.7 for enhanced conversion capabilities
-# - Enhanced adapter compatibility with improved version detection for JP2Forge 0.9.7
-# - Improved version compatibility handling to support both 0.9.6 and 0.9.7
-# - Updated Docker containers to automatically install JP2Forge 0.9.7
+# - Updated JP2Forge dependency to 0.9.7
+# - Enhanced adapter compatibility
+# - Improved version handling
 #
-# V0.1.4 improvements:
-# - Enhanced HTTP method handling with proper GET/POST restrictions
-# - Fixed potential CSRF vulnerabilities by requiring POST method for state-changing actions
-# - Improved logout security by enforcing POST method requirement
-# - Aligned documentation templates with their Markdown counterparts
+# Usage:
+#   docker-compose up -d    # Start all services
+#   docker-compose logs     # View service logs
+#   docker-compose down     # Stop all services
 #
 
 services:
@@ -40,7 +59,7 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=PostgreSQL Database for JP2Forge Web"
-      - "com.jp2forge.version=0.1.5"
+      - "com.jp2forge.version=0.1.6"
 
   # Redis for Celery
   redis:
@@ -59,14 +78,14 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=Redis for JP2Forge Web Celery"
-      - "com.jp2forge.version=0.1.5"
+      - "com.jp2forge.version=0.1.6"
 
   # Django Web Application
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jp2forge_web:0.1.5
+    image: jp2forge_web:0.1.6
     container_name: jp2forge_web
     volumes:
       - static_volume:/app/staticfiles
@@ -91,14 +110,14 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=JP2Forge Web Application"
-      - "com.jp2forge.version=0.1.5"
+      - "com.jp2forge.version=0.1.6"
 
   # Celery Worker for Background Tasks
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-    image: jp2forge_celery:0.1.5
+    image: jp2forge_celery:0.1.6
     container_name: jp2forge_worker
     command: celery -A jp2forge_web worker -l INFO --concurrency=2
     volumes:
@@ -121,7 +140,7 @@ services:
       - no-new-privileges:true
     labels:
       - "com.jp2forge.description=Celery Worker for JP2Forge Web"
-      - "com.jp2forge.version=0.1.5"
+      - "com.jp2forge.version=0.1.6"
 
 volumes:
   postgres_data:

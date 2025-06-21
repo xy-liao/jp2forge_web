@@ -1,3 +1,56 @@
+"""Django views for the JP2Forge Web converter application.
+
+This module contains all view functions for handling JPEG2000 conversion jobs,
+including job creation, monitoring, batch operations, and file downloads.
+
+API Endpoints Summary:
+===================
+
+Authenticated Endpoints (require login):
+
+GET /converter/
+    Dashboard with job statistics and recent jobs
+    
+GET /converter/jobs/
+    Paginated list of user's conversion jobs with filtering
+    
+POST /converter/jobs/new/
+    Create new conversion job(s) from uploaded files
+    
+GET /converter/jobs/<uuid>/
+    Detailed view of specific conversion job
+    
+POST /converter/jobs/<uuid>/delete/
+    Delete specific conversion job and associated files
+    
+POST /converter/jobs/batch/
+    Batch operations on multiple jobs (download, delete, reprocess)
+    
+POST /converter/download/selected/
+    Download selected files as ZIP archive
+    
+GET /converter/jobs/<uuid>/download/
+    Download job result files (single or multi-page)
+    
+GET /converter/jobs/<uuid>/download-report/
+    Download job conversion report as JSON
+    
+GET /converter/version-info/
+    System version and dependency information
+    
+Public Endpoints:
+
+GET /converter/about/
+    Application information and feature overview
+    
+Security:
+- All job operations require user authentication
+- Users can only access their own jobs
+- File access is validated through job ownership
+- CSRF protection on all state-changing operations
+- HTTP method restrictions enforced
+"""
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -538,8 +591,29 @@ def batch_job_action(request):
         return redirect('job_list')
 
 def batch_delete_jobs(request, jobs):
-    """
-    Delete multiple jobs at once
+    """Delete multiple conversion jobs and their associated files.
+    
+    This function performs a bulk deletion operation on the provided job queryset.
+    It safely removes both the database records and the associated file system
+    directories for each job. All job files (input, output, temporary, and reports)
+    are permanently deleted.
+    
+    Args:
+        request (HttpRequest): The Django HTTP request object
+        jobs (QuerySet): Django queryset of ConversionJob objects to delete
+        
+    Returns:
+        HttpResponseRedirect: Redirects to job_list with success/warning message
+        
+    Side Effects:
+        - Deletes job database records
+        - Removes job directories from filesystem (jobs/{job_id}/)
+        - Logs deletion activity for audit trail
+        - Displays user feedback messages
+        
+    Note:
+        File deletion errors are logged but do not prevent database cleanup.
+        This ensures consistency even if filesystem operations fail.
     """
     job_count = jobs.count()
     if job_count == 0:
@@ -569,8 +643,35 @@ def batch_delete_jobs(request, jobs):
 
 
 def batch_process_jobs(request, jobs):
-    """
-    Reprocess multiple failed jobs at once
+    """Requeue multiple failed conversion jobs for processing.
+    
+    This function filters the provided jobs for those with 'failed' status
+    and requeues them for conversion processing. It resets job status,
+    progress, and error messages before submitting new Celery tasks.
+    
+    Args:
+        request (HttpRequest): The Django HTTP request object
+        jobs (QuerySet): Django queryset of ConversionJob objects to reprocess
+        
+    Returns:
+        HttpResponseRedirect: Redirects to job_list with status message
+        
+    Behavior:
+        - Only processes jobs with status='failed'
+        - Resets job.status to 'pending'
+        - Clears job.progress (sets to 0)
+        - Clears job.error_message
+        - Queues new convert_to_jp2 Celery task for each job
+        
+    Side Effects:
+        - Updates job database records
+        - Queues new background tasks
+        - Logs reprocessing activity
+        - Displays user feedback messages
+        
+    Note:
+        Jobs that are not in 'failed' status are ignored. Users receive
+        feedback about how many jobs were actually requeued.
     """
     # Filter for failed jobs only
     failed_jobs = jobs.filter(status='failed')
@@ -775,14 +876,46 @@ def job_download_all(request, job_id):
     return response
 
 def download_selected_files(request):
-    """
-    Download selected files as a ZIP archive.
+    """Download user-selected files as a ZIP archive with smart organization.
+    
+    This function creates a ZIP archive containing files selected by the user
+    through checkboxes in the job list interface. It intelligently organizes
+    files using either flat structure or folder structure based on whether
+    files come from multi-page conversions.
     
     Args:
-        request: HTTP request with file_urls parameter containing list of file URLs to download
+        request (HttpRequest): POST request containing file_urls[] parameter
+                              with list of media URLs to download
         
     Returns:
-        HttpResponse with a ZIP file attachment
+        HttpResponse: ZIP file download response with appropriate filename
+        HttpResponseRedirect: Redirect to job_list if no files selected
+        JsonResponse: Error response for non-POST requests
+        
+    Request Parameters:
+        file_urls[] (list): Array of media URLs pointing to JP2 files
+        flat (bool, optional): Force flat file structure in ZIP
+        
+    Behavior:
+        - Parses media URLs to extract job IDs and filenames
+        - Groups files by job to detect multi-page conversions
+        - Uses folder structure for multi-page files
+        - Uses flat structure with prefixes for single-page files
+        - Includes original filename as prefix to avoid naming conflicts
+        
+    Side Effects:
+        - Logs download activity for audit trail
+        - Displays user feedback messages for errors
+        - Creates temporary ZIP file in memory
+        
+    Security:
+        - Validates file paths are within media directory
+        - Restricts access to user's own job files through URL structure
+        - Requires POST method to prevent CSRF attacks
+        
+    Note:
+        URL format expected: /media/jobs/{job_id}/output/{filename}
+        Invalid URLs or missing files are silently skipped with error logging.
     """
     if request.method != 'POST':
         return JsonResponse({'error': 'POST request required'}, status=405)

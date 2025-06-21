@@ -1,3 +1,10 @@
+"""Django forms for the JP2Forge Web converter application.
+
+This module defines the form classes used for JPEG2000 conversion job creation
+and configuration. The forms handle file uploads, compression settings, and
+BnF compliance options with dynamic JavaScript behavior.
+"""
+
 from django import forms
 from .models import ConversionJob
 from crispy_forms.helper import FormHelper
@@ -5,6 +12,26 @@ from crispy_forms.layout import Layout, Submit, Row, Column, HTML
 from .bnf_validator import BnFStandards
 
 class ConversionJobForm(forms.ModelForm):
+    """Form for creating and configuring JPEG2000 conversion jobs.
+    
+    This form provides a comprehensive interface for users to upload files
+    and configure conversion parameters including compression modes, document
+    types, and BnF compliance settings. The form includes extensive JavaScript
+    functionality for dynamic field behavior and real-time validation feedback.
+    
+    Features:
+    - File upload with size and type validation
+    - Dynamic compression mode selection with conditional fields
+    - BnF compliance configuration with document type-specific ratios
+    - Real-time quality setting adjustments
+    - Interactive file list with size formatting
+    - Responsive form layout using Crispy Forms
+    
+    Attributes:
+        files (FileField): File upload field for source images
+        Meta (class): Form metadata linking to ConversionJob model
+        helper (FormHelper): Crispy Forms helper for layout and styling
+    """
     # Simple file field without multiple attribute
     files = forms.FileField(
         required=True,
@@ -24,6 +51,16 @@ class ConversionJobForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+        """Initialize the form with Crispy Forms layout and field configuration.
+        
+        Sets up the form layout, field requirements, help texts, and JavaScript
+        behavior for dynamic form interactions. Configures BnF compliance options
+        and document type-specific compression ratio information.
+        
+        Args:
+            *args: Variable positional arguments passed to parent __init__
+            **kwargs: Variable keyword arguments passed to parent __init__
+        """
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -257,6 +294,19 @@ class ConversionJobForm(forms.ModelForm):
         """
     
     def clean(self):
+        """Validate form data with compression mode-specific rules.
+        
+        Performs cross-field validation to ensure that quality settings
+        are appropriate for the selected compression mode. Quality is
+        required for Lossy and Supervised modes but optional for Lossless
+        and BnF Compliant modes where it's ignored.
+        
+        Returns:
+            dict: Cleaned and validated form data
+            
+        Raises:
+            ValidationError: If quality is missing for modes that require it
+        """
         cleaned_data = super().clean()
         compression_mode = cleaned_data.get('compression_mode')
         quality = cleaned_data.get('quality')

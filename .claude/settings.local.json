@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh release delete:*)",
+      "Bash(git reset:*)"
+    ],
+    "deny": []
+  }
+}

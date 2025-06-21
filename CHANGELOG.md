@@ -1,5 +1,50 @@
 # Release Notes
 
+## v0.1.6 (June 21, 2025) - Documentation and UI Improvements
+
+This release focuses on comprehensive documentation updates, UI consistency improvements, and Docker modernization in preparation for publication.
+
+### Documentation Enhancements
+
+- **Comprehensive docstring updates** across all Python modules (models, views, forms, tasks)
+- **Enhanced README.md** with updated version requirements and security features
+- **Improved code documentation** with detailed function and class descriptions
+- **Better inline documentation** for complex business logic and batch operations
+- **Consistent docstring format** following Google/Sphinx standards throughout the codebase
+
+### User Interface Improvements
+
+- **Consistent badge colors** in system information page - badges now use unified colors within each category
+- **Updated version information** to reflect current Python and dependency versions
+- **Enhanced visual consistency** across dependency information displays
+
+### Infrastructure Updates
+
+- **Docker modernization** - Updated from Python 3.11 to Python 3.12 for better performance and security
+- **Updated base images** in Dockerfile to use latest Python 3.12-slim
+- **Consistent version requirements** between documentation and Docker configuration
+- **Enhanced security baseline** with latest Python runtime
+
+### Code Quality Improvements
+
+- **Comprehensive model documentation** for ConversionJob with detailed field descriptions
+- **Enhanced form documentation** including JavaScript behavior and validation rules
+- **Detailed view function documentation** especially for batch operations and file handling
+- **Better error handling documentation** and security consideration notes
+- **Improved inline comments** for complex algorithms and business logic
+
+### Technical Improvements
+
+- **Enhanced type hints** and parameter documentation throughout the codebase
+- **Better documentation of BnF compliance features** and their implementation
+- **Clearer explanation of multi-page TIFF handling** and ZIP file organization
+- **Improved documentation of Celery task processing** and error recovery
+
+### Breaking Changes
+
+- **Docker images now use Python 3.12** (backward compatible, but rebuilds required)
+- **Version badges updated** to reflect v0.1.6 release
+
 ## v0.1.5 (June 20, 2025) - JP2Forge 0.9.7 Compatibility Update
 
 This release updates JP2Forge Web to support JP2Forge 0.9.7, the latest version of the underlying JPEG2000 conversion library with enhanced capabilities and improved reporting.

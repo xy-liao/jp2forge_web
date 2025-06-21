@@ -1,4 +1,28 @@
 #!/bin/bash
+#
+# JP2Forge Web Application Setup Script
+# 
+# This script performs a complete manual installation of JP2Forge Web:
+# 1. Validates system dependencies (Python 3.12+, pip, Redis)
+# 2. Creates and configures Python virtual environment
+# 3. Installs Python dependencies from requirements.txt
+# 4. Initializes Django database and creates superuser
+# 5. Sets up directory structure and static files
+# 6. Provides instructions for starting services
+#
+# Prerequisites:
+# - Python 3.12 or higher (3.11 minimum)
+# - pip package manager
+# - Redis server (for Celery task queue)
+# - ExifTool (for metadata processing)
+# - Git (for repository management)
+#
+# Usage:
+#   chmod +x setup.sh
+#   ./setup.sh
+#
+# For Docker installation, use docker_setup.sh instead.
+#
 
 echo "Setting up JP2Forge Web Application..."
 

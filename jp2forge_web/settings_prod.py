@@ -7,7 +7,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # JP2Forge Web version
-VERSION = '0.1.5'  # Updated to match version in README.md and settings.py
+VERSION = '0.1.6'  # Updated to match version in README.md and settings.py
 
 # Load environment variables from .env file
 load_dotenv()
