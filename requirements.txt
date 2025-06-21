@@ -1,0 +1,14 @@
+django>=4.2.20
+# JP2Forge Web updated for version 0.9.7 compatibility
+jp2forge==0.9.7
+celery>=5.3.6
+redis>=5.0.1
+django-crispy-forms>=2.1
+crispy-bootstrap4>=2023.1
+django-celery-results>=2.5.1
+Pillow>=10.3.0
+python-dotenv>=1.0.0
+gunicorn>=23.0.0
+psycopg2-binary>=2.9.9
+# Added for documentation system
+markdown>=3.8

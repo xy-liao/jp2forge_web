@@ -1,0 +1,35 @@
+<div class="card mb-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">System Information</h5>
+    </div>
+    <div class="card-body">
+        <h6>JP2Forge Web v{{ versions.jp2forge_web }}</h6>
+        <p class="text-muted small mb-3">Running on {{ versions.system }}</p>
+        
+        <h6>Core Components</h6>
+        <ul class="list-unstyled small">
+            <li><span class="text-muted">Python:</span> {{ versions.python }}</li>
+            <li><span class="text-muted">Django:</span> {{ versions.django }}</li>
+            <li><span class="text-muted">JP2Forge Library:</span> {{ versions.jp2forge }}</li>
+        </ul>
+        
+        <div class="collapse" id="moreVersionInfo">
+            <h6>Additional Dependencies</h6>
+            <ul class="list-unstyled small">
+                <li><span class="text-muted">Celery:</span> {{ versions.celery }}</li>
+                <li><span class="text-muted">Redis:</span> {{ versions.redis }}</li>
+                <li><span class="text-muted">Pillow:</span> {{ versions.pillow }}</li>
+                <li><span class="text-muted">PostgreSQL Driver:</span> {{ versions.psycopg2 }}</li>
+                <li><span class="text-muted">Gunicorn:</span> {{ versions.gunicorn }}</li>
+                <li><span class="text-muted">Markdown:</span> {{ versions.markdown }}</li>
+            </ul>
+        </div>
+        
+        <button class="btn btn-sm btn-outline-secondary mt-2" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#moreVersionInfo" 
+                aria-expanded="false" aria-controls="moreVersionInfo">
+            <span class="collapse-text-show">Show More</span>
+            <span class="collapse-text-hide">Show Less</span>
+        </button>
+    </div>
+</div>

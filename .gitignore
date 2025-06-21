@@ -1,0 +1,111 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+staticfiles
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+celerybeat-schedule
+celerybeat.pid
+
+# Logs directory - exclude all log files and backups
+logs/
+*.log.*
+*.log.*.bak
+
+# Additional project files to exclude
+jp2forge_web.log
+COMPLETED_TASKS.md
+# Test kit outputs and temporary files
+test_kit/test_output/
+test_kit/**/*.jp2
+test_kit/**/*.xmp
+test_kit/**/*.png
+test_kit/**/*.jpg
+test_kit/**/*.tif
+test_kit/**/*.tiff
+test_kit/**/__pycache__/
+analyze_logs.py
+
+# Database files
+*.sqlite3
+db.sqlite3
+db2.sqlite3
+"db 2.sqlite3"
+*.sqlite3.*.bak
+
+# Additional sensitive files
+.env.local
+.env.development
+.env.production
+credentials.json
+secrets.json
+auth_tokens.txt
+
+# Exclude any backups or dumps
+*.dump
+*.bak
+dump/
+backup/

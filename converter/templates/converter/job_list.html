@@ -1,0 +1,574 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}My Jobs | JP2Forge Web{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-row {
+        transition: all 0.3s ease;
+    }
+    .job-row:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    [data-bs-theme="dark"] .job-row:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    .job-actions {
+        white-space: nowrap;
+    }
+    .progress {
+        height: 5px;
+        margin-top: 5px;
+    }
+    .job-filters {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    [data-bs-theme="dark"] .job-filters {
+        background-color: #343a40;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    [data-bs-theme="dark"] .job-filters .form-select {
+        background-color: #212529;
+        color: #f8f9fa;
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    [data-bs-theme="dark"] .job-filters .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        border-color: #86b7fe;
+    }
+    .pagination {
+        margin-bottom: 0;
+    }
+    .batch-actions {
+        display: none;
+        margin-bottom: 1rem;
+    }
+    .batch-actions.visible {
+        display: flex;
+    }
+    .select-all-checkbox {
+        cursor: pointer;
+    }
+    .job-checkbox {
+        cursor: pointer;
+    }
+    [data-bs-theme="dark"] .table-light {
+        background-color: #343a40;
+        color: #f8f9fa;
+    }
+    [data-bs-theme="dark"] .card-footer {
+        background-color: #343a40;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    [data-bs-theme="dark"] .bg-light {
+        background-color: #343a40 !important;
+    }
+    [data-bs-theme="dark"] .text-muted {
+        color: #adb5bd !important;
+    }
+    [data-bs-theme="dark"] .form-label {
+        color: #f8f9fa;
+    }
+
+    /* Table header styling for dark mode */
+    [data-bs-theme="dark"] .table-light,
+    [data-bs-theme="dark"] .table thead tr,
+    [data-bs-theme="dark"] .table thead th {
+        background-color: #2b3035 !important;
+        color: #f8f9fa !important;
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    /* Fix for any table header that might use classes instead of thead */
+    [data-bs-theme="dark"] .table-header,
+    [data-bs-theme="dark"] tr.header,
+    [data-bs-theme="dark"] th {
+        background-color: #2b3035 !important;
+        color: #f8f9fa !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>My Conversion Jobs</h1>
+        <p class="text-muted">View, monitor, and manage your JP2Forge conversion jobs.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'job_create' %}" class="btn btn-primary btn-action">
+            <i class="bi bi-plus-circle"></i> New Conversion
+        </a>
+    </div>
+</div>
+
+<!-- Batch Actions Bar -->
+<div id="batch-actions" class="batch-actions mb-3 justify-content-between align-items-center bg-light p-3 rounded">
+    <div class="d-flex align-items-center">
+        <span class="me-2"><span id="selected-count">0</span> items selected</span>
+        
+        <!-- Download structure toggle option -->
+        <div class="form-check form-switch ms-3 d-inline-block">
+            <input class="form-check-input" type="checkbox" id="flat-structure-toggle">
+            <label class="form-check-label" for="flat-structure-toggle">Flat structure</label>
+            <span class="ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="When enabled, files will be downloaded in a flat structure instead of folders.">
+                <i class="bi bi-question-circle-fill text-muted small"></i>
+            </span>
+        </div>
+    </div>
+    <div>
+        <button id="batch-download-btn" class="btn btn-sm btn-success btn-action-sm me-1" disabled>
+            <i class="bi bi-download"></i> Download Selected
+        </button>
+        <button id="batch-process-btn" class="btn btn-sm btn-warning btn-action-sm me-1" disabled>
+            <i class="bi bi-play-circle"></i> Process Selected
+        </button>
+        <button id="batch-delete-btn" class="btn btn-sm btn-danger btn-action-sm">
+            <i class="bi bi-trash"></i> Delete Selected
+        </button>
+    </div>
+</div>
+
+<!-- Job Filters -->
+<div class="job-filters mb-4">
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <label for="status" class="form-label">Status</label>
+            <select name="status" id="status" class="form-select">
+                <option value="">All Statuses</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="failed" {% if request.GET.status == 'failed' %}selected{% endif %}>Failed</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="compression_mode" class="form-label">Compression Mode</label>
+            <select name="compression_mode" id="compression_mode" class="form-select">
+                <option value="">All Modes</option>
+                <option value="lossless" {% if request.GET.compression_mode == 'lossless' %}selected{% endif %}>Lossless</option>
+                <option value="lossy" {% if request.GET.compression_mode == 'lossy' %}selected{% endif %}>Lossy</option>
+                <option value="supervised" {% if request.GET.compression_mode == 'supervised' %}selected{% endif %}>Supervised</option>
+                <option value="bnf_compliant" {% if request.GET.compression_mode == 'bnf_compliant' %}selected{% endif %}>BnF Compliant</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="document_type" class="form-label">Document Type</label>
+            <select name="document_type" id="document_type" class="form-select">
+                <option value="">All Types</option>
+                <option value="photograph" {% if request.GET.document_type == 'photograph' %}selected{% endif %}>Photograph</option>
+                <option value="heritage_document" {% if request.GET.document_type == 'heritage_document' %}selected{% endif %}>Heritage Document</option>
+                <option value="color" {% if request.GET.document_type == 'color' %}selected{% endif %}>Color</option>
+                <option value="grayscale" {% if request.GET.document_type == 'grayscale' %}selected{% endif %}>Grayscale</option>
+            </select>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary btn-action-sm">Apply Filters</button>
+            <a href="{% url 'job_list' %}" class="btn btn-outline-secondary btn-action-sm">Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- Jobs Table -->
+<div class="card">
+    <div class="card-body p-0">
+        {% if jobs %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="form-check-input select-all-checkbox" id="select-all">
+                        </th>
+                        <th>Filename</th>
+                        <th>Status</th>
+                        <th>Compression</th>
+                        <th>Type</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="jobs-table-body">
+                    {% for job in jobs %}
+                    <tr class="job-row" data-job-id="{{ job.id }}" data-job-status="{{ job.status }}">
+                        <td>
+                            <input type="checkbox" class="form-check-input job-checkbox" data-job-id="{{ job.id }}" data-job-status="{{ job.status }}" data-has-result="{% if job.result_file %}true{% else %}false{% endif %}">
+                        </td>
+                        <td>{{ job.original_filename }}</td>
+                        <td>
+                            {% if job.status == 'pending' %}
+                            <span class="badge bg-secondary">Pending</span>
+                            {% elif job.status == 'processing' %}
+                            <span class="badge bg-primary">Processing</span>
+                            {% elif job.status == 'completed' %}
+                            <span class="badge bg-success">Completed</span>
+                            {% elif job.status == 'failed' %}
+                            <span class="badge bg-danger">Failed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ job.get_compression_mode_display }}</td>
+                        <td>{{ job.get_document_type_display }}</td>
+                        <td><span data-utc-date="{{ job.created_at|date:'c' }}" data-include-time="false">{{ job.created_at|naturaltime }}</span></td>
+                        <td class="text-end job-actions">
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-outline-info btn-action-sm">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            {% if job.status == 'completed' and job.result_file %}
+                                <!-- Check if this job has multiple output files -->
+                                {% with output_dir=job.id|stringformat:"s" %}
+                                {% with output_path="jobs/"|add:output_dir|add:"/output" %}
+                                {% if job.has_multiple_outputs %}
+                                    <a href="{% url 'job_download_all' job.id %}" class="btn btn-sm btn-success btn-action-sm">
+                                        <i class="bi bi-download"></i> Download
+                                    </a>
+                                {% else %}
+                                    <a href="{{ job.result_file.url }}" class="btn btn-sm btn-success btn-action-sm" download>
+                                        <i class="bi bi-download"></i> Download
+                                    </a>
+                                {% endif %}
+                                {% endwith %}
+                                {% endwith %}
+                            {% endif %}
+                            <a href="{% url 'job_delete' job.id %}" class="btn btn-sm btn-danger btn-action-sm">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if jobs.has_other_pages %}
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-muted">
+                        Showing {{ jobs.start_index }}-{{ jobs.end_index }} of {{ jobs.paginator.count }} jobs
+                    </small>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if jobs.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ jobs.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in jobs.paginator.page_range %}
+                            {% if jobs.number == num %}
+                            <li class="page-item active">
+                                <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                            </li>
+                            {% elif num > jobs.number|add:'-3' and num < jobs.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if jobs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ jobs.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ jobs.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-file-earmark-x" style="font-size: 3rem; color: #ccc;"></i>
+            <h4 class="mt-3">No jobs found</h4>
+            <p class="text-muted">No conversion jobs match your criteria.</p>
+            <a href="{% url 'job_create' %}" class="btn btn-primary mt-2">
+                <i class="bi bi-plus-circle"></i> Create New Job
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Hidden Form for Batch Operations -->
+<form id="batch-action-form" method="post" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="job_ids" id="job-ids-input">
+    <input type="hidden" name="action" id="batch-action-input">
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to update job statuses in real-time
+    function updateJobStatuses() {
+        const processingJobs = document.querySelectorAll('tr[data-job-status="processing"], tr[data-job-status="pending"]');
+        
+        if (processingJobs.length === 0) {
+            return; // No jobs to update
+        }
+        
+        // Collect job IDs for all processing/pending jobs
+        const jobIds = Array.from(processingJobs).map(row => row.getAttribute('data-job-id'));
+        
+        // Update each job status
+        jobIds.forEach(jobId => {
+            fetch(`/converter/jobs/${jobId}/status/`)
+                .then(response => response.json())
+                .then(data => {
+                    const jobRow = document.querySelector(`tr[data-job-id="${jobId}"]`);
+                    if (!jobRow) return;
+                    
+                    // Update checkbox data attribute
+                    const checkbox = jobRow.querySelector('.job-checkbox');
+                    if (checkbox) {
+                        checkbox.setAttribute('data-job-status', data.status);
+                        if (data.status === 'completed' && data.result_file) {
+                            checkbox.setAttribute('data-has-result', 'true');
+                        }
+                    }
+                    
+                    // Update status cell
+                    const statusCell = jobRow.querySelector('td:nth-child(3)'); // Adjusted for checkbox column
+                    if (statusCell) {
+                        let statusHTML = '';
+                        
+                        if (data.status === 'pending') {
+                            statusHTML = '<span class="badge bg-secondary">Pending</span>';
+                        } else if (data.status === 'processing') {
+                            statusHTML = '<span class="badge bg-primary">Processing</span>';
+                        } else if (data.status === 'completed') {
+                            statusHTML = '<span class="badge bg-success">Completed</span>';
+                            
+                            // Add download button if not present
+                            const actionsCell = jobRow.querySelector('.job-actions');
+                            if (actionsCell && !actionsCell.querySelector('.btn-success') && data.result_file) {
+                                const downloadBtn = document.createElement('a');
+                                downloadBtn.href = data.result_file;
+                                downloadBtn.className = 'btn btn-sm btn-success';
+                                downloadBtn.download = true;
+                                downloadBtn.innerHTML = '<i class="bi bi-download"></i> Download';
+                                actionsCell.insertBefore(downloadBtn, actionsCell.lastElementChild);
+                            }
+                        } else if (data.status === 'failed') {
+                            statusHTML = '<span class="badge bg-danger">Failed</span>';
+                        }
+                        
+                        statusCell.innerHTML = statusHTML;
+                    }
+                    
+                    // Update job status attribute
+                    jobRow.setAttribute('data-job-status', data.status);
+                    
+                    // Update batch action buttons
+                    updateBatchActionButtons();
+                })
+                .catch(error => {
+                    console.error(`Error updating job ${jobId}:`, error);
+                });
+        });
+        
+        // Continue polling as long as there are processing/pending jobs
+        setTimeout(updateJobStatuses, 5000); // Update every 5 seconds
+    }
+    
+    // Batch operations functionality
+    function initBatchOperations() {
+        const selectAllCheckbox = document.getElementById('select-all');
+        const jobCheckboxes = document.querySelectorAll('.job-checkbox');
+        const batchActions = document.getElementById('batch-actions');
+        const selectedCountElement = document.getElementById('selected-count');
+        const batchDownloadBtn = document.getElementById('batch-download-btn');
+        const batchProcessBtn = document.getElementById('batch-process-btn');
+        const batchDeleteBtn = document.getElementById('batch-delete-btn');
+        const batchActionForm = document.getElementById('batch-action-form');
+        const jobIdsInput = document.getElementById('job-ids-input');
+        const batchActionInput = document.getElementById('batch-action-input');
+        
+        // Helper function to get selected job IDs
+        function getSelectedJobIds() {
+            return Array.from(document.querySelectorAll('.job-checkbox:checked'))
+                .map(checkbox => checkbox.getAttribute('data-job-id'));
+        }
+        
+        // Update batch action buttons based on selections
+        function updateSelectionCount() {
+            const selectedJobIds = getSelectedJobIds();
+            const count = selectedJobIds.length;
+            
+            // Update selected count
+            selectedCountElement.textContent = count;
+            
+            // Show/hide batch actions bar
+            if (count > 0) {
+                batchActions.classList.add('visible');
+            } else {
+                batchActions.classList.remove('visible');
+            }
+            
+            // Update batch action buttons
+            updateBatchActionButtons();
+        }
+        
+        // Update batch action buttons based on selected jobs
+        window.updateBatchActionButtons = function() {
+            const selectedCheckboxes = document.querySelectorAll('.job-checkbox:checked');
+            const selectedCount = selectedCheckboxes.length;
+            
+            // Download button - enable only if at least one completed job with result is selected
+            const hasCompletedWithResult = Array.from(selectedCheckboxes)
+                .some(checkbox => checkbox.getAttribute('data-job-status') === 'completed' && 
+                                 checkbox.getAttribute('data-has-result') === 'true');
+            batchDownloadBtn.disabled = !hasCompletedWithResult;
+            
+            // Process button - enable only if at least one failed job is selected
+            const hasFailedJobs = Array.from(selectedCheckboxes)
+                .some(checkbox => checkbox.getAttribute('data-job-status') === 'failed');
+            batchProcessBtn.disabled = !hasFailedJobs;
+            
+            // Delete button - always enabled if there's at least one selected job
+            batchDeleteBtn.disabled = selectedCount === 0;
+        }
+        
+        // Select all checkbox
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                jobCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateSelectionCount();
+            });
+        }
+        
+        // Individual job checkboxes
+        jobCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Update "select all" checkbox state
+                if (!this.checked) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Check if all checkboxes are checked
+                    const allChecked = Array.from(jobCheckboxes).every(cb => cb.checked);
+                    selectAllCheckbox.checked = allChecked;
+                }
+                
+                updateSelectionCount();
+            });
+        });
+        
+        // Batch download button
+        if (batchDownloadBtn) {
+            batchDownloadBtn.addEventListener('click', function() {
+                const selectedJobIds = getSelectedJobIds();
+                if (selectedJobIds.length === 0) return;
+                
+                // Filter for completed jobs with results
+                const completedJobCheckboxes = document.querySelectorAll('.job-checkbox:checked[data-job-status="completed"][data-has-result="true"]');
+                
+                if (completedJobCheckboxes.length === 0) {
+                    alert('No completed jobs with results selected.');
+                    return;
+                }
+                
+                // Get flat structure preference
+                const useFlatStructure = document.getElementById('flat-structure-toggle').checked;
+                
+                // Submit form for batch download
+                jobIdsInput.value = JSON.stringify(selectedJobIds);
+                batchActionInput.value = 'download';
+                
+                // Add flat structure preference if enabled
+                if (useFlatStructure) {
+                    // Check if flat input already exists and remove it if so
+                    const existingFlatInput = batchActionForm.querySelector('input[name="flat"]');
+                    if (existingFlatInput) {
+                        existingFlatInput.remove();
+                    }
+                    
+                    // Add flat structure input
+                    const flatInput = document.createElement('input');
+                    flatInput.type = 'hidden';
+                    flatInput.name = 'flat';
+                    flatInput.value = 'true';
+                    batchActionForm.appendChild(flatInput);
+                }
+                
+                batchActionForm.action = '{% url "batch_job_action" %}';
+                batchActionForm.submit();
+            });
+        }
+        
+        // Batch process button
+        if (batchProcessBtn) {
+            batchProcessBtn.addEventListener('click', function() {
+                const selectedJobIds = getSelectedJobIds();
+                if (selectedJobIds.length === 0) return;
+                
+                // Filter for failed jobs only
+                const failedJobCheckboxes = document.querySelectorAll('.job-checkbox:checked[data-job-status="failed"]');
+                
+                if (failedJobCheckboxes.length === 0) {
+                    alert('No failed jobs selected for reprocessing.');
+                    return;
+                }
+                
+                // Ask for confirmation
+                if (!confirm(`Reprocess ${failedJobCheckboxes.length} failed jobs?`)) {
+                    return;
+                }
+                
+                // Submit form for batch processing
+                const failedJobIds = Array.from(failedJobCheckboxes).map(cb => cb.getAttribute('data-job-id'));
+                jobIdsInput.value = JSON.stringify(failedJobIds);
+                batchActionInput.value = 'process';
+                batchActionForm.action = '{% url "batch_job_action" %}';
+                batchActionForm.submit();
+            });
+        }
+        
+        // Batch delete button
+        if (batchDeleteBtn) {
+            batchDeleteBtn.addEventListener('click', function() {
+                const selectedJobIds = getSelectedJobIds();
+                if (selectedJobIds.length === 0) return;
+                
+                // Ask for confirmation
+                if (!confirm(`Delete ${selectedJobIds.length} selected jobs?`)) {
+                    return;
+                }
+                
+                // Submit form for batch deletion
+                jobIdsInput.value = JSON.stringify(selectedJobIds);
+                batchActionInput.value = 'delete';
+                batchActionForm.action = '{% url "batch_job_action" %}';
+                batchActionForm.submit();
+            });
+        }
+    }
+    
+    // Start the status updates when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        updateJobStatuses();
+        initBatchOperations();
+    });
+</script>
+{% endblock %}

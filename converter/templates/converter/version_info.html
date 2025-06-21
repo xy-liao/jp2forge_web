@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}System Information - JP2Forge Web{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>JP2Forge Web System Information</h4>
+                <p class="text-muted mb-0">Detailed version information about the application and its dependencies</p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Core Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>JP2Forge Web</strong>
+                                            <div class="text-muted small">Application</div>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">v{{ versions.jp2forge_web }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Python</strong>
+                                            <div class="text-muted small">Runtime</div>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">{{ versions.python }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Django</strong>
+                                            <div class="text-muted small">Web Framework</div>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">{{ versions.django }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>System</strong>
+                                            <div class="text-muted small">Operating System</div>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">{{ versions.system }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">JPEG2000 Processing</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>JP2Forge Library</strong>
+                                            <div class="text-muted small">JPEG2000 Conversion Engine</div>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">{{ versions.jp2forge }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Pillow</strong>
+                                            <div class="text-muted small">Image Processing</div>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">{{ versions.pillow }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-dark">
+                        <h5 class="mb-0">Infrastructure Components</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Celery</strong>
+                                            <div class="text-muted small">Task Queue</div>
+                                        </div>
+                                        <span class="badge bg-info rounded-pill">{{ versions.celery }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Redis</strong>
+                                            <div class="text-muted small">Message Broker</div>
+                                        </div>
+                                        <span class="badge bg-info rounded-pill">{{ versions.redis }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Gunicorn</strong>
+                                            <div class="text-muted small">WSGI Server</div>
+                                        </div>
+                                        <span class="badge bg-info rounded-pill">{{ versions.gunicorn }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>PostgreSQL Driver</strong>
+                                            <div class="text-muted small">Database Connector</div>
+                                        </div>
+                                        <span class="badge bg-info rounded-pill">{{ versions.psycopg2 }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Security Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>All dependencies are kept up to date with the latest security patches. The application has been configured to use:</p>
+                        <ul>
+                            <li>The latest version of Python (3.12+)</li>
+                            <li>The latest version of Django (5.2+)</li>
+                            <li>The latest version of PostgreSQL (16+) when running in Docker</li>
+                            <li>The latest version of Redis (7.2+) when running in Docker</li>
+                            <li>Security-enhanced Docker configuration with multi-stage builds</li>
+                            <li>Automatic vulnerability scanning with pip-audit</li>
+                        </ul>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Version numbers shown above reflect the actual packages installed in the current environment.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{
+  "job_id": "mock-job-123",
+  "original_file": "mock_image.png",
+  "compression_mode": "lossless",
+  "document_type": "heritage_document",
+  "bnf_compliant": "false",
+  "completed_at": "2025-05-07T17:30:00Z",
+  "output_file": "mock_heritage_document_lossless.jp2",
+  "original_size": 1024000,
+  "converted_size": 204800,
+  "compression_ratio": "2.50:1"
+}

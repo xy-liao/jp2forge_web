@@ -1,0 +1,149 @@
+# JP2Forge Web Docker Compose Configuration
+# Version: 0.1.6 (June 21, 2025)
+#
+# This docker-compose file defines a complete, production-ready stack for JP2Forge Web
+# with proper service dependencies, health checks, and security configurations.
+#
+# Services:
+# - db: PostgreSQL 16 database with persistent storage
+# - redis: Redis 7.2 message broker for Celery tasks
+# - web: Django application server (JP2Forge Web)
+# - worker: Celery worker for background task processing
+#
+# Features:
+# - Health checks for all services
+# - Persistent data volumes
+# - Security-hardened configuration
+# - Automatic service orchestration
+# - Environment-based configuration
+#
+# V0.1.6 improvements:
+# - Updated to Python 3.12 runtime in containers
+# - Enhanced documentation and service descriptions
+# - Improved security annotations
+# - Updated version labels throughout
+#
+# V0.1.5 improvements:
+# - Updated JP2Forge dependency to 0.9.7
+# - Enhanced adapter compatibility
+# - Improved version handling
+#
+# Usage:
+#   docker-compose up -d    # Start all services
+#   docker-compose logs     # View service logs
+#   docker-compose down     # Stop all services
+#
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: jp2forge_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-jp2forge}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env file}
+      - POSTGRES_DB=${POSTGRES_DB:-jp2forge}
+    ports:
+      - "5433:5432"  # Map to port 5433 on host to avoid conflicts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jp2forge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "com.jp2forge.description=PostgreSQL Database for JP2Forge Web"
+      - "com.jp2forge.version=0.1.6"
+
+  # Redis for Celery
+  redis:
+    image: redis:7.2-alpine
+    container_name: jp2forge_redis
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD must be set in .env file}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "com.jp2forge.description=Redis for JP2Forge Web Celery"
+      - "com.jp2forge.version=0.1.6"
+
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jp2forge_web:0.1.6
+    container_name: jp2forge_web
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - CREATE_SUPERUSER=true
+      - SECURE_DOCKER_ENVIRONMENT=true
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "com.jp2forge.description=JP2Forge Web Application"
+      - "com.jp2forge.version=0.1.6"
+
+  # Celery Worker for Background Tasks
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jp2forge_celery:0.1.6
+    container_name: jp2forge_worker
+    command: celery -A jp2forge_web worker -l INFO --concurrency=2
+    volumes:
+      - media_volume:/app/media
+    depends_on:
+      web:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      - "com.jp2forge.description=Celery Worker for JP2Forge Web"
+      - "com.jp2forge.version=0.1.6"
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

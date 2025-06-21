@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Job | JP2Forge Web{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #2d3238;
+    }
+    
+    .breadcrumb {
+        background: transparent;
+        padding: 0.5rem 0;
+        margin-bottom: 1rem;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .breadcrumb-item a {
+        color: #0d6efd;
+    }
+    
+    .breadcrumb-item.active {
+        color: #adb5bd;
+    }
+    
+    .card {
+        border: none;
+        background-color: #343a40;
+        margin-bottom: 1rem;
+    }
+    
+    .card-header {
+        border-bottom: none;
+        padding: 1rem;
+    }
+    
+    .page-header {
+        background-color: #dc3545;
+        color: #fff;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+    }
+    
+    .delete-warning {
+        background-color: #f8d7da;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .warning-icon {
+        color: #842029;
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    .warning-content {
+        color: #842029;
+    }
+    
+    .warning-content h5 {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .warning-content p {
+        margin-bottom: 0;
+    }
+    
+    .job-info-card {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .job-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        background-color: #0d6efd;
+        color: white;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+    
+    .job-status.pending {
+        background-color: #6c757d;
+    }
+    
+    .job-status.processing {
+        background-color: #0d6efd;
+    }
+    
+    .job-status.completed {
+        background-color: #198754;
+    }
+    
+    .job-status.failed {
+        background-color: #dc3545;
+    }
+    
+    .confirmation-checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 0;
+    }
+    
+    .confirmation-checkbox input {
+        margin-right: 0.75rem;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .confirmation-checkbox label {
+        margin-bottom: 0;
+        font-weight: 500;
+        color: #f8f9fa;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn-cancel i {
+        margin-right: 0.5rem;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn-delete i {
+        margin-right: 0.5rem;
+    }
+    
+    .btn-delete:disabled {
+        background-color: rgba(220, 53, 69, 0.65);
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'job_list' %}">Jobs</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'job_detail' job.id %}">{{ job.original_filename }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delete</li>
+        </ol>
+    </nav>
+    
+    <div class="page-header">
+        <h5 class="mb-0">Delete Conversion Job</h5>
+    </div>
+    
+    <div class="delete-warning">
+        <div class="warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div class="warning-content">
+            <h5>Warning</h5>
+            <p>You are about to delete this conversion job. This action <strong>cannot be undone</strong>. All files associated with this job will be permanently removed.</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <span class="job-status {{ job.status }}">
+                {{ job.get_status_display }}
+            </span>
+        </div>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="confirmation-checkbox">
+            <input class="form-check-input" type="checkbox" id="confirm-delete" required>
+            <label class="form-check-label" for="confirm-delete">
+                I understand that this action cannot be undone and all files will be permanently deleted.
+            </label>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{% url 'job_detail' job.id %}" class="btn-cancel">
+                <i class="bi bi-arrow-left"></i> Cancel
+            </a>
+            <button type="submit" class="btn-delete" id="delete-button" disabled>
+                <i class="bi bi-trash"></i> Delete Permanently
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmCheckbox = document.getElementById('confirm-delete');
+        const deleteButton = document.getElementById('delete-button');
+        
+        // Enable delete button only when checkbox is checked
+        confirmCheckbox.addEventListener('change', function() {
+            deleteButton.disabled = !this.checked;
+        });
+    });
+</script>
+{% endblock %}
