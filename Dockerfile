@@ -31,7 +31,7 @@
 #
 
 # Build stage: Install dependencies and compile packages
-FROM python:3.12-slim AS builder
+FROM python:3.13-slim AS builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -61,7 +61,7 @@ RUN pip install --upgrade pip \
 # Temporarily disabled due to setuptools vulnerability (PYSEC-2025-49)
 
 # Production stage: Minimal runtime environment
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
