@@ -1,10 +1,18 @@
-# JP2Forge Web Application
+# JP2Forge Web — Reference Implementation
 
 [![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-blue.svg)](https://github.com/xy-liao/jp2forge_web/releases/tag/v0.1.6) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python 3.9–3.12](https://img.shields.io/badge/python-3.9--3.12-blue.svg)](https://www.python.org/downloads/) [![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green.svg)](https://github.com/xy-liao/jp2forge_web) [![Security: SonarQube Compliant](https://img.shields.io/badge/Security-SonarQube%20Compliant-brightgreen.svg)](https://www.sonarsource.com/products/sonarqube/)
 
-A web interface for the JP2Forge JPEG2000 conversion library, providing an easy-to-use system for converting and managing image files in the JPEG2000 format.
+A reference implementation showing how to integrate [JP2Forge](https://github.com/xy-liao/jp2forge) into a production-grade web service for institutional JPEG2000 conversion workflows.
 
-**Important Note**: This application serves primarily as a promotional demonstration for the [JP2Forge script](https://github.com/xy-liao/jp2forge) and its BnF (Bibliothèque nationale de France) compliance capabilities. JP2Forge Web doesn't leverage all available arguments and features of the underlying JP2Forge script - it's a case study implementation showcasing selected functionality of the more comprehensive JP2Forge tool.
+## Purpose & Scope
+
+This project is a **case study**, not a general-purpose application. It demonstrates one concrete answer to the question: *how should an institution deploy JP2Forge as a shared internal service?*
+
+The stack — Django, Celery, Redis, PostgreSQL, Docker — is intentionally production-grade. For an institution processing hundreds of high-resolution TIFFs submitted by multiple staff members simultaneously, asynchronous job queuing (Celery + Redis) is the correct architecture: it prevents web server timeouts, provides real-time progress tracking, and keeps a persistent audit trail of every conversion job.
+
+This project does not expose every JP2Forge parameter. It covers the subset most relevant to institutional digitization workflows: BnF-compliant conversion, quality validation, and batch processing with authentication and job management.
+
+> If you need a command-line tool or a Python library for JPEG2000 conversion, use [JP2Forge](https://github.com/xy-liao/jp2forge) directly.
 
 ## Dashboard Screenshot
 
@@ -179,7 +187,7 @@ python manage_services.py restart
 - For manual: Check database settings in .env
 
 **"Import error: No module named 'jp2forge'"**
-- Ensure JP2Forge 0.9.7 is installed: `pip install jp2forge==0.9.7`
+- Ensure JP2Forge 0.9.7 is installed: `pip install jp2forge==0.9.8`
 - For Docker: Rebuild containers: `docker-compose build --no-cache`
 - Check virtual environment activation: `source venv/bin/activate`
 
@@ -215,11 +223,11 @@ JP2FORGE_MOCK_MODE=True
 
 ### Core Components
 
-- **Django 5.2+**: Web framework with enhanced security
-- **Celery 5.5+**: Background task processing with improved reliability
-- **Redis 6.2+**: Message broker and caching
-- **PostgreSQL 16+**: Database (Docker) / SQLite (development)
-- **JP2Forge 0.9.7**: JPEG2000 conversion engine with BnF compliance
+- **Django 5.2+**: Web framework — authentication, job management, admin interface
+- **Celery 5.5+**: Asynchronous task queue — handles long-running conversions without blocking the web server
+- **Redis 6.2+**: Message broker for Celery; also used for caching
+- **PostgreSQL 16+**: Persistent job and audit log storage (Docker) / SQLite (development)
+- **JP2Forge 0.9.8**: JPEG2000 conversion engine with BnF compliance
 
 ### Security Features
 
@@ -247,6 +255,3 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history and updates.
 ## Related Projects
 
 - **[JP2Forge](https://github.com/xy-liao/jp2forge)**: The underlying JPEG2000 conversion library
-
-<!-- Repository cleanup completed -->
-<!-- Contributors list refresh -->
