@@ -54,8 +54,8 @@ git clone https://github.com/xy-liao/jp2forge_web.git
 cd jp2forge_web
 
 # Run automated setup script
-chmod +x docker_setup.sh
-./docker_setup.sh
+chmod +x setup.sh
+./setup.sh docker
 ```
 
 The script automatically:
@@ -80,19 +80,12 @@ The script automatically:
 git clone https://github.com/xy-liao/jp2forge_web.git
 cd jp2forge_web
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Run automated manual setup script
+chmod +x setup.sh
+./setup.sh
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Initialize application
-python init.py
-
-# Start services
-./start_dev.sh      # Django server
-./start_celery.sh   # Celery worker (in separate terminal)
+# Start services (Django server + Celery worker)
+./dev.sh
 ```
 
 **Access the application**: http://localhost:8000
@@ -162,16 +155,16 @@ docker-compose exec web python manage.py migrate
 
 ```bash
 # Check service status
-python manage_services.py status
+./dev.sh status
 
 # Stop and cleanup all services
-python manage_services.py clean
+./dev.sh clean
 
 # Start all services
-python manage_services.py start
+./dev.sh start
 
 # Restart all services
-python manage_services.py restart
+./dev.sh restart
 ```
 
 ## Troubleshooting

@@ -110,11 +110,13 @@ def process_conversion_job(self, job_id):
     logger.info(f"Starting conversion job {job_id}")
     
     try:
-        # Retrieve the job and update its status
-        job = ConversionJob.objects.get(id=job_id)
-        job.status = 'processing'
-        job.progress = 0
-        job.save()
+        # Retrieve the job and update its status using select_for_update
+        from django.db import transaction
+        with transaction.atomic():
+            job = ConversionJob.objects.select_for_update().get(id=job_id)
+            job.status = 'processing'
+            job.progress = 0
+            job.save()
         
         logger.info(f"Processing job {job_id} for file {job.original_filename}")
         
@@ -135,8 +137,14 @@ def process_conversion_job(self, job_id):
         if os.path.getsize(input_path) == 0:
             raise ValueError("Input file is empty")
         
+        # Variables for progress throttling
+        last_saved_time = 0.0
+        last_saved_progress = -1.0
+        
         # Progress callback for real-time updates
         def update_progress(progress_data):
+            nonlocal last_saved_time, last_saved_progress
+            
             # Extract progress percentage or default to 0
             percent_complete = progress_data.get('percent_complete', 0)
             
@@ -169,34 +177,35 @@ def process_conversion_job(self, job_id):
                 meta={'progress': percent_complete, 'current_step': current_step}
             )
             
-            try:
-                # Re-fetch the job from the database to avoid stale data
-                from django.db import transaction
-                with transaction.atomic():
-                    # Get a fresh instance to ensure we're working with most recent data
+            # Throttle intermediate progress writes to DB (at most once per second OR per 5% progress increment)
+            current_time = time.time()
+            time_diff = current_time - last_saved_time
+            prog_diff = abs(percent_complete - last_saved_progress)
+            
+            if percent_complete >= 100 or last_saved_progress < 0 or time_diff >= 1.0 or prog_diff >= 5.0:
+                try:
+                    # Update job using a fast, non-locking update query
+                    from django.utils import timezone
                     from .models import ConversionJob
-                    job_instance = ConversionJob.objects.select_for_update().get(id=job_id)
                     
-                    # Update job record with current progress and step
-                    job_instance.progress = percent_complete
+                    # Safely load the current metrics dict to append current_step
+                    job_metrics = ConversionJob.objects.filter(id=job_id).values_list('metrics', flat=True).first() or {}
+                    job_metrics['current_step'] = current_step
                     
-                    # Initialize metrics if empty
-                    if not job_instance.metrics:
-                        job_instance.metrics = {}
+                    ConversionJob.objects.filter(id=job_id).update(
+                        progress=percent_complete,
+                        metrics=job_metrics,
+                        updated_at=timezone.now()
+                    )
                     
-                    # Store current step in job metrics
-                    job_instance.metrics['current_step'] = current_step
-                    
-                    # Save the update immediately 
-                    job_instance.save(update_fields=['progress', 'metrics', 'updated_at'])
-                    
-                    # Force commit by ending transaction
-                
-                # Log progress updates
-                if int(percent_complete) % 5 == 0 or percent_complete >= 99:
-                    logger.info(f"Job {job_id} progress: {percent_complete:.1f}% (Step: {current_step})")
-            except Exception as e:
-                logger.error(f"Error updating job progress: {str(e)}")
+                    last_saved_time = current_time
+                    last_saved_progress = percent_complete
+                except Exception as e:
+                    logger.error(f"Error updating job progress: {str(e)}")
+            
+            # Log progress updates
+            if int(percent_complete) % 5 == 0 or percent_complete >= 99:
+                logger.info(f"Job {job_id} progress: {percent_complete:.1f}% (Step: {current_step})")
             
             # Simulate some work for testing if needed
             if settings.DEBUG and hasattr(settings, 'SIMULATED_CONVERSION_DELAY'):
@@ -280,230 +289,190 @@ def process_conversion_job(self, job_id):
             logger.error(f"Error during workflow processing for job {job_id}: {str(e)}")
             raise
         
-        # Update job with results
-        job.status = 'completed'
-        job.progress = 100
-        # Clear any previous error messages since the job is now completed successfully
-        job.error_message = ''
-        
-        # Handle single file output or multipage output
-        if isinstance(result.output_file, list):
-            # Multi-page result - use the first file for the job record
-            job.output_filename = os.path.basename(result.output_file[0])
-            job.result_file = f'jobs/{job.id}/output/{os.path.basename(result.output_file[0])}'
+        # Update job with results inside a transaction with select_for_update
+        from django.db import transaction
+        with transaction.atomic():
+            # Get a fresh, locked instance of the job
+            job = ConversionJob.objects.select_for_update().get(id=job_id)
+            job.status = 'completed'
+            job.progress = 100
+            job.error_message = ''
             
-            logger.info(f"Job {job_id} produced multiple output files: {len(result.output_file)}")
-        else:
-            # Single file result
-            job.output_filename = os.path.basename(result.output_file)
-            job.result_file = f'jobs/{job.id}/output/{os.path.basename(result.output_file)}'
-            
-            logger.info(f"Job {job_id} produced single output file: {job.output_filename}")
-        
-        # Store file size information if available
-        if result.file_sizes:
-            job.original_size = result.file_sizes.get('original_size', job.original_size or 0)
-            job.converted_size = result.file_sizes.get('converted_size', 0)
-            
-            # Handle compression ratio which might be in format "4.50:1"
-            compression_ratio = result.file_sizes.get('compression_ratio', '0')
-            if isinstance(compression_ratio, str) and ':' in compression_ratio:
-                job.compression_ratio = float(compression_ratio.split(':')[0])
+            # Handle single file output or multipage output
+            if isinstance(result.output_file, list):
+                job.output_filename = os.path.basename(result.output_file[0])
+                job.result_file = f'jobs/{job.id}/output/{os.path.basename(result.output_file[0])}'
+                logger.info(f"Job {job_id} produced multiple output files: {len(result.output_file)}")
             else:
-                job.compression_ratio = float(compression_ratio) if compression_ratio else 0
+                job.output_filename = os.path.basename(result.output_file)
+                job.result_file = f'jobs/{job.id}/output/{os.path.basename(result.output_file)}'
+                logger.info(f"Job {job_id} produced single output file: {job.output_filename}")
             
-            # Log the compression results
-            logger.info(f"Job {job_id} - Original: {job.original_size} bytes, "
-                      f"Converted: {job.converted_size} bytes, "
-                      f"Ratio: {job.compression_ratio}:1")
-            
-            # For BnF mode, check if compression ratio meets requirements
-            if is_bnf_mode:
-                is_compliant, target_ratio = bnf_validator.is_compression_ratio_compliant(
-                    job.compression_ratio, job.document_type
-                )
+            # Store file size information if available
+            if result.file_sizes:
+                job.original_size = result.file_sizes.get('original_size', job.original_size or 0)
+                job.converted_size = result.file_sizes.get('converted_size', 0)
                 
-                # Store compliance info in metrics
-                if not result.metrics:
-                    result.metrics = {}
-                    
-                result.metrics['bnf_compliance'] = {
-                    'is_compliant': str(is_compliant).lower(),  # Convert to string "true"/"false" for JSON
-                    'target_ratio': target_ratio,
-                    'actual_ratio': job.compression_ratio,
-                    'document_type': job.document_type,
-                    'tolerance': bnf_validator.tolerance
-                }
+                # Handle compression ratio which might be in format "4.50:1"
+                compression_ratio = result.file_sizes.get('compression_ratio', '0')
+                if isinstance(compression_ratio, str) and ':' in compression_ratio:
+                    job.compression_ratio = float(compression_ratio.split(':')[0])
+                else:
+                    job.compression_ratio = float(compression_ratio) if compression_ratio else 0
                 
-                # When using BnF mode, we need to ensure validation is properly reported
-                if 'bnf_validation' not in result.metrics:
-                    # Get validation result if it doesn't exist
-                    validation_result = jp2forge_adapter.validate_bnf_compliance(result, job.document_type)
-                    result.metrics['bnf_validation'] = validation_result
+                logger.info(f"Job {job_id} - Original: {job.original_size} bytes, "
+                          f"Converted: {job.converted_size} bytes, "
+                          f"Ratio: {job.compression_ratio}:1")
                 
-                # Note: Need to check if validation already exists and contains incorrect compression info
-                if ('bnf_validation' in result.metrics and 'checks' in result.metrics['bnf_validation'] and 
-                    'compression_ratio' in result.metrics['bnf_validation']['checks']):
-                    # Fix the inconsistency - make sure we're using the actual measured ratio
-                    result.metrics['bnf_validation']['checks']['compression_ratio']['actual'] = job.compression_ratio
+                # For BnF mode, check if compression ratio meets requirements
+                if is_bnf_mode:
+                    is_compliant, target_ratio = bnf_validator.is_compression_ratio_compliant(
+                        job.compression_ratio, job.document_type
+                    )
                     
-                    # Update passed status and message based on the real ratio
-                    # For BnF mode, we always consider it passed since we use lossless fallback when ratio isn't met
-                    result.metrics['bnf_validation']['checks']['compression_ratio']['passed'] = "true"
-                    
-                    if job.compression_ratio >= target_ratio * (1 - bnf_validator.tolerance):
-                        # Ratio meets requirements directly
-                        result.metrics['bnf_validation']['checks']['compression_ratio']['message'] = (
-                            f"Compression ratio {job.compression_ratio:.2f}:1 meets requirements"
-                        )
-                    else:
-                        # Using fallback - still compliant
-                        result.metrics['bnf_validation']['checks']['compression_ratio']['message'] = (
-                            f"Using lossless compression as fallback (ratio {job.compression_ratio:.2f}:1 " +
-                            f"doesn't meet target {target_ratio:.2f}:1 but is BnF compliant via fallback)"
-                        )
-                
-                # If we have any checks and a "File not found" error, override the overall compliance to be true
-                # since we're using metrics to validate
-                if ('bnf_validation' in result.metrics and 
-                    'checks' in result.metrics['bnf_validation'] and 
-                    len(result.metrics['bnf_validation']['checks']) > 0 and
-                    result.metrics['bnf_validation'].get('error') == 'File not found'):
-                    result.metrics['bnf_validation']['is_compliant'] = "true"
-                    result.metrics['bnf_validation']['note'] = "Validation based on metrics data; file access validation skipped"
-        
-        # Store quality metrics - make sure to prepare them for JSON serialization
-        if result.metrics:
-            # Process metrics to make them JSON serializable with robust error handling
-            try:
-                job.metrics = ensure_json_serializable(result.metrics)
-                
-                # Format common metrics for easier display
-                if 'psnr' in result.metrics and isinstance(result.metrics['psnr'], (int, float)):
-                    logger.info(f"Job {job_id} - PSNR: {result.metrics['psnr']:.2f} dB")
-                    
-                if 'ssim' in result.metrics and isinstance(result.metrics['ssim'], (int, float)):
-                    logger.info(f"Job {job_id} - SSIM: {result.metrics['ssim']:.4f}")
-                
-                # Add additional information for multi-page files
-                if isinstance(result.output_file, list):
-                    # Add page information to metrics
-                    job.metrics['pages'] = len(result.output_file)
-                    
-                    # Generate list of pages with detailed information
-                    page_files = []
-                    multipage_results = []
-                    
-                    # Per-page metrics generator
-                    for idx, page_file in enumerate(result.output_file):
-                        page_filename = os.path.basename(page_file)
-                        page_files.append(page_filename)
+                    if not result.metrics:
+                        result.metrics = {}
                         
-                        # Calculate per-page metrics (if available) or use overall metrics
-                        page_metrics = {}
-                        if 'per_page_metrics' in result.metrics and idx < len(result.metrics['per_page_metrics']):
-                            # Use specific metrics for this page if available
-                            page_metrics = result.metrics['per_page_metrics'][idx]
+                    result.metrics['bnf_compliance'] = {
+                        'is_compliant': str(is_compliant).lower(),
+                        'target_ratio': target_ratio,
+                        'actual_ratio': job.compression_ratio,
+                        'document_type': job.document_type,
+                        'tolerance': bnf_validator.tolerance
+                    }
+                    
+                    if 'bnf_validation' not in result.metrics:
+                        validation_result = jp2forge_adapter.validate_bnf_compliance(result, job.document_type)
+                        result.metrics['bnf_validation'] = validation_result
+                    
+                    if ('bnf_validation' in result.metrics and 'checks' in result.metrics['bnf_validation'] and 
+                        'compression_ratio' in result.metrics['bnf_validation']['checks']):
+                        result.metrics['bnf_validation']['checks']['compression_ratio']['actual'] = job.compression_ratio
+                        result.metrics['bnf_validation']['checks']['compression_ratio']['passed'] = "true"
+                        
+                        if job.compression_ratio >= target_ratio * (1 - bnf_validator.tolerance):
+                            result.metrics['bnf_validation']['checks']['compression_ratio']['message'] = (
+                                f"Compression ratio {job.compression_ratio:.2f}:1 meets requirements"
+                            )
                         else:
-                            # Copy all relevant metrics from overall job metrics to page level
-                            # Basic quality metrics
-                            for key in ['psnr', 'ssim']:
-                                if key in result.metrics:
-                                    page_metrics[key] = result.metrics[key]
-                            
-                            # File size metrics - ensure pages get size info
-                            if 'file_sizes' in result.metrics:
-                                page_metrics['file_sizes'] = result.metrics['file_sizes'].copy()
-                            elif 'file_sizes' in result.__dict__ and result.file_sizes:
-                                page_metrics['file_sizes'] = result.file_sizes.copy()
-                            
-                            # Include compression metrics if available
-                            if 'compression_ratio' in page_metrics.get('file_sizes', {}):
-                                page_metrics['compression_ratio'] = page_metrics['file_sizes']['compression_ratio']
-                            elif job.compression_ratio:
-                                page_metrics['compression_ratio'] = f"{job.compression_ratio:.2f}:1"
-                                
-                            # If bnf_compliance exists, copy relevant portion for this page
-                            if 'bnf_compliance' in result.metrics:
-                                page_metrics['bnf_compliance'] = result.metrics['bnf_compliance'].copy()
-                            
-                            # If bnf_validation exists, include relevant portions
-                            if 'bnf_validation' in result.metrics:
-                                if 'checks' in result.metrics['bnf_validation']:
-                                    page_metrics['bnf_validation'] = {
-                                        'is_compliant': result.metrics['bnf_validation'].get('is_compliant', 'false'),
-                                        'checks': {}
-                                    }
-                                    
-                                    # Copy only the most relevant checks
-                                    if 'compression_ratio' in result.metrics['bnf_validation'].get('checks', {}):
-                                        page_metrics['bnf_validation']['checks']['compression_ratio'] = (
-                                            result.metrics['bnf_validation']['checks']['compression_ratio'].copy()
-                                        )
-                            
-                            # Always include at least some minimal info about this specific page
-                            page_metrics['page_number'] = idx + 1
-                            page_metrics['page_filename'] = page_filename
+                            result.metrics['bnf_validation']['checks']['compression_ratio']['message'] = (
+                                f"Using lossless compression as fallback (ratio {job.compression_ratio:.2f}:1 " +
+                                f"doesn't meet target {target_ratio:.2f}:1 but is BnF compliant via fallback)"
+                            )
+                    
+                    if ('bnf_validation' in result.metrics and 
+                        'checks' in result.metrics['bnf_validation'] and 
+                        len(result.metrics['bnf_validation']['checks']) > 0 and
+                        result.metrics['bnf_validation'].get('error') == 'File not found'):
+                        result.metrics['bnf_validation']['is_compliant'] = "true"
+                        result.metrics['bnf_validation']['note'] = "Validation based on metrics data; file access validation skipped"
+            
+            # Store quality metrics - make sure to prepare them for JSON serialization
+            if result.metrics:
+                try:
+                    job.metrics = ensure_json_serializable(result.metrics)
+                    
+                    if 'psnr' in result.metrics and isinstance(result.metrics['psnr'], (int, float)):
+                        logger.info(f"Job {job_id} - PSNR: {result.metrics['psnr']:.2f} dB")
                         
-                        # Create page result entry
-                        page_result = {
-                            "page": idx + 1,
-                            "status": "SUCCESS",
-                            "output_file": page_file,
-                            "metrics": page_metrics
-                        }
-                        multipage_results.append(page_result)
+                    if 'ssim' in result.metrics and isinstance(result.metrics['ssim'], (int, float)):
+                        logger.info(f"Job {job_id} - SSIM: {result.metrics['ssim']:.4f}")
                     
-                    # Add both simple list and detailed multipage results
-                    job.metrics['page_files'] = page_files
-                    job.metrics['multipage_results'] = multipage_results
+                    # Add additional information for multi-page files
+                    if isinstance(result.output_file, list):
+                        job.metrics['pages'] = len(result.output_file)
+                        page_files = []
+                        multipage_results = []
+                        
+                        for idx, page_file in enumerate(result.output_file):
+                            page_filename = os.path.basename(page_file)
+                            page_files.append(page_filename)
+                            
+                            page_metrics = {}
+                            if 'per_page_metrics' in result.metrics and idx < len(result.metrics['per_page_metrics']):
+                                page_metrics = result.metrics['per_page_metrics'][idx]
+                            else:
+                                for key in ['psnr', 'ssim']:
+                                    if key in result.metrics:
+                                        page_metrics[key] = result.metrics[key]
+                                
+                                if 'file_sizes' in result.metrics:
+                                    page_metrics['file_sizes'] = result.metrics['file_sizes'].copy()
+                                elif 'file_sizes' in result.__dict__ and result.file_sizes:
+                                    page_metrics['file_sizes'] = result.file_sizes.copy()
+                                
+                                if 'compression_ratio' in page_metrics.get('file_sizes', {}):
+                                    page_metrics['compression_ratio'] = page_metrics['file_sizes']['compression_ratio']
+                                elif job.compression_ratio:
+                                    page_metrics['compression_ratio'] = f"{job.compression_ratio:.2f}:1"
+                                    
+                                if 'bnf_compliance' in result.metrics:
+                                    page_metrics['bnf_compliance'] = result.metrics['bnf_compliance'].copy()
+                                
+                                if 'bnf_validation' in result.metrics:
+                                    if 'checks' in result.metrics['bnf_validation']:
+                                        page_metrics['bnf_validation'] = {
+                                            'is_compliant': result.metrics['bnf_validation'].get('is_compliant', 'false'),
+                                            'checks': {}
+                                        }
+                                        if 'compression_ratio' in result.metrics['bnf_validation'].get('checks', {}):
+                                            page_metrics['bnf_validation']['checks']['compression_ratio'] = (
+                                                result.metrics['bnf_validation']['checks']['compression_ratio'].copy()
+                                            )
+                                page_metrics['page_number'] = idx + 1
+                                page_metrics['page_filename'] = page_filename
+                            
+                            page_result = {
+                                "page": idx + 1,
+                                "status": "SUCCESS",
+                                "output_file": page_file,
+                                "metrics": page_metrics
+                            }
+                            multipage_results.append(page_result)
+                        
+                        job.metrics['page_files'] = page_files
+                        job.metrics['multipage_results'] = multipage_results
+                        logger.info(f"Job {job_id} - Added detailed metadata for {len(result.output_file)} pages to report")
                     
-                    logger.info(f"Job {job_id} - Added detailed metadata for {len(result.output_file)} pages to report")
-                
-                # Write metrics to report.json file
+                    # Write metrics to report.json file
+                    report_file_path = os.path.join(report_dir, 'report.json')
+                    try:
+                        with open(report_file_path, 'w') as f:
+                            json.dump(job.metrics, f, indent=4)
+                        logger.info(f"Job {job_id} - Wrote report file to {report_file_path}")
+                    except Exception as report_error:
+                        logger.error(f"Failed to write report file for job {job_id}: {str(report_error)}")
+                except Exception as e:
+                    logger.error(f"Failed to process metrics for job {job_id}: {str(e)}")
+                    job.metrics = {}
+            else:
+                job.metrics = {}
+                # Even without metrics, write a basic report
                 report_file_path = os.path.join(report_dir, 'report.json')
                 try:
+                    basic_report = {
+                        'job_id': str(job.id),
+                        'original_file': job.original_filename,
+                        'output_file': job.output_filename,
+                        'compression_mode': job.compression_mode,
+                        'document_type': job.document_type,
+                        'bnf_compliant': job.bnf_compliant,
+                        'completed_at': timezone.now().isoformat(),
+                        'note': 'No detailed metrics available for this conversion'
+                    }
+                    if isinstance(result.output_file, list):
+                        basic_report['pages'] = len(result.output_file)
+                        basic_report['page_files'] = [os.path.basename(page_file) for page_file in result.output_file]
+                        logger.info(f"Job {job_id} - Added metadata for {len(result.output_file)} pages to basic report")
                     with open(report_file_path, 'w') as f:
-                        json.dump(job.metrics, f, indent=4)
-                    logger.info(f"Job {job_id} - Wrote report file to {report_file_path}")
+                        json.dump(basic_report, f, indent=4)
+                    logger.info(f"Job {job_id} - Wrote basic report file to {report_file_path}")
                 except Exception as report_error:
-                    logger.error(f"Failed to write report file for job {job_id}: {str(report_error)}")
-            except Exception as e:
-                # Ultimate fallback: if all else fails, use an empty dict
-                logger.error(f"Failed to process metrics for job {job_id}: {str(e)}")
-                job.metrics = {}
-        else:
-            job.metrics = {}
+                    logger.error(f"Failed to write basic report file for job {job_id}: {str(report_error)}")
             
-            # Even without metrics, write a basic report
-            report_file_path = os.path.join(report_dir, 'report.json')
-            try:
-                basic_report = {
-                    'job_id': str(job.id),
-                    'original_file': job.original_filename,
-                    'output_file': job.output_filename,
-                    'compression_mode': job.compression_mode,
-                    'document_type': job.document_type,
-                    'bnf_compliant': job.bnf_compliant,
-                    'completed_at': job.completed_at.isoformat() if job.completed_at else None,
-                    'note': 'No detailed metrics available for this conversion'
-                }
-                
-                # Add multi-page information if applicable
-                if isinstance(result.output_file, list):
-                    basic_report['pages'] = len(result.output_file)
-                    basic_report['page_files'] = [os.path.basename(page_file) for page_file in result.output_file]
-                    logger.info(f"Job {job_id} - Added metadata for {len(result.output_file)} pages to basic report")
-                    
-                with open(report_file_path, 'w') as f:
-                    json.dump(basic_report, f, indent=4)
-                logger.info(f"Job {job_id} - Wrote basic report file to {report_file_path}")
-            except Exception as report_error:
-                logger.error(f"Failed to write basic report file for job {job_id}: {str(report_error)}")
-        
-        # Record completion time
-        job.completed_at = timezone.now()
-        job.save()
+            # Record completion time
+            job.completed_at = timezone.now()
+            job.save()
         
         # Clean up temporary files if not in debug mode
         if not settings.DEBUG and os.path.exists(temp_dir):
@@ -551,17 +520,19 @@ def handle_job_error(job_id, error_message, status='failed'):
     Helper function to update a job's status when an error occurs
     """
     from .models import ConversionJob
+    from django.db import transaction
     
     try:
-        job = ConversionJob.objects.get(id=job_id)
-        job.status = status
-        job.error_message = error_message
-        
-        # Only set completion time if the job is permanently failed
-        if status == 'failed':
-            job.completed_at = timezone.now()
+        with transaction.atomic():
+            job = ConversionJob.objects.select_for_update().get(id=job_id)
+            job.status = status
+            job.error_message = error_message
             
-        job.save()
+            # Only set completion time if the job is permanently failed
+            if status == 'failed':
+                job.completed_at = timezone.now()
+                
+            job.save()
         logger.info(f"Updated job {job_id} status to {status} with error: {error_message}")
     except Exception as e:
         logger.error(f"Error updating job status for {job_id}: {e}")

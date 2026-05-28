@@ -1,13 +1,10 @@
 from django.urls import path
-from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('jobs/', views.job_list, name='job_list'),
     path('jobs/create/', views.job_create, name='job_create'),
-    # Redirect the old multiple upload route to the unified upload page
-    path('jobs/multiple/', RedirectView.as_view(pattern_name='job_create', permanent=False), name='multiple_job_create'),
     path('jobs/<uuid:job_id>/', views.job_detail, name='job_detail'),
     path('jobs/<uuid:job_id>/status/', views.job_status, name='job_status'),
     path('jobs/<uuid:job_id>/delete/', views.job_delete, name='job_delete'),

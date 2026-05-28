@@ -200,57 +200,6 @@ def job_create(request):
     return render(request, 'converter/job_create.html', {'form': form})
 
 @login_required
-def multiple_file_job_create(request):
-    """
-    View for creating multiple conversion jobs from multiple files
-    """
-    if request.method == 'POST':
-        form = ConversionJobForm(request.POST, request.FILES)
-        if form.is_valid():
-            files = request.FILES.getlist('multiple_files')
-            jobs_created = 0
-            
-            for file in files:
-                # Create a new job for each file
-                job = ConversionJob(
-                    user=request.user,
-                    compression_mode=form.cleaned_data['compression_mode'],
-                    document_type=form.cleaned_data['document_type'],
-                    bnf_compliant=form.cleaned_data['bnf_compliant'],
-                    quality=form.cleaned_data['quality'],
-                )
-                
-                # Set file details
-                job.original_file = file
-                job.original_filename = file.name
-                job.original_size = file.size
-                job.save()
-                
-                logger.info(f"User {request.user.username} created job {job.id} for file {job.original_filename}")
-                
-                # Start Celery task for this job
-                try:
-                    task = process_conversion_job.delay(str(job.id))
-                    job.task_id = task.id
-                    job.save(update_fields=['task_id'])
-                    jobs_created += 1
-                except Exception as e:
-                    logger.error(f"Failed to start Celery task for job {job.id}: {str(e)}")
-                    job.status = 'failed'
-                    job.error_message = f"Failed to start conversion task: {str(e)}"
-                    job.save(update_fields=['status', 'error_message'])
-            
-            if jobs_created > 0:
-                messages.success(request, f"Successfully created {jobs_created} conversion jobs. Your files are now being processed.")
-                return redirect('job_list')
-            else:
-                messages.error(request, "Failed to create any conversion jobs. Please check the system logs.")
-    else:
-        form = ConversionJobForm()
-    
-    return render(request, 'converter/multiple_job_create.html', {'form': form})
-
-@login_required
 def job_list(request):
     """
     View for listing all conversion jobs with filtering options

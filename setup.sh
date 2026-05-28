@@ -1,289 +1,367 @@
 #!/bin/bash
 #
 # JP2Forge Web Application Setup Script
-# 
-# This script performs a complete manual installation of JP2Forge Web:
-# 1. Validates system dependencies (Python 3.9–3.12, pip, Redis)
-# 2. Creates and configures Python virtual environment
-# 3. Installs Python dependencies from requirements.txt
-# 4. Initializes Django database and creates superuser
-# 5. Sets up directory structure and static files
-# 6. Provides instructions for starting services
+# Version 0.2.0
 #
-# Prerequisites:
-# - Python 3.9–3.12 (3.9 minimum, 3.12 recommended)
-# - pip package manager
-# - Redis server (for Celery task queue)
-# - ExifTool (for metadata processing)
-# - Git (for repository management)
+# Consolidates: docker_setup.sh, setup_noninteractive.sh, init.py, and cleanup.py
 #
 # Usage:
-#   chmod +x setup.sh
-#   ./setup.sh
-#
-# For Docker installation, use docker_setup.sh instead.
-#
+#   ./setup.sh                 - Interactive manual setup
+#   ./setup.sh docker          - Docker setup (recommended)
+#   ./setup.sh -y | --yes      - Non-interactive manual setup
 
-echo "Setting up JP2Forge Web Application..."
+set -e
 
-# Don't attempt to deactivate - this causes issues when run as a script
-# Instead, we'll just create a fresh virtual environment
+# Color definitions
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-# Check if Python is installed
-if ! command -v python3 &> /dev/null; then
-    echo "Python 3 is not installed. Please install Python 3 and try again."
-    exit 1
-fi
+PROJECT_ROOT="$(pwd)"
 
-# Check if pip is installed
-if ! command -v pip3 &> /dev/null; then
-    echo "pip3 is not installed. Please install pip and try again."
-    exit 1
-fi
-
-# Check if Redis is installed and running
-echo "Checking Redis installation..."
-if ! command -v redis-cli &> /dev/null; then
-    echo "Warning: Redis is not installed or not in PATH."
-    echo "Redis is required for Celery. Please install Redis:"
-    echo "  - On macOS: brew install redis && brew services start redis"
-    echo "  - On Ubuntu/Debian: sudo apt install redis-server && sudo service redis-server start"
-    echo "  - On Windows: Download from https://github.com/tporadowski/redis/releases"
-    
-    read -p "Do you want to continue without Redis? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please install Redis and try again."
-        exit 1
-    fi
-else
-    # Check if Redis is running
-    if ! redis-cli ping > /dev/null 2>&1; then
-        echo "Warning: Redis is installed but not running."
-        echo "Please start Redis:"
-        echo "  - On macOS: brew services start redis"
-        echo "  - On Ubuntu/Debian: sudo service redis-server start"
-        echo "  - On Windows: Start the Redis service"
-        
-        read -p "Do you want to continue without starting Redis? (y/n) " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Setup aborted. Please start Redis and try again."
-            exit 1
-        fi
-    else
-        echo "Redis is running correctly."
-    fi
-fi
-
-# Check if ExifTool is installed
-echo "Checking ExifTool installation..."
-if ! command -v exiftool &> /dev/null; then
-    echo "Warning: ExifTool is not installed or not in PATH."
-    echo "ExifTool is required for metadata extraction. Please install ExifTool:"
-    echo "  - On macOS: brew install exiftool"
-    echo "  - On Ubuntu/Debian: sudo apt install libimage-exiftool-perl"
-    echo "  - On Windows: Download from https://exiftool.org"
-    
-    read -p "Do you want to continue without ExifTool? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please install ExifTool and try again."
-        exit 1
-    fi
-fi
-
-# Clean up any existing virtual environments to avoid conflicts
-if [ -d ".venv" ]; then
-    echo "Removing existing .venv directory..."
-    rm -rf .venv
-fi
-
-if [ -d "venv" ]; then
-    echo "Removing existing venv directory..."
-    rm -rf venv
-fi
-
-# Create a fresh virtual environment
-echo "Creating fresh virtual environment..."
-python3 -m venv .venv
-
-# Activate the virtual environment directly without sourcing
-VIRTUAL_ENV_PATH="$(pwd)/.venv"
-export VIRTUAL_ENV="$VIRTUAL_ENV_PATH"
-export PATH="$VIRTUAL_ENV_PATH/bin:$PATH"
-unset PYTHONHOME
-echo "Virtual environment activated."
-
-# Ensure pip is updated
-echo "Updating pip..."
-pip install --upgrade pip
-
-# Install dependencies
-echo "Installing dependencies..."
-echo "Note: Installing JP2Forge 0.9.7 from PyPI. If installation fails, the application will run in mock mode."
-pip install -r requirements.txt || {
-    echo "Warning: Some dependencies failed to install (likely JP2Forge 0.9.7 from PyPI)."
-    echo "Attempting to install remaining dependencies individually..."
-    
-    # Install core dependencies that should work
-    pip install django>=4.2.20 celery>=5.3.6 redis>=5.0.1 django-crispy-forms>=2.1 \
-                crispy-bootstrap4>=2023.1 django-celery-results>=2.5.1 Pillow>=10.3.0 \
-                python-dotenv>=1.0.0 gunicorn>=23.0.0 psycopg2-binary>=2.9.9 markdown>=3.8
-    
-    echo "Core dependencies installed."
-    echo "WARNING: JP2Forge 0.9.7 installation failed - application will run in mock mode."
-    echo "For production use, JP2Forge 0.9.7 is required for full functionality."
+show_help() {
+    echo "Usage: ./setup.sh [option]"
+    echo ""
+    echo "Options:"
+    echo "  docker            Set up JP2Forge Web in Docker containers (recommended)"
+    echo "  -y, --yes         Run manual setup in non-interactive mode"
+    echo "  -h, --help        Show this help message"
+    echo ""
+    echo "If no option is provided, the script runs in interactive manual setup mode."
 }
 
-# Install markdown package (needed for documentation) 
-echo "Installing markdown package for documentation..."
-pip install markdown
+cleanup_env() {
+    echo -e "${YELLOW}Performing environment cleanup...${NC}"
+    # Stop running processes
+    pkill -f "manage.py runserver" || true
+    pkill -f "celery -A jp2forge_web" || true
+    
+    # Remove caches
+    find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find . -type f -name "*.pyc" -delete 2>/dev/null || true
+    
+    # Remove old venvs
+    rm -rf .venv venv env 2>/dev/null || true
+    
+    # Remove compiled static files
+    rm -rf staticfiles 2>/dev/null || true
+    
+    # Remove media directory content
+    rm -rf media 2>/dev/null || true
+    mkdir -p media/jobs
+    
+    # Remove database files
+    rm -f *.sqlite3 2>/dev/null || true
+    
+    # Remove log files
+    rm -rf logs 2>/dev/null || true
+    mkdir -p logs
+    rm -f *.log 2>/dev/null || true
+    
+    echo -e "${GREEN}✓ Cleanup complete${NC}"
+}
 
-# Verify critical dependencies are installed
-echo "Verifying critical dependencies..."
-MISSING_DEPS=0
+run_docker_setup() {
+    echo -e "${BLUE}==============================================${NC}"
+    echo -e "${BLUE}     JP2FORGE WEB DOCKER SETUP (UNIFIED)      ${NC}"
+    echo -e "${BLUE}==============================================${NC}"
 
-# Check for Django
-if ! python -c "import django" &> /dev/null; then
-    echo "Error: Django is not installed correctly."
-    MISSING_DEPS=1
-fi
-
-# Check for crispy-bootstrap4
-if ! python -c "import crispy_bootstrap4" &> /dev/null; then
-    echo "Error: crispy-bootstrap4 is not installed correctly."
-    echo "Trying to install it again..."
-    pip install crispy-bootstrap4
-    if ! python -c "import crispy_bootstrap4" &> /dev/null; then
-        echo "Failed to install crispy-bootstrap4. This may cause issues with form rendering."
-        MISSING_DEPS=1
-    fi
-fi
-
-# Check for django-celery-results
-if ! python -c "import django_celery_results" &> /dev/null; then
-    echo "Error: django-celery-results is not installed correctly."
-    echo "Trying to install it again..."
-    pip install django-celery-results
-    if ! python -c "import django_celery_results" &> /dev/null; then
-        echo "Failed to install django-celery-results. This may cause issues with task handling."
-        MISSING_DEPS=1
-    fi
-fi
-
-# Check for markdown package
-if ! python -c "import markdown" &> /dev/null; then
-    echo "Error: markdown is not installed correctly."
-    echo "Trying to install it again..."
-    pip install markdown
-    if ! python -c "import markdown" &> /dev/null; then
-        echo "Failed to install markdown. This may cause issues with documentation."
-        MISSING_DEPS=1
-    fi
-fi
-
-# Check for JP2Forge if it's supposed to be available
-# Note: JP2Forge might not be pip-installable, so we'll just warn if it's not found
-JP2FORGE_AVAILABLE=0
-if python -c "import core.types" &> /dev/null; then
-    echo "✓ JP2Forge core modules found - full functionality available."
-    JP2FORGE_AVAILABLE=1
-else
-    echo "⚠ JP2Forge core modules are not found."
-    echo "The application will run in mock mode without real JPEG2000 conversion capabilities."
-    echo "This is acceptable for testing the UI, but not for production use."
-    echo ""
-    echo "To install JP2Forge manually, try:"
-    echo "  pip install jp2forge==0.9.7"
-    echo ""
-    echo "IMPORTANT: Only version 0.9.7 is supported by JP2Forge Web."
-    echo "Other versions may cause compatibility issues."
-fi
-
-if [ $MISSING_DEPS -eq 1 ]; then
-    echo "Warning: Some dependencies could not be installed properly."
-    echo "The application may not function correctly."
-    read -p "Do you want to continue anyway? (y/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo "Setup aborted. Please resolve the dependency issues and try again."
+    # Check Docker
+    if ! command -v docker &> /dev/null; then
+        echo -e "${RED}Error: Docker is not installed.${NC}"
+        echo -e "Please install Docker from https://www.docker.com/get-started"
         exit 1
     fi
-else
-    echo "All critical dependencies verified!"
-fi
+    echo -e "${GREEN}✓ Docker is installed${NC}"
 
-# Update .env with JP2Forge status
-if [ -f .env ]; then
-    if [ $JP2FORGE_AVAILABLE -eq 0 ]; then
-        echo "JP2FORGE_MOCK_MODE=True" >> .env
-        echo "Added JP2FORGE_MOCK_MODE=True to .env file"
+    # Determine Compose Command
+    if docker compose version &> /dev/null; then
+        COMPOSE_COMMAND="docker compose"
+    elif command -v docker-compose &> /dev/null; then
+        COMPOSE_COMMAND="docker-compose"
     else
-        echo "JP2FORGE_MOCK_MODE=False" >> .env
-        echo "Added JP2FORGE_MOCK_MODE=False to .env file"
+        echo -e "${RED}Error: Neither Docker Compose v2 plugin nor docker-compose is available.${NC}"
+        exit 1
     fi
-fi
+    echo -e "${GREEN}✓ Using: $COMPOSE_COMMAND${NC}"
 
-# Create .env file from example
-if [ ! -f .env ]; then
-    echo "Creating .env file from example..."
-    if [ ! -f .env.example ]; then
-        echo "Error: .env.example file not found. Creating a basic .env file..."
-        echo "SECRET_KEY=$(python -c "import secrets; print(secrets.token_urlsafe(50))")" > .env
-        echo "DEBUG=True" >> .env
-        echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
-        echo "CELERY_BROKER_URL=redis://localhost:6379/0" >> .env
-        echo "MAX_UPLOAD_SIZE=10485760" >> .env
+    if ! docker info &> /dev/null; then
+        echo -e "${RED}Error: Docker daemon is not running.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓ Docker daemon is running${NC}"
+
+    # Stop and clean existing containers
+    echo -e "\n${YELLOW}Cleaning up existing JP2Forge containers...${NC}"
+    $COMPOSE_COMMAND down -v &> /dev/null || true
+    $COMPOSE_COMMAND down &> /dev/null || true
+
+    # Environment file setup
+    # If .env exists and does NOT contain SECURE_DOCKER_ENVIRONMENT=true, it might be a manual config.
+    if [ -f ".env" ] && ! grep -q "SECURE_DOCKER_ENVIRONMENT=true" .env; then
+        echo -e "${YELLOW}Existing .env file is configured for manual dev. Backing it up to .env.manual...${NC}"
+        mv .env .env.manual
+    fi
+
+    if [ ! -f ".env" ]; then
+        echo -e "Creating new .env file..."
+        SECRET_KEY=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*()_+{}[]|;:,.<>?=' | fold -w 60 | head -n 1)
+        POSTGRES_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))" 2>/dev/null || cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        REDIS_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))" 2>/dev/null || cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+
+        cat > .env << EOF
+# JP2Forge Web Docker Environment Configuration
+SECRET_KEY=${SECRET_KEY}
+DEBUG=0
+DJANGO_SETTINGS_MODULE=jp2forge_web.settings
+ALLOWED_HOSTS=*
+
+# Database Settings
+DATABASE_URL=postgres://jp2forge:${POSTGRES_PASSWORD}@db:5432/jp2forge
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=jp2forge
+DB_USER=jp2forge
+DB_PASSWORD=${POSTGRES_PASSWORD}
+DB_HOST=db
+DB_PORT=5432
+
+# PostgreSQL Settings
+POSTGRES_USER=jp2forge
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+POSTGRES_DB=jp2forge
+
+# Redis Settings
+REDIS_PASSWORD=${REDIS_PASSWORD}
+
+# Celery Settings
+CELERY_BROKER_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+CELERY_RESULT_BACKEND=django-db
+
+# File Upload & JP2Forge
+MAX_UPLOAD_SIZE=10485760
+JP2FORGE_OUTPUT_DIR=/app/media/jobs
+JP2FORGE_REPORT_DIR=/app/media/reports
+JP2FORGE_MOCK_MODE=False
+
+# Security Settings
+SECURE_SSL_REDIRECT=False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
+SECURE_HSTS_SECONDS=0
+SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+SECURE_HSTS_PRELOAD=False
+SECURE_DOCKER_ENVIRONMENT=true
+CREATE_SUPERUSER=true
+EOF
+        echo -e "${GREEN}✓ Created new secure .env file${NC}"
     else
-        cp .env.example .env
-        # Generate a random SECRET_KEY
-        SECRET_KEY=$(python -c "import secrets; print(secrets.token_urlsafe(50))")
-        # Replace the placeholder with the generated key
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS sed requires an empty string for -i
-            sed -i '' "s/SECRET_KEY=changeme/SECRET_KEY=$SECRET_KEY/g" .env
-        else
-            # Linux sed
-            sed -i "s/SECRET_KEY=changeme/SECRET_KEY=$SECRET_KEY/g" .env
+        echo -e "${YELLOW}Using existing .env file${NC}"
+    fi
+
+    # Perms
+    chmod +x *.sh 2>/dev/null || true
+
+    # Clear conflicting local environment variables
+    unset POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB REDIS_PASSWORD
+    unset DB_NAME DB_USER DB_PASSWORD DB_HOST DB_PORT
+
+    # Build and start containers
+    echo -e "\n${YELLOW}Building and starting containers...${NC}"
+    $COMPOSE_COMMAND build
+    $COMPOSE_COMMAND up -d
+
+    # Wait for database
+    attempt=1
+    max_attempts=20
+    while [ $attempt -le $max_attempts ]; do
+        echo -ne "${YELLOW}Checking database connection (attempt $attempt/$max_attempts)...${NC}\r"
+        if $COMPOSE_COMMAND exec -T db pg_isready &> /dev/null; then
+            echo -e "${GREEN}✓ Database is ready                                     ${NC}"
+            break
+        fi
+        attempt=$((attempt+1))
+        sleep 3
+    done
+
+    # Setup admin user in Django
+    echo -e "\n${YELLOW}Setting up default superuser...${NC}"
+    $COMPOSE_COMMAND exec -T web python -c "
+import django
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jp2forge_web.settings')
+django.setup()
+from django.contrib.auth.models import User
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+    print('Default superuser \"admin\" with password \"admin123\" created successfully')
+else:
+    print('Superuser \"admin\" already exists')
+" || echo -e "${YELLOW}⚠ Could not verify admin user${NC}"
+
+    echo -e "\n${GREEN}==============================================${NC}"
+    echo -e "${GREEN}       JP2FORGE WEB DOCKER SETUP COMPLETE!     ${NC}"
+    echo -e "${GREEN}==============================================${NC}"
+    echo -e "Web application is running at: ${BLUE}http://localhost:8000${NC}"
+    echo -e "Default credentials: admin / admin123"
+}
+
+run_manual_setup() {
+    local interactive=$1
+    echo -e "${BLUE}==============================================${NC}"
+    echo -e "${BLUE}     JP2FORGE WEB MANUAL SETUP (UNIFIED)      ${NC}"
+    echo -e "${BLUE}==============================================${NC}"
+
+    # Stop processes and clean directories first
+    cleanup_env
+
+    # Check dependencies
+    if ! command -v python3 &> /dev/null; then
+        echo -e "${RED}Error: Python 3 is not installed.${NC}"
+        exit 1
+    fi
+    if ! command -v pip3 &> /dev/null; then
+        echo -e "${RED}Error: pip3 is not installed.${NC}"
+        exit 1
+    fi
+
+    # Verify Redis (for Celery)
+    if ! command -v redis-cli &> /dev/null; then
+        echo -e "${YELLOW}Warning: Redis is not installed or not in PATH.${NC}"
+        if [ "$interactive" = "true" ]; then
+            read -p "Do you want to continue without Redis? (y/n) " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        fi
+    else
+        if ! redis-cli ping > /dev/null 2>&1; then
+            echo -e "${YELLOW}Warning: Redis is installed but not running.${NC}"
+            if [ "$interactive" = "true" ]; then
+                read -p "Do you want to continue without starting Redis? (y/n) " -n 1 -r
+                echo ""
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                    exit 1
+                fi
+            fi
         fi
     fi
+
+    # Verify ExifTool
+    if ! command -v exiftool &> /dev/null; then
+        echo -e "${YELLOW}Warning: ExifTool is not installed or not in PATH.${NC}"
+        if [ "$interactive" = "true" ]; then
+            read -p "Do you want to continue without ExifTool? (y/n) " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                exit 1
+            fi
+        fi
+    fi
+
+    # Create fresh virtualenv
+    echo -e "\n${YELLOW}Creating Python virtual environment (.venv)...${NC}"
+    python3 -m venv .venv
+    
+    # Activate virtual environment
+    VIRTUAL_ENV_PATH="$(pwd)/.venv"
+    export VIRTUAL_ENV="$VIRTUAL_ENV_PATH"
+    export PATH="$VIRTUAL_ENV_PATH/bin:$PATH"
+    unset PYTHONHOME
+
+    # Update pip and install packages
+    echo -e "${YELLOW}Installing Python packages...${NC}"
+    pip install --upgrade pip
+    
+    # Install requirement dependencies
+    pip install -r requirements.txt || {
+        echo -e "${YELLOW}Warning: Full requirements install failed. Trying core fallback...${NC}"
+        pip install django>=4.2.20 celery>=5.3.6 redis>=5.0.1 django-crispy-forms>=2.1 \
+                    crispy-bootstrap4>=2023.1 django-celery-results>=2.5.1 Pillow>=10.3.0 \
+                    python-dotenv>=1.0.0 gunicorn>=23.0.0 psycopg2-binary>=2.9.9 markdown>=3.8
+    }
+
+    # Verify JP2Forge core availability
+    JP2FORGE_AVAILABLE=0
+    if python -c "import core.types" &> /dev/null; then
+        JP2FORGE_AVAILABLE=1
+    fi
+
+    # Create environment configurations
+    # If .env exists and contains SECURE_DOCKER_ENVIRONMENT=true, it will break manual SQLite setup.
+    if [ -f ".env" ] && grep -q "SECURE_DOCKER_ENVIRONMENT=true" .env; then
+        echo -e "${YELLOW}Existing .env file is configured for Docker. Backing it up to .env.docker...${NC}"
+        mv .env .env.docker
+    fi
+
+    if [ ! -f ".env" ]; then
+        echo -e "Creating basic .env file..."
+        SECRET_KEY=$(python -c "import secrets; print(secrets.token_urlsafe(50))")
+        cat > .env << EOF
+SECRET_KEY=${SECRET_KEY}
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+CELERY_BROKER_URL=redis://localhost:6379/0
+MAX_UPLOAD_SIZE=10485760
+JP2FORGE_MOCK_MODE=$([ $JP2FORGE_AVAILABLE -eq 0 ] && echo "True" || echo "False")
+EOF
+    fi
+
+    # Apply database migrations
+    echo -e "\n${YELLOW}Applying Django migrations...${NC}"
+    python manage.py makemigrations converter accounts
+    python manage.py migrate
+
+    # Collect staticfiles
+    echo -e "\n${YELLOW}Collecting Django static files...${NC}"
+    python manage.py collectstatic --noinput
+
+    # Create Media & Logs directories
+    mkdir -p media/jobs logs
+
+    # Setup Superuser
+    if [ "$interactive" = "true" ]; then
+        read -p "Do you want to create a Django superuser account now? (y/n) " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            python manage.py createsuperuser
+        fi
+    else
+        # Auto-create admin superuser non-interactively
+        python -c "
+import django
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jp2forge_web.settings')
+django.setup()
+from django.contrib.auth.models import User
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+    print('Default superuser \"admin\" with password \"admin123\" created successfully')
+else:
+    print('Superuser already exists')
+"
+    fi
+
+    echo -e "\n${GREEN}==============================================${NC}"
+    echo -e "${GREEN}       JP2FORGE WEB SETUP COMPLETE!            ${NC}"
+    echo -e "${GREEN}==============================================${NC}"
+    echo -e "To start development server:   ${BLUE}./dev.sh${NC}"
+    echo -e "To stop services:              ${BLUE}./dev.sh stop${NC}"
+}
+
+# Main routing logic based on arguments
+if [ "$1" = "docker" ]; then
+    run_docker_setup
+elif [ "$1" = "-y" ] || [ "$1" = "--yes" ] || [ "$1" = "--non-interactive" ]; then
+    run_manual_setup false
+elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    show_help
+elif [ -z "$1" ]; then
+    run_manual_setup true
+else
+    echo -e "${RED}Unknown option: $1${NC}"
+    show_help
+    exit 1
 fi
-
-# Make script files executable
-echo "Making script files executable..."
-chmod +x *.sh
-
-# Apply migrations
-echo "Applying database migrations..."
-python manage.py makemigrations
-python manage.py migrate
-
-# Create media directories
-echo "Creating media directories..."
-mkdir -p media/jobs
-
-# Collect static files
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
-
-# Offer to create a superuser
-read -p "Do you want to create a superuser now? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    python manage.py createsuperuser
-fi
-
-echo "Setup complete!"
-echo ""
-echo "To run the development server:"
-echo "./start_dev.sh"
-echo ""
-echo "Or manually:"
-echo "python manage.py runserver"
-echo ""
-echo "To run the Celery worker (in a separate terminal):"
-echo "./start_celery.sh"
-echo ""
-echo "Or manually:"
-echo "celery -A jp2forge_web worker -l INFO"
